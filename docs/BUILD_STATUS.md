@@ -2,7 +2,7 @@
 
 ## Latest scopes 1–4 verification
 
-**182 unit/API tests, 112 Chrome checks and 18 Edge checks pass.** Frontend/backend types, 24 static checks, 21 original hashes, verification build and 15-page PDF checks pass. Homepage artwork is fixed. Automatic approval review rejected the isolated staging request because it exceeded 200,000 bytes; no app was created and no production release occurred. [Current status and external acceptance](audit/SCOPES_1_TO_4_PROGRESS.md) supersedes the historical counts below.
+**231 unit/API tests, 113 Chrome checks and 18 Edge checks pass.** Frontend/backend types, 24 static checks, 21 original hashes, verification build and 15-page PDF checks pass. Homepage artwork is fixed. The user approved staging; automatic approval review rejected the retry at the same 200,000-byte limit; no app was created and no production release occurred. [Current status and external acceptance](audit/SCOPES_1_TO_4_PROGRESS.md) supersedes the historical counts below.
 
 
 ## Historical evidence continuation — latest results

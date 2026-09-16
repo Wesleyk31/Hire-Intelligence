@@ -26,7 +26,7 @@ checks += [
     ('no public manual source refresh route', "'POST /api/sources/refresh'" not in idx),
     ('CALL NOW is computed', 'isCallNowCandidate' in idx and bool(re.search(r'callNow\s*:\s*projects\.filter',idx))),
     ('no 50-project ceiling', '.slice(0, 50);' not in intel),
-    ('canonical grouping helper used', 'groupCanonicalEvidence(records)' in intel),
+    ('canonical grouping helper used', bool(re.search(r'groupCanonicalEvidence\(records(?:\.filter\(isEvidenceEligible\))?\)',intel))),
     ('recency-aware stage helper used', bool(re.search(r'chooseCurrentStage\(\s*stageSignals',intel))),
     ('delivery contractor role filter used', "organisationRole === 'DELIVERY_CONTRACTOR'" in intel),
     ('Organisations view renamed', 'Companies & Contacts' not in fa),

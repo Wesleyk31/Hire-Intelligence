@@ -1,3 +1,4 @@
+import { RECOVERED_KML_MEMBERS } from './feed-recovery';
 import {
   findField,
   recordIdentity,
@@ -9,6 +10,7 @@ import {
   sourceWorkbook,
   projectWorkbookRows,
   ckanResourceRows,
+  ckanKmlRows,
   selectCkanResource,
   paginationTotal,
   paginationCompleted,
@@ -39,6 +41,7 @@ export type BackfillContext = {
   ckanResource?: CkanResource;
   wfs?: WfsCheckpoint;
   wfsLayer?: string;
+  kmlSnapshot?: string;
 };
 export type Page = {
   rows: RawRow[];
@@ -460,7 +463,26 @@ async function ckanPackage(
     ),
   };
 }
-async function kml(source: BackfillSource, cursor: number): Promise<Page> {
+async function kml(
+  source: BackfillSource,
+  cursor: number,
+  context?: BackfillContext,
+): Promise<Page> {
+  if (RECOVERED_KML_MEMBERS[source.key]) {
+    if (cursor > 0 && !context?.kmlSnapshot)
+      throw new Error('KML_CHECKPOINT_REQUIRED_RESTART');
+    const page = await ckanKmlRows(source.key, source.endpoint);
+    if (context?.kmlSnapshot && context.kmlSnapshot !== page.snapshot)
+      throw new Error('KML_SNAPSHOT_CHANGED');
+    if (cursor > page.rows.length) throw new Error('KML_CURSOR_INVALID');
+    const rows = page.rows.slice(cursor, cursor + BATCH);
+    return {
+      rows,
+      next: cursor + rows.length,
+      completed: cursor + rows.length >= page.rows.length,
+      context: { ...context, kmlSnapshot: page.snapshot },
+    };
+  }
   const body = (await jsonFetch(source.endpoint)) as any;
   if (body.success !== true || !Array.isArray(body.result?.resources))
     throw new Error('CKAN_SCHEMA_INVALID');
@@ -560,12 +582,10 @@ async function projectXlsx(
     await workbook(source.endpoint),
     true,
   );
-  const rows = all
-    .slice(cursor, cursor + BATCH)
-    .map((raw) => ({
-      externalId: projectRecordIdentity(source.key, raw),
-      raw,
-    }));
+  const rows = all.slice(cursor, cursor + BATCH).map((raw) => ({
+    externalId: projectRecordIdentity(source.key, raw),
+    raw,
+  }));
   return {
     rows,
     next: cursor + rows.length,
@@ -593,7 +613,7 @@ export async function collectBackfillPage(
   if (source.method === 'OPENDATASOFT') return ods(source, cursor);
   if (source.method === 'WFS') return wfs(source, cursor, context);
   if (source.method === 'WFS_DIRECT') return wfsDirect(source, cursor, context);
-  if (source.method === 'CKAN_KML') return kml(source, cursor);
+  if (source.method === 'CKAN_KML') return kml(source, cursor, context);
   if (source.method === 'XLSX_PROJECT') return projectXlsx(source, cursor);
   if (source.method === 'GEOJSON') return geojson(source, cursor);
   throw new Error('BACKFILL_METHOD_UNSUPPORTED:' + source.method);

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { db } from '@appdeploy/sdk';
 import { evidenceTimestamp, type OrganisationRole } from './domain-hardening';
+import { evidenceHoldReasons } from './evidence-eligibility';
 import type { IntelligenceEvidence } from './intelligence';
 
 export type OperationalEvidence = IntelligenceEvidence & {
@@ -57,13 +58,18 @@ function archivedEvidence(
       ? (row.organisationRole as OrganisationRole)
       : 'UNKNOWN',
     provenance: text(row.provenance),
-    ...(Array.isArray(row.qualityFlags)
-      ? {
-          qualityFlags: [
-            ...new Set(row.qualityFlags.map(text).filter(Boolean)),
-          ],
-        }
-      : {}),
+    qualityFlags: [
+      ...new Set([
+        ...(Array.isArray(row.qualityFlags)
+          ? row.qualityFlags.map(text).filter(Boolean)
+          : []),
+        ...evidenceHoldReasons(row).filter(
+          (reason) =>
+            reason === 'MALFORMED_QUALITY_FLAGS' ||
+            reason === 'MALFORMED_PROMOTION_RESTRICTION',
+        ),
+      ]),
+    ],
     ...(typeof row.contextOnly === 'boolean'
       ? { contextOnly: row.contextOnly }
       : {}),
@@ -84,7 +90,7 @@ function archivedEvidence(
   };
 }
 
-function preferred(
+function preferredVersion(
   a: OperationalEvidence,
   b: OperationalEvidence,
 ): OperationalEvidence {
@@ -99,6 +105,19 @@ function preferred(
   if (stamp(a) !== stamp(b)) return stamp(a) > stamp(b) ? a : b;
   // Stable tie-breaking makes duplicate/revision ordering irrelevant.
   return JSON.stringify(a).localeCompare(JSON.stringify(b)) >= 0 ? a : b;
+}
+
+function preferred(
+  a: OperationalEvidence,
+  b: OperationalEvidence,
+): OperationalEvidence {
+  const selected = preferredVersion(a, b);
+  // A newer or live copy is not evidence that a prior review hold was resolved.
+  // Keep all known restrictions within this bounded window until explicit reconciliation.
+  const reasons = [
+    ...new Set([...evidenceHoldReasons(a), ...evidenceHoldReasons(b)]),
+  ].sort();
+  return reasons.length ? { ...selected, qualityFlags: reasons } : selected;
 }
 
 const MAX_WINDOW_RECORDS = 1500;

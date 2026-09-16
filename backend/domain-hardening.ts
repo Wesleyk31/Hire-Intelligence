@@ -315,7 +315,10 @@ export function inferOrganisation(
     ? firstValue(raw, ['clientname', 'owner', 'holder', 'ownname'])
     : '';
   if (titleHolder)
-    return { name: titleHolder, role: 'APPLICANT_HOLDER' as OrganisationRole };
+    return {
+      name: titleHolder,
+      role: 'APPLICANT_HOLDER' as OrganisationRole,
+    };
   const aemoProponent = sourceKey.startsWith('aemo-')
     ? firstValue(raw, ['organisationname', 'organizationname'])
     : '';
@@ -333,7 +336,10 @@ export function inferOrganisation(
     return { name: proponent, role: 'OWNER_PROPONENT' as OrganisationRole };
   const applicant = firstValue(raw, ['applicant', 'holder', 'ownname']);
   if (applicant)
-    return { name: applicant, role: 'APPLICANT_HOLDER' as OrganisationRole };
+    return {
+      name: applicant,
+      role: 'APPLICANT_HOLDER' as OrganisationRole,
+    };
   const company = firstValue(raw, ['company', 'organisation', 'organization']);
   if (!company) return { name: '', role: 'UNKNOWN' as OrganisationRole };
   return { name: company, role: 'UNKNOWN' as OrganisationRole };
@@ -448,7 +454,10 @@ export type CallNowCandidate = {
   equipmentPrediction?: { classes?: string[]; confidence?: number };
 };
 
-export function isCallNowCandidate(project: CallNowCandidate) {
+export function isCallNowCandidate(
+  project: CallNowCandidate & { promotionEligible?: boolean },
+) {
+  if (project.promotionEligible === false) return false;
   const stageReady = [
     'AWARDED',
     'MOBILISATION',
@@ -506,7 +515,10 @@ export function validateDemoRequest(input: Record<string, unknown>) {
   if (name.length < 2 || company.length < 2)
     return { ok: false as const, error: 'Name and company are required.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return { ok: false as const, error: 'A valid business email is required.' };
+    return {
+      ok: false as const,
+      error: 'A valid business email is required.',
+    };
   if (
     name.length > 200 ||
     company.length > 300 ||
@@ -515,5 +527,8 @@ export function validateDemoRequest(input: Record<string, unknown>) {
     phone.length > 80
   )
     return { ok: false as const, error: 'Input is too long.' };
-  return { ok: true as const, value: { name, company, email, phone, message } };
+  return {
+    ok: true as const,
+    value: { name, company, email, phone, message },
+  };
 }

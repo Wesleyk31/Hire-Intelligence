@@ -6,19 +6,19 @@
 
 Local repairs and implementation increments across all four scopes are delivered. **These scopes are not yet accepted in production.** Automatic approval review rejected the new isolated staging deployment because the request exceeded its **200,000-byte review limit**. No app was created, no scheduled job was enabled, and no live database was modified. The existing app remains on its prior release; the local protections are not a claim that the old live APIs are protected.
 
-The user has been asked to approve that specific staging deployment. The rejected action has not been split, rerouted or retried through another execution path. Business identity/contact, administrator emails, retention periods and two authorized real staging accounts are still required for their respective acceptance checks.
+The user approved that specific staging deployment and requested continued building. One direct retry with that explicit approval was rejected again by the same 200,000-byte automatic-review limit before AppDeploy ran. Approval is recorded; the technical block remains. The action has not been split or rerouted to bypass review. Business identity/contact, administrator emails, retention periods and two authorized real staging accounts are still required for their respective acceptance checks.
 
 | Scope | Implemented and verified locally | External acceptance still required |
 |---|---|---|
 | 1. Release blockers | Six self-contained SVG illustrations replace broken active artwork; original corrupt file retained. Authenticated operational routes, deferred workspace loading, deterministic release package and five platform workflow tests. | Approval review must permit staging; actual production build/runtime, provider sign-in/expiry/revocation, anonymous denial and two-account persistence. No production release until staging acceptance. |
-| 2. Historical evidence and repair | Bounded continuation for live and archived evidence; previous/next windows; window-aware CRM validation; read-only record review/export; immutable fingerprints and quality findings; dry-run inventory; checked index intents stop uncertain insertion retries. | Inventory actual stored records, review/reconcile legacy indexes and physical duplicates, restart old WFS cursors deliberately, then prove source→archive→project reconciliation. SDK has no CAS/transactions: no distributed single-writer or exactly-once claim. |
-| 3. Feeds and pilots | Corrected SA/NSW WFS layers and stable IDs; dedicated national workbook parser; provider-total pagination and repeated-page guards; Logan and QLD context previews with attribution/quarantine; read-only collector diagnostics. | Real scheduled ingestion, rights/access acceptance and legacy-ID migration before enabling recovered feeds. Resolve six latest feed errors and one empty source. Pilots remain read-only and are not promoted to demand alerts. |
+| 2. Historical evidence and repair | Bounded continuation for live and archived evidence; previous/next windows; window-aware CRM validation; read-only record review/export; immutable fingerprints and quality findings; dry-run inventory and complete-snapshot offline repair proposals; checked index intents stop uncertain insertion retries. | Inventory actual stored records, review/reconcile legacy indexes and physical duplicates, restart old WFS cursors deliberately, then prove source→archive→project reconciliation. SDK has no CAS/transactions: no distributed single-writer or exactly-once claim. |
+| 3. Feeds and pilots | Corrected SA/NSW WFS layers and stable IDs; dedicated national workbook parser; provider-total pagination and repeated-page guards; Logan and QLD context previews with attribution/quarantine; read-only collector diagnostics; bounded NT MODAT ZIP parsing and enforced context/quality holds. | Real scheduled ingestion, rights/access acceptance and legacy-ID migration before enabling recovered feeds. Resolve four latest collector errors and one empty source; three NT title domains retain explicit size/schema/identity gates. Pilots remain read-only and are not promoted to demand alerts. |
 | 4. Operations/performance | Per-source latency/date/duplicate/save observations; bounded refresh slices; partial-write uncertainty; lazy app/map/PDF loading; faster canonical grouping; Chrome/Edge/mobile/keyboard/PDF checks. | Observe real scheduled cycles, verify actual account storage and representative deployed performance; approve business Privacy/Terms, retention and administrator policy. |
 
 ## Final local verification
 
-- **182 unit/API tests passed** across 16 files using real maintained handlers/normalizers with replaced network/database boundaries.
-- **112 Chrome browser checks passed**, covering all 9 public pages and all 12 operational modules, desktop/mobile navigation, empty/error states, forms, search, drill-downs, map flows, CRM/report fixtures, pagination and delayed-save races.
+- **231 unit/API tests passed** across 19 files using real maintained handlers/normalizers with replaced network/database boundaries.
+- **113 Chrome browser checks passed**, covering all 9 public pages and all 12 operational modules, desktop/mobile navigation, empty/error states, forms, search, drill-downs, map flows, CRM/report fixtures, pagination and delayed-save races.
 - **18 Edge workflow checks passed**, including operational navigation, evidence review, pagination, CRM/account fixtures and source diagnostics. Chrome and Edge share Chromium; Safari/Firefox were not tested.
 - Frontend and backend TypeScript passed. The explicit **verification build** passed; it contains test-runtime aliases and is not deployed. A real platform production build remains unverified.
 - **24 format-tolerant static checks** and **21 original handoff SHA-256 checks** passed. The immutable original checker is retained; the maintained UTF-8 companion permits normal source formatting.
@@ -36,6 +36,10 @@ The user has been asked to approve that specific staging deployment. The rejecte
 7. Reports and calibration mislabeled later-window outcomes as unresolved legacy data. Project/evidence sections now explicitly describe the current window; CRM outcomes retain account scope and source health/backfill retain system scope.
 8. Logan multi-parcel applications could pick an arbitrary locality. Localities are retained deterministically and multiple localities are flagged.
 
+## Accepted continuation
+
+See [continued-build results](CONTINUED_BUILD_2026-09-16.md) for the new scoring gates, read-only stage baselines, archive restriction retention, repair proposals, NT recovery and independent-review fixes. The Windows browser harness now ignores generated trace artifacts after a reproduced EBUSY watcher crash. The passing counts above come from the subsequent clean runs.
+
 ## Measured performance
 
 - Initial verification JavaScript: **266,444 bytes**, down from **911,536 bytes** (70.77%). Operational workspace is about 65 KB, map about 166 KB and PDF libraries load on use. These are local verification artifacts, not measurements of the old live deployment.
@@ -43,9 +47,9 @@ The user has been asked to approve that specific staging deployment. The rejecte
 
 ## Feed evidence
 
-The 70-source pass at 02:42 UTC returned 56 row-producing sources, 13 errors and one empty source. A targeted 13-source retest at 02:54 UTC returned 12 row-producing sources and one error, recovering seven temporary DNS failures. Latest per-source observations combined across those two times are **63 with rows, six errors and one empty**. This combination is not a simultaneous uptime or scheduler measurement.
+The 70-source pass at 02:42 UTC returned 56 row-producing sources, 13 errors and one empty source. A targeted 13-source retest at 02:54 UTC returned 12 row-producing sources and one error, recovering seven temporary DNS failures. The subsequent 03:16 UTC four-source audit recovered NT mines and mineral occurrences. Latest per-source collector observations combined across the three audits are **65 with rows, four errors and one empty**. This combination is not a simultaneous uptime or scheduler measurement.
 
-Remaining errors: Queensland granted resource authorities returned HTTP 202 without usable data; five NT sources returned HTTP 406. Queensland Stadiums returned no rows. A provider response with rows still needs domain/date/rights review and does not prove successful deployed ingestion.
+Remaining collector errors: Queensland granted resource authorities returns HTTP 202 on the latest workbook; three NT title collectors remain unsupported. Their catalogues and correctly negotiated ZIP downloads work, but archive size and domain/identity semantics require further implementation. Queensland Stadiums still returns an empty datastore; its workbook is challenged by the provider. See [remaining-feed recovery](REMAINING_FEED_RECOVERY.md). A provider response with rows still needs domain/date/rights review and does not prove successful deployed ingestion.
 
 All seven recovered WFS bindings returned sampled rows on retest. The national workbook helper yielded 432 unique projects, including 21 completed, using the Consolidated sheet. Recovered sources remain disabled pending acceptance and identifier reconciliation. SA power retains `NATURAL_ID_REVIEW_REQUIRED`.
 
@@ -55,9 +59,9 @@ Evidence: [full feed audit](FEED_AUDIT_2026-09-16T02-42-20-545Z.md), [targeted r
 
 ## Release artifact and next actions
 
-The reviewed source bundle contains **52 files / 596,054 bytes**, with cron disabled and synthetic SDK/test runtime excluded. The new-app request contains 49 paths after omitting unchanged scaffold files and expressing scaffold edits as diffs. Five complete workflow tests include exactly one sanity workflow and an explicit read-only API fault case. Original rollback reference: live **v96 / 1789467699311**; no release occurred in this task.
+The reviewed source bundle contains **54 files / 613,279 bytes**, with cron disabled and synthetic SDK/test runtime excluded. The rejected, approved request contained 49 paths. The regenerated source bundle includes this continuation and has not been submitted again; deployment still requires the prescribed fresh-scaffold diff flow when the technical block is resolved. Five complete workflow tests include exactly one sanity workflow and an explicit read-only API fault case. Original rollback reference: live **v96 / 1789467699311**; no release occurred in this task.
 
-Bundle SHA-256: `df0ba62ce659d462bbb153a54baff0722d2c9ce24b75543206b9a4191b97f3a7`.
+Bundle SHA-256: `58a66a385a242d4f1e752731cae9ca4587b6a88b53364f26c86f9943e2012746`.
 
 Artifacts: `.local/release-staging/files.json` and `.local/release-staging/manifest.json`. Recreate with `node scripts/prepare-release.mjs --out .local/release-staging` after any maintained-source change.
 

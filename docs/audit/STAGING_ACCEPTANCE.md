@@ -4,7 +4,7 @@ Date: 2026-09-16 (Australia/Perth)
 
 ## Current status
 
-**Deployment attempted and rejected by automatic approval review (request exceeded 200,000 bytes); no staging app was created. Staging acceptance has not been performed.** The source helper writes local artifacts only. It does not create/update an app, authenticate, install dependencies, contact providers, seed records, run cron or submit requests.
+**The user approved the staging action. Its retry was rejected again by automatic approval review (request exceeded 200,000 bytes); no staging app was created. Staging acceptance has not been performed.** The source helper writes local artifacts only. It does not create/update an app, authenticate, install dependencies, contact providers, seed records, run cron or submit requests.
 
 The new staging app must use the real AppDeploy runtime. Its scheduled jobs are deliberately disabled with `cron.json` containing `[]`. The existing production app and its `tests/tests.txt` contract remain unchanged.
 
@@ -32,6 +32,8 @@ Outputs:
 The artifact is **not a deploy-tool request**. Before creating the new staging app, the release owner must read current AppDeploy deployment instructions and validate the new-app test schema. After receiving the exact fresh scaffold, convert scaffold/template modifications to the required diffs. Do not guess the baseline, send full template contents where diffs are required, or use this new-app bundle as an update to the existing production app.
 
 Run the helper after parallel source edits settle. Re-run after any code/test/config change; the digest records exactly what was read, not a promise that the working tree will stay unchanged. The helper uses stable ordering and no timestamps, so unchanged sources yield identical artifacts.
+
+The 200,000-byte rejection remains a technical automatic-review limit despite explicit approval. Do not request the same approval again or split/reroute the rejected action to evade review. No platform build or quota check has run.
 
 ## Included source
 

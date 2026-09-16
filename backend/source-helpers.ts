@@ -1,3 +1,4 @@
+import { recoveredKmlRows } from './feed-recovery';
 import { read, utils, type WorkBook } from 'xlsx';
 import { createHash } from 'node:crypto';
 
@@ -719,4 +720,24 @@ function nationalMajorProjectRows(book: WorkBook): Record<string, unknown>[] {
   }
   if (!rows.size) throw new Error('XLSX_PROJECT_ROWS_MISSING');
   return [...rows.values()];
+}
+
+/** NT MODAT archives only; title archives retain their separate review gates. */
+export async function ckanKmlRows(sourceKey: string, endpoint: string) {
+  const body = await sourceJson(endpoint);
+  if (body.success !== true || !Array.isArray(body.result?.resources))
+    throw new Error('CKAN_SCHEMA_INVALID');
+  const resources = body.result.resources.filter(
+    (item: any) =>
+      String(item.format || '').toUpperCase() === 'KML' && item.url,
+  );
+  if (resources.length !== 1)
+    throw new Error('KML_RESOURCE_AMBIGUOUS_OR_MISSING');
+  return recoveredKmlRows(
+    sourceKey,
+    await requestBytes(
+      String(resources[0].url),
+      'application/zip,application/x-zip-compressed,application/octet-stream',
+    ),
+  );
 }

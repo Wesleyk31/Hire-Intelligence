@@ -15,6 +15,8 @@ export type ReportSummary = {
   completedBackfill: string;
   predictedDemandClusters: number;
   dataWindow: string;
+  heldEvidenceCount: number;
+  eligibleEvidenceCount: number;
 };
 
 export function buildExecutiveReportSummary(
@@ -29,8 +31,19 @@ export function buildExecutiveReportSummary(
     (source: any) => source.status === 'FAILED',
   ).length;
   const universe = dashboard.universe || {};
+  const heldEvidenceCount = projects.reduce(
+    (count: number, project: any) => count + (project.heldEvidenceCount || 0),
+    0,
+  );
+  const eligibleEvidenceCount = projects.reduce(
+    (count: number, project: any) =>
+      count + (project.eligibleEvidenceCount ?? project.evidenceCount ?? 0),
+    0,
+  );
   return {
     generatedAt: new Date().toISOString(),
+    heldEvidenceCount,
+    eligibleEvidenceCount,
     headline: `${projects.length} canonical projects, ${events.length} opportunity signals, ${high} high-priority projects in this evidence window`,
     projectCount: projects.length,
     opportunityCount: events.length,
@@ -44,6 +57,7 @@ export function buildExecutiveReportSummary(
     predictedDemandClusters:
       dashboard.commercial?.equipmentClusters?.length || 0,
     dataWindow:
+      `${eligibleEvidenceCount} eligible evidence records; ${heldEvidenceCount} evidence records held for context or quality review and excluded from scoring and demand signals. ` +
       (universe.archiveRecordsLoaded !== undefined
         ? `${universe.loaded ?? 0} unique evidence records in this evidence window from current and archived sources; ${universe.liveLoaded ?? 0} current rows and ${universe.archiveRecordsLoaded ?? 0} archived rows read.${universe.truncated ? ' Bounded view: additional stored records exist.' : ''}${universe.invalidArchiveRecords || universe.invalidArchivePages ? ' Some archive rows or pages need review and are excluded.' : ''}`
         : `${universe.loaded ?? projects.length} records loaded in this evidence window.${universe.truncated ? ' Additional stored records exist.' : ''}`) +
@@ -167,6 +181,7 @@ export async function downloadExecutivePdf(
   autoTable(doc, {
     startY: 50,
     head: [['Executive metric', 'Current position']],
+    columnStyles: { 0: { cellWidth: 58 } },
     body: [
       ['Loaded canonical projects', String(summary.projectCount)],
       ['Opportunity signals', String(summary.opportunityCount)],

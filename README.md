@@ -6,7 +6,7 @@ The supplied archive was a hardening overlay, not a standalone application. All 
 
 ## Latest scopes 1–4 results
 
-Local repairs pass **182 unit/API tests, 112 Chrome checks and 18 Edge checks**, plus TypeScript, 24 static checks, 21 handoff hashes and PDF bounds. Broken artwork is replaced; evidence pagination, data review, recovered collectors, source previews and performance improvements are implemented. **Staging deployment was rejected by automatic approval review's 200,000-byte request limit; no live release or database mutation occurred.** See [scope status, evidence and remaining acceptance](docs/audit/SCOPES_1_TO_4_PROGRESS.md).
+Local repairs pass **231 unit/API tests, 113 Chrome checks and 18 Edge checks**, plus TypeScript, 24 static checks, 21 handoff hashes and PDF bounds. Broken artwork is replaced; evidence pagination, data review, recovered collectors, source previews and performance improvements are implemented. **The user approved staging; automatic approval review rejected its retry at the same 200,000-byte request limit; no live release or database mutation occurred.** See [scope status, evidence and remaining acceptance](docs/audit/SCOPES_1_TO_4_PROGRESS.md).
 
 ## Earlier audit state (superseded)
 

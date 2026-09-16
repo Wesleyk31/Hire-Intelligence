@@ -1,5 +1,8 @@
 import { groupReviewedOutcomes } from './calibration';
-import { db } from '@appdeploy/sdk';
+import {
+  evidenceHoldReasons,
+  isEvidenceEligible,
+} from './evidence-eligibility';
 import {
   chooseCurrentStage,
   evidenceTimestamp,
@@ -84,6 +87,10 @@ export type PilotCalibrationOutcome = {
 };
 
 export type ProjectIntelligence = {
+  promotionEligible?: boolean;
+  eligibleEvidenceCount?: number;
+  heldEvidenceCount?: number;
+  holdReasons?: string[];
   id: string;
   name: string;
   location: string;
@@ -511,7 +518,7 @@ function scoreSignalQuality(
         0,
       ) / records.length
     : 0;
-  const newestFreshness = Math.max(...records.map(freshness));
+  const newestFreshness = Math.max(0, ...records.map(freshness));
   const uniqueSources = new Set(records.map((record) => record.sourceKey)).size;
   const corroboration = clamp(
     (uniqueSources - 1) * 12 + Math.max(0, records.length - uniqueSources) * 3,
@@ -636,7 +643,16 @@ export async function buildProjectIntelligence(
   sourceList: IntelligenceSource[],
 ): Promise<ProjectIntelligence[]> {
   const sourceMap = new Map(sourceList.map((source) => [source.key, source]));
-  const groups = groupCanonicalEvidence(records);
+  // Qualifying rows define canonical groups; restricted text must not bridge unrelated projects.
+  const groups = groupCanonicalEvidence(records.filter(isEvidenceEligible));
+  const heldGroups = groupCanonicalEvidence(
+    records.filter((record) => !isEvidenceEligible(record)),
+  );
+  for (const [key, held] of heldGroups) {
+    const existing = groups.get(key);
+    if (existing) existing.push(...held);
+    else groups.set('context:' + key, held);
+  }
   const snapshotPage = await listBounded<StageSnapshot>(
     'project_stage_snapshots',
     { pageSize: 500, maxItems: 2000 },
@@ -646,27 +662,41 @@ export async function buildProjectIntelligence(
   );
   const aliasOwners = new Map<string, number>();
   for (const rows of groups.values()) {
-    for (const alias of new Set(rows.map((row) => normaliseKey(row.project))))
+    for (const alias of new Set(
+      rows.filter(isEvidenceEligible).map((row) => normaliseKey(row.project)),
+    ))
       aliasOwners.set(alias, (aliasOwners.get(alias) || 0) + 1);
   }
   const claimedSnapshots = new Set<string>();
   const emittedProjectKeys = new Set<string>();
-  const additions: StageSnapshot[] = [];
-  const updates: Array<{ id: string; record: StageSnapshot }> = [];
   const projects: ProjectIntelligence[] = [];
   for (const [projectKey, projectRecords] of groups) {
-    const stageSignals = projectRecords.map((record) =>
+    const qualifyingRecords = projectRecords.filter(isEvidenceEligible);
+    const heldRecords = projectRecords.filter(
+      (record) => !isEvidenceEligible(record),
+    );
+    const stageSignals = qualifyingRecords.map((record) =>
       classifyStage(record, sourceMap.get(record.sourceKey)),
     );
-    const currentStage = chooseCurrentStage(stageSignals, stageRank, 45);
+    const currentStage: StageSignal = stageSignals.length
+      ? chooseCurrentStage(stageSignals, stageRank, 45)
+      : {
+          label: 'WATCH',
+          confidence: 0,
+          reliability: 0,
+          observedAt: '',
+          sourceKey: '',
+          reason:
+            'Evidence is retained for context or quality review and cannot establish a commercial stage.',
+        };
     const aliases = [
       ...new Set(
-        projectRecords
+        qualifyingRecords
           .map((record) => normaliseKey(record.project))
           .filter(Boolean),
       ),
     ];
-    const evidenceKeys = projectRecords
+    const evidenceKeys = qualifyingRecords
       .map((row) => `${row.sourceKey}:${row.externalId}`)
       .sort();
     const matched = snapshotPage.items.filter((snapshot) =>
@@ -684,6 +714,7 @@ export async function buildProjectIntelligence(
     // Current canonical keys belong to their direct groups, even if a split group is visited first.
     // Check keys as well as snapshot row IDs because old storage can contain duplicate keys.
     const previous =
+      qualifyingRecords.length > 0 &&
       candidate &&
       !claimedSnapshots.has(candidate.id) &&
       !emittedProjectKeys.has(candidate.projectKey) &&
@@ -694,7 +725,7 @@ export async function buildProjectIntelligence(
     const stableProjectKey = previous?.projectKey || projectKey;
     emittedProjectKeys.add(stableProjectKey);
     const uniqueSources = new Set(
-      projectRecords.map((record) => record.sourceKey),
+      qualifyingRecords.map((record) => record.sourceKey),
     ).size;
     const transitionQualified =
       currentStage.confidence >= 0.78 &&
@@ -706,36 +737,26 @@ export async function buildProjectIntelligence(
       stageRank[currentStage.label] > stageRank[previous.stageLabel] &&
       currentStage.observedAt >= previous.observedAt,
     );
-    const nextSnapshot: StageSnapshot = {
-      evidenceKeys,
-      projectKey: stableProjectKey,
-      stageLabel: currentStage.label,
-      stageConfidence: currentStage.confidence,
-      observedAt: currentStage.observedAt,
-      sourceKey: currentStage.sourceKey,
-      reason: currentStage.reason,
-    };
-    if (!previous) additions.push(nextSnapshot);
-    else if (
-      advanced ||
-      JSON.stringify(previous.evidenceKeys) !== JSON.stringify(evidenceKeys)
-    )
-      updates.push({ id: previous.id, record: nextSnapshot });
-    const equipmentPrediction = predictEquipment(projectRecords, sourceMap);
-    const signalQuality = scoreSignalQuality(projectRecords, sourceMap);
-    const priority = scorePriority(
-      projectRecords,
-      currentStage,
-      equipmentPrediction,
-      signalQuality,
-    );
+    const equipmentPrediction = predictEquipment(qualifyingRecords, sourceMap);
+    const signalQuality = scoreSignalQuality(qualifyingRecords, sourceMap);
+    const priority = qualifyingRecords.length
+      ? scorePriority(
+          qualifyingRecords,
+          currentStage,
+          equipmentPrediction,
+          signalQuality,
+        )
+      : {
+          priority: 0,
+          factors: ['No eligible evidence; retained for review.'],
+        };
     const contractorConfidence = scoreContractorConfidence(
-      projectRecords,
+      qualifyingRecords,
       sourceMap,
     );
     const contractors = [
       ...new Set(
-        projectRecords
+        qualifyingRecords
           .filter((record) => record.organisationRole === 'DELIVERY_CONTRACTOR')
           .map((record) => record.company.trim())
           .filter(Boolean),
@@ -744,11 +765,17 @@ export async function buildProjectIntelligence(
     const sources = [
       ...new Set(projectRecords.map((record) => record.sourceKey)),
     ];
-    const lead = [...projectRecords].sort(
-      (a, b) => evidenceTimestamp(b) - evidenceTimestamp(a),
-    )[0];
+    const lead = [
+      ...(qualifyingRecords.length ? qualifyingRecords : projectRecords),
+    ].sort((a, b) => evidenceTimestamp(b) - evidenceTimestamp(a))[0];
     projects.push({
       id: stableProjectKey,
+      promotionEligible: qualifyingRecords.length > 0,
+      eligibleEvidenceCount: qualifyingRecords.length,
+      heldEvidenceCount: heldRecords.length,
+      holdReasons: [
+        ...new Set(heldRecords.flatMap(evidenceHoldReasons)),
+      ].sort(),
       name: lead.project,
       location: lead.location,
       company: contractors[0] || '',
@@ -759,7 +786,7 @@ export async function buildProjectIntelligence(
       records: projectRecords,
       evidenceCount: projectRecords.length,
       value:
-        projectRecords.find(
+        qualifyingRecords.find(
           (record) => record.value && record.value !== 'Not stated',
         )?.value || 'Not stated',
       stageLabel: currentStage.label,
@@ -786,15 +813,14 @@ export async function buildProjectIntelligence(
       priorityFactors: priority.factors,
     });
   }
-  for (let i = 0; i < updates.length; i += 500)
-    await db.update('project_stage_snapshots', updates.slice(i, i + 500));
-  for (let i = 0; i < additions.length; i += 500)
-    await db.add('project_stage_snapshots', additions.slice(i, i + 500));
+  // Dashboard/CRM projection reads do not mutate stored stage baselines.
+  // Existing snapshots remain read-only comparison evidence until an explicit ingestion reconciliation.
   return projects.sort(
     (a, b) =>
       b.bdmPriority - a.bdmPriority ||
       b.signalQualityScore - a.signalQualityScore ||
-      b.evidenceCount - a.evidenceCount,
+      (b.eligibleEvidenceCount || 0) - (a.eligibleEvidenceCount || 0) ||
+      a.id.localeCompare(b.id),
   );
 }
 

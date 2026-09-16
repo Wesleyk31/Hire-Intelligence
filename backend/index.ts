@@ -1,3 +1,5 @@
+import { RECOVERED_KML_MEMBERS } from './feed-recovery';
+import { isEvidenceEligible } from './evidence-eligibility';
 import {
   sourceWfsPage,
   RECOVERED_WFS_LAYERS,
@@ -20,6 +22,7 @@ import {
   sourceWorkbook,
   projectWorkbookRows,
   ckanResourceRows,
+  ckanKmlRows,
 } from './source-helpers';
 import { router, json, error, db, requireAuth } from '@appdeploy/sdk';
 import { read, utils } from 'xlsx';
@@ -343,7 +346,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-mineral-titles',
     enabled: false,
     disableReason:
-      'NT CKAN endpoint returned HTTP 406 from production runtime; deferred pending access revalidation',
+      'Official ZIP expands 117,389,620 bytes, above the 32MiB recovery bound; a verified scalable title export, schema/identity reconciliation and scheduled ingestion are required.',
   },
   {
     key: 'nt-petroleum-pipeline-titles',
@@ -359,7 +362,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-petroleum-and-pipeline-titles',
     enabled: false,
     disableReason:
-      'NT CKAN endpoint returned HTTP 406 from production runtime; deferred pending access revalidation',
+      'Official ZIP contains 1,634 mixed-domain placemarks including release blocks and regional polygons; title-specific schema/identity review and scheduled ingestion are required.',
   },
   {
     key: 'nt-geothermal-titles',
@@ -375,7 +378,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-geothermal-title',
     enabled: false,
     disableReason:
-      'NT CKAN endpoint returned HTTP 406 from production runtime; deferred pending access revalidation',
+      'Official ZIP contains 114 placemarks but repeated TITLEID/UNIQ_ID values; holder/multipart identity and date semantics need review before scheduled ingestion.',
   },
   {
     key: 'nt-mines',
@@ -391,7 +394,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-mines',
     enabled: false,
     disableReason:
-      'NT CKAN endpoint returned HTTP 406 from production runtime; deferred pending access revalidation',
+      'Official MODAT ZIP transport and fields verified 2026-09-16; context-only. Third-party content rights, legacy-ID reconciliation and real scheduled-ingestion gates remain.',
   },
   {
     key: 'nt-mineral-occurrences',
@@ -407,7 +410,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-mineral-occurrences',
     enabled: false,
     disableReason:
-      'NT CKAN endpoint returned HTTP 406 from production runtime; deferred pending access revalidation',
+      'Official MODAT ZIP transport and fields verified 2026-09-16; context-only. Third-party content rights, legacy-ID reconciliation and real scheduled-ingestion gates remain.',
   },
   {
     key: 'aemo-generation-information',
@@ -1255,6 +1258,8 @@ async function collectTenure(source: SourceDef) {
     : [];
 }
 async function collectKmlPackage(source: SourceDef) {
+  if (RECOVERED_KML_MEMBERS[source.key])
+    return (await ckanKmlRows(source.key, source.endpoint)).rows.slice(0, 40);
   const body = (await fetchJson(source.endpoint)) as any;
   if (body.success !== true || !Array.isArray(body.result?.resources))
     throw new Error('CKAN_SCHEMA_INVALID');
@@ -1294,7 +1299,10 @@ async function collectKmlPackage(source: SourceDef) {
         .replace(/<[^>]+>/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-    return { externalId: text(raw.id || raw.title || raw.name || i + 1), raw };
+    return {
+      externalId: text(raw.id || raw.title || raw.name || i + 1),
+      raw,
+    };
   });
 }
 function geoJsonRaw(feature: any): Record<string, unknown> {
@@ -1523,7 +1531,11 @@ export async function collect(source: SourceDef) {
       ...rawOpportunity(source, r.externalId, r.raw, observedAt),
       qualityFlags: r.qualityFlags,
     }));
-  return { observedAt, recordsFetched: opportunities.length, opportunities };
+  return {
+    observedAt,
+    recordsFetched: opportunities.length,
+    opportunities,
+  };
 }
 
 async function upsertState(state: SourceState) {
@@ -1945,7 +1957,8 @@ async function buildPublicSummary() {
   });
   const states = currentSourceStates(s.items);
   const success = states.filter((state) => state.status === 'SUCCESS').length;
-  const groups = groupCanonicalEvidence(o.items);
+  const eligible = o.items.filter(isEvidenceEligible);
+  const groups = groupCanonicalEvidence(eligible);
   const counts: Record<string, number> = {
     WA: 0,
     QLD: 0,
@@ -1976,8 +1989,8 @@ async function buildPublicSummary() {
   return {
     metrics: {
       active: groups.size,
-      eventSignals: o.items.length,
-      highPriority: o.items.filter((item) => item.stage === 'PREPARE').length,
+      eventSignals: eligible.length,
+      highPriority: eligible.filter((item) => item.stage === 'PREPARE').length,
       callNow: 0,
     },
     sources: { active: success, configured: LIVE_SOURCES.length },
@@ -1989,6 +2002,7 @@ async function buildPublicSummary() {
     regionalCounts: counts,
     universe: {
       loaded: o.items.length,
+      heldEvidence: o.items.length - eligible.length,
       truncated: o.truncated,
       pagesRead: o.pagesRead,
     },

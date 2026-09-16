@@ -1,8 +1,8 @@
 {
   "date": "2026-09-16",
-  "unitTests": 182,
-  "unitFiles": 16,
-  "chromeBrowserTests": 112,
+  "unitTests": 231,
+  "unitFiles": 19,
+  "chromeBrowserTests": 113,
   "edgeBrowserTests": 18,
   "publicPages": 9,
   "operationalPages": 12,
@@ -14,14 +14,20 @@
   "build": "verification_only_pass",
   "productionBuild": "not_run_approval_review_blocked",
   "combinedLatestFeedObservations": {
-    "ROWS": 63,
-    "ERROR": 6,
+    "ROWS": 65,
+    "ERROR": 4,
     "EMPTY": 1,
     "METADATA_ONLY": 0
   },
   "feedObservationsAreSimultaneous": false,
   "deployment": "not_created_automatic_review_200000_byte_limit",
-  "releaseBundleSha256": "df0ba62ce659d462bbb153a54baff0722d2c9ce24b75543206b9a4191b97f3a7",
-  "sourceFiles": 52,
-  "deployPaths": 49
+  "releaseBundleSha256": "58a66a385a242d4f1e752731cae9ca4587b6a88b53364f26c86f9943e2012746",
+  "sourceFiles": 54,
+  "sourceBytes": 613279,
+  "stagingUserApproval": "explicitly_accepted",
+  "deploymentAttempts": 2,
+  "stageSnapshotWrites": "none_in_read_projections",
+  "realDataRepair": "not_performed",
+  "pdfCover": "rendered_and_reviewed",
+  "lastRejectedRequestPaths": 49
 }

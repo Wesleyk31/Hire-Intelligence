@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
+import { inflateRawSync } from 'node:zlib';
 import ts from 'typescript';
 import xlsx from 'xlsx';
 
@@ -17,6 +18,7 @@ const maxBodyBytes = 25 * 1024 * 1024;
 const indexText = fs.readFileSync(path.join(root, 'backend/index.ts'), 'utf8');
 const backfillText = fs.readFileSync(path.join(root, 'backend/backfill-fetch.ts'), 'utf8');
 const helperText = fs.readFileSync(path.join(root, 'backend/source-helpers.ts'), 'utf8');
+const recoveryText = fs.readFileSync(path.join(root, 'backend/feed-recovery.ts'), 'utf8');
 const domainText = fs.readFileSync(path.join(root, 'backend/domain-hardening.ts'), 'utf8');
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const compile = text => ts.transpileModule(text, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
@@ -28,6 +30,7 @@ const stripImports = text => {
 };
 const domainCode = compile(domainText);
 const helperCode = compile(stripImports(helperText));
+const recoveryCode = compile(stripImports(recoveryText));
 let liveCode = indexText.slice(0, indexText.indexOf('async function upsertState'));
 liveCode = stripImports(liveCode).replace(/const\s+opportunities\s*=\s*rows\s*\.filter/, 'globalThis.__rawRows=rows;const opportunities=rows.filter');
 liveCode += '\nglobalThis.liveAudit={SOURCES,HISTORICAL_SOURCES,collect};';
@@ -70,9 +73,11 @@ function responseShape(buffer, contentType) {
 }
 function makeContext(fetcher) {
   const domain = { exports: {}, Date: AuditDate, Set, Map, console }; vm.runInNewContext(domainCode, domain);
-  const helperContext = { exports: {}, createHash:crypto.createHash, fetch: fetcher, URL, AbortController, setTimeout, clearTimeout, Date: AuditDate, TextDecoder, Uint8Array, read: xlsx.read, utils: xlsx.utils };
+  const recovery = { exports: {}, Buffer, Uint8Array, TextDecoder, createHash: crypto.createHash, inflateRawSync };
+  vm.runInNewContext(recoveryCode, recovery);
+  const helperContext = { ...recovery.exports, exports: {}, createHash:crypto.createHash, fetch: fetcher, URL, AbortController, setTimeout, clearTimeout, Date: AuditDate, TextDecoder, Uint8Array, read: xlsx.read, utils: xlsx.utils };
   vm.runInNewContext(helperCode, helperContext);
-  const context = vm.createContext({ ...helperContext.exports, exports: {}, fetch: fetcher, URL, AbortController, AbortSignal, setTimeout, clearTimeout, Date: AuditDate, console, read: xlsx.read, utils: xlsx.utils, ...domain.exports });
+  const context = vm.createContext({ ...recovery.exports, ...helperContext.exports, exports: {}, fetch: fetcher, URL, AbortController, AbortSignal, setTimeout, clearTimeout, Date: AuditDate, console, read: xlsx.read, utils: xlsx.utils, ...domain.exports });
   vm.runInContext(liveCode, context);
   const live = context.liveAudit;
   context.exports = {};
@@ -125,7 +130,7 @@ let cursor=0;
 await Promise.all(Array.from({length:Math.min(concurrency,selected.length)},async()=>{while(cursor<selected.length){const source=selected[cursor++];await probe(source);}}));
 metadata.sort((a,b)=>sources.findIndex(s=>s.key===a.key)-sources.findIndex(s=>s.key===b.key));
 const timestamp=startedAt.replace(/[:.]/g,'-');
-const report={startedAt,finishedAt:new Date().toISOString(),methodology:{readOnly:true,auditClock:startedAt,concurrency,sampleLimit,requestTimeoutMs,maxBodyBytes,redirects:'follow',parser:'Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.',scope:'All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted.'},codeHashes:{index:hash(indexText),backfillFetch:hash(backfillText),domainHardening:hash(domainText),sourceHelpers:hash(helperText)},counts:{configured:registry.SOURCES.length,active:registry.SOURCES.filter(s=>s.enabled!==false).length,disabled:registry.SOURCES.filter(s=>s.enabled===false).length,historicalOnly:registry.HISTORICAL_SOURCES.length,probed:metadata.length,liveRows:metadata.filter(r=>r.live.status==='ROWS').length,liveErrors:metadata.filter(r=>r.live.status==='ERROR').length,liveEmpty:metadata.filter(r=>r.live.status==='EMPTY').length,metadataOnly:metadata.filter(r=>r.live.status==='METADATA_ONLY').length},results:metadata};
+const report={startedAt,finishedAt:new Date().toISOString(),methodology:{readOnly:true,auditClock:startedAt,concurrency,sampleLimit,requestTimeoutMs,maxBodyBytes,redirects:'follow',parser:'Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.',scope:'All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted.'},codeHashes:{index:hash(indexText),backfillFetch:hash(backfillText),domainHardening:hash(domainText),sourceHelpers:hash(helperText),feedRecovery:hash(recoveryText)},counts:{configured:registry.SOURCES.length,active:registry.SOURCES.filter(s=>s.enabled!==false).length,disabled:registry.SOURCES.filter(s=>s.enabled===false).length,historicalOnly:registry.HISTORICAL_SOURCES.length,probed:metadata.length,liveRows:metadata.filter(r=>r.live.status==='ROWS').length,liveErrors:metadata.filter(r=>r.live.status==='ERROR').length,liveEmpty:metadata.filter(r=>r.live.status==='EMPTY').length,metadataOnly:metadata.filter(r=>r.live.status==='METADATA_ONLY').length},results:metadata};
 fs.mkdirSync(outDir,{recursive:true});
 const basename=`FEED_AUDIT_${timestamp}`;
 fs.writeFileSync(path.join(outDir,basename+'.json'),JSON.stringify(report,null,2)+'\n');

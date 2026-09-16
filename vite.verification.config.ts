@@ -6,5 +6,5 @@ export default defineConfig({
   plugins: [react()], base: './',
   resolve: { alias: { '@appdeploy/client': fileURLToPath(new URL('./tests/runtime/client.ts', import.meta.url)) } },
   build: { outDir: '.local/verification-dist' },
-  server: { host: '127.0.0.1', port: 4175, strictPort: true },
+  server: { host: '127.0.0.1', port: 4175, strictPort: true, watch: { ignored: ['**/.local/**', '**/test-results/**', '**/playwright-report/**'] } },
 });

@@ -1,0 +1,496 @@
+{
+  "at": "2026-09-16T03:08:04.131Z",
+  "results": [
+    {
+      "key": "qld-granted-resource-authorities",
+      "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+      "at": "2026-09-16T03:08:02.245Z",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json;charset=utf-8",
+        "server": "nginx"
+      },
+      "bytes": 35839
+    },
+    {
+      "key": "nt-mineral-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "at": "2026-09-16T03:08:02.873Z",
+      "status": 406,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "bytes": 1346,
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "at": "2026-09-16T03:08:03.471Z",
+      "status": 406,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "bytes": 1346,
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "at": "2026-09-16T03:08:03.680Z",
+      "status": 406,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "bytes": 1346,
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-mines",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINESITES_kml.zip",
+      "at": "2026-09-16T03:08:03.883Z",
+      "status": 406,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "bytes": 1346,
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-mineral-occurrences",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINERALOCCURRENCES_kml.zip",
+      "at": "2026-09-16T03:08:04.084Z",
+      "status": 406,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "bytes": 1346,
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "qld-stadiums-contracts-jul-dec-2025",
+      "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+      "at": "2026-09-16T03:08:04.131Z",
+      "status": 202,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "server": "CloudFront",
+        "x-amzn-waf-action": "challenge"
+      },
+      "bytes": 0,
+      "body": ""
+    },
+    {
+      "key": "nt-mineral-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "error": "fetch failed",
+      "cause": "ECONNRESET"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "at": "2026-09-16T03:08:53.830Z",
+      "accept": "application/zip,application/octet-stream",
+      "status": 406,
+      "bytes": 1346,
+      "contentType": "text/html",
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "at": "2026-09-16T03:08:54.433Z",
+      "accept": "application/zip,application/octet-stream",
+      "status": 406,
+      "bytes": 1346,
+      "contentType": "text/html",
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-mines",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINESITES_kml.zip",
+      "at": "2026-09-16T03:08:54.644Z",
+      "accept": "application/zip,application/octet-stream",
+      "status": 406,
+      "bytes": 1346,
+      "contentType": "text/html",
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-mineral-occurrences",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINERALOCCURRENCES_kml.zip",
+      "at": "2026-09-16T03:08:54.844Z",
+      "accept": "application/zip,application/octet-stream",
+      "status": 406,
+      "bytes": 1346,
+      "contentType": "text/html",
+      "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>406 - Client browser does not accept the MIME type of the requested page.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "at": "2026-09-16T03:09:20.795Z",
+      "accept": "*/*",
+      "status": 200,
+      "bytes": 59364,
+      "contentType": "application/x-zip-compressed"
+    },
+    {
+      "key": "nt-mineral-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "error": "This operation was aborted"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "error": "This operation was aborted"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "at": "2026-09-16T03:10:19.763Z",
+      "accept": "application/zip,application/x-zip-compressed,application/octet-stream",
+      "status": 200,
+      "bytes": 59364,
+      "contentType": "application/x-zip-compressed",
+      "entries": [
+        {
+          "name": "Root Entry/",
+          "size": 0
+        },
+        {
+          "name": "Root Entry/\u0001Sh33tJ5",
+          "size": 4
+        },
+        {
+          "name": "Root Entry/NT_GeothermalTitles_kml.kml",
+          "size": 679770
+        }
+      ],
+      "kml": [
+        {
+          "name": "Root Entry/NT_GeothermalTitles_kml.kml",
+          "placemarks": 114,
+          "schemaFields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "DT_RW_APPL",
+            "DT_RW_GRNT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "nt-mines",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINESITES_kml.zip",
+      "at": "2026-09-16T03:10:20.529Z",
+      "accept": "application/zip,application/x-zip-compressed,application/octet-stream",
+      "status": 200,
+      "bytes": 17174,
+      "contentType": "application/x-zip-compressed",
+      "entries": [
+        {
+          "name": "Root Entry/",
+          "size": 0
+        },
+        {
+          "name": "Root Entry/\u0001Sh33tJ5",
+          "size": 4
+        },
+        {
+          "name": "Root Entry/images/T3.png",
+          "size": 330
+        },
+        {
+          "name": "Root Entry/MINESITES.kml",
+          "size": 248112
+        },
+        {
+          "name": "Root Entry/MINESITES_kml.kml",
+          "size": 4069
+        }
+      ],
+      "kml": [
+        {
+          "name": "Root Entry/MINESITES.kml",
+          "placemarks": 61
+        },
+        {
+          "name": "Root Entry/MINESITES_kml.kml",
+          "placemarks": 0,
+          "schemaFields": [
+            "MODAT_ID",
+            "NAME",
+            "MIN_CATGRY",
+            "COM_MAJOR",
+            "COM_MINOR",
+            "STATUS",
+            "MIN_FIELD",
+            "GEOLREGION",
+            "GEOLPRVNCE",
+            "EON",
+            "ERA",
+            "PERIOD",
+            "MAP100",
+            "EASTING",
+            "NORTHING",
+            "ZONE_MGA",
+            "LOC_METHOD",
+            "LOC_ACCURY",
+            "LOC_DESC",
+            "OCCUR_SIZE",
+            "LENGTH",
+            "WIDTH",
+            "DEPTH",
+            "OREBODYSHP",
+            "MODEL",
+            "COX_CLASS",
+            "MINSTYLE1",
+            "MINSTYLE2",
+            "GRAINSIZE",
+            "ORECONTRL1",
+            "ORECONTRL2",
+            "HOSTRELATN",
+            "DIPDIRECTN",
+            "DIP",
+            "COMMENTS",
+            "PROD_COMME",
+            "MIN_METHOD"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "nt-mineral-occurrences",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/Mineral_Deposits/MINERALOCCURRENCES_kml.zip",
+      "at": "2026-09-16T03:10:23.626Z",
+      "accept": "application/zip,application/x-zip-compressed,application/octet-stream",
+      "status": 200,
+      "bytes": 675463,
+      "contentType": "application/x-zip-compressed",
+      "entries": [
+        {
+          "name": "Root Entry/",
+          "size": 0
+        },
+        {
+          "name": "Root Entry/\u0001Sh33tJ5",
+          "size": 4
+        },
+        {
+          "name": "Root Entry/images/03.png",
+          "size": 246
+        },
+        {
+          "name": "Root Entry/MINERALOCCURRENCES.kml",
+          "size": 14351102
+        },
+        {
+          "name": "Root Entry/MINERALOCCURRENCES_kml.kml",
+          "size": 4096
+        }
+      ],
+      "kml": [
+        {
+          "name": "Root Entry/MINERALOCCURRENCES.kml",
+          "placemarks": 3461
+        },
+        {
+          "name": "Root Entry/MINERALOCCURRENCES_kml.kml",
+          "placemarks": 0,
+          "schemaFields": [
+            "MODAT_ID",
+            "NAME",
+            "MIN_CATGRY",
+            "COM_MAJOR",
+            "COM_MINOR",
+            "STATUS",
+            "MIN_FIELD",
+            "GEOLREGION",
+            "GEOLPRVNCE",
+            "EON",
+            "ERA",
+            "PERIOD",
+            "MAP100",
+            "EASTING",
+            "NORTHING",
+            "ZONE_MGA",
+            "LOC_METHOD",
+            "LOC_ACCURY",
+            "LOC_DESC",
+            "OCCUR_SIZE",
+            "LENGTH",
+            "WIDTH",
+            "DEPTH",
+            "OREBODYSHP",
+            "MODEL",
+            "COX_CLASS",
+            "MINSTYLE1",
+            "MINSTYLE2",
+            "GRAINSIZE",
+            "ORECONTRL1",
+            "ORECONTRL2",
+            "HOSTRELATN",
+            "DIPDIRECTN",
+            "DIP",
+            "COMMENTS",
+            "PROD_COMME",
+            "MIN_METHOD"
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "status": 200,
+      "at": "2026-09-16T03:11:18.361Z",
+      "bytes": 9916204,
+      "entries": [
+        {
+          "name": "NT_MineralTitles_kml.kml",
+          "size": 117389620
+        }
+      ]
+    },
+    {
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "status": 200,
+      "at": "2026-09-16T03:11:42.930Z",
+      "bytes": 7587155,
+      "entries": [
+        {
+          "name": "NT_PetroleumPipelineTitles_kml.kml",
+          "size": 26394009
+        }
+      ],
+      "schemas": [
+        {
+          "name": "Root Entry/NT_PetroleumPipelineTitles_kml.kml",
+          "count": 1634,
+          "fields": [
+            "TitleID",
+            "SW_Member",
+            "Ti_Type_Cd",
+            "Ti_Number",
+            "Status",
+            "Ts_Type",
+            "Dt_Effect",
+            "Pty_Name",
+            "Pct",
+            "Hld_Ty_Cd",
+            "Hld_Type",
+            "Area_Sqkm",
+            "Area_Units",
+            "Area_Meas",
+            "Uniq_Id",
+            "ID",
+            "OPEN_DATE",
+            "CLOSE_DATE",
+            "STATUS",
+            "BLOCKS",
+            "HYPERLINK",
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID",
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_NUMBER",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "DT_RW_GRNT",
+            "DT_RW_APPL",
+            "R_NAME",
+            "R_SOURCE",
+            "DTSOURCE",
+            "DTCOMPILED",
+            "TRANCHE",
+            "CATNUMBER",
+            "CATDESC",
+            "COMMENTS",
+            "MORA_ID",
+            "ORGANISATION",
+            "DT_APPL",
+            "DT_VT_STRT",
+            "DT_VT_FINL",
+            "ACTIVE",
+            "DT_CONSENT",
+            "TS_TYPE_CD",
+            "DT_CEASED",
+            "RP_ID",
+            "YEAR",
+            "MEAS_TY",
+            "LGLN_TY_CD",
+            "LGLN_TYPE",
+            "HANDLE_URL",
+            "REGISTER"
+          ],
+          "titleIds": 560,
+          "uniqIds": 1622
+        }
+      ]
+    },
+    {
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "status": 200,
+      "at": "2026-09-16T03:11:44.204Z",
+      "bytes": 59364,
+      "entries": [
+        {
+          "name": "NT_GeothermalTitles_kml.kml",
+          "size": 679770
+        }
+      ],
+      "schemas": [
+        {
+          "name": "Root Entry/NT_GeothermalTitles_kml.kml",
+          "count": 114,
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID",
+            "DT_GRNT",
+            "DT_EXPIRY"
+          ],
+          "titleIds": 35,
+          "uniqIds": 107
+        }
+      ]
+    }
+  ],
+  "notes": "Bounded read-only probes. Only response metadata/schema names are retained; record values and full downloads are not stored. No provider controls were bypassed."
+}

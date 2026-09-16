@@ -1,3 +1,4 @@
+import { evidenceHoldReasons } from '../backend/evidence-eligibility';
 import SourceDiagnostics from './SourceDiagnostics';
 import EvidenceExplorer from './EvidenceExplorer';
 import SourcePilotPanel from './SourcePilotPanel';
@@ -41,6 +42,9 @@ type Evidence = {
   description: string;
   observedAt: string;
   sourceObservedAt?: string;
+  qualityFlags?: string[];
+  contextOnly?: boolean;
+  promotionEligible?: boolean;
   value: string;
 };
 
@@ -53,6 +57,10 @@ type Project = {
   sources: string[];
   records: Evidence[];
   evidenceCount: number;
+  eligibleEvidenceCount?: number;
+  heldEvidenceCount?: number;
+  promotionEligible?: boolean;
+  holdReasons?: string[];
   value: string;
   stageLabel: string;
   stageConfidence: number;
@@ -2156,6 +2164,13 @@ function ProjectDrawer({
             <b>{project.evidenceCount}</b>
           </span>
         </div>
+        {!!project.heldEvidenceCount && (
+          <p className="hi-message">
+            {project.eligibleEvidenceCount || 0} eligible evidence records;{' '}
+            {project.heldEvidenceCount} held for context or quality review. Held
+            records are excluded from scoring and demand signals.
+          </p>
+        )}
         <h3>Stage</h3>
         <p>
           {project.stageLabel} · {project.stageConfidence}% confidence
@@ -2185,8 +2200,19 @@ function ProjectDrawer({
             <article key={`${record.sourceKey}-${record.externalId}-${index}`}>
               <b>{record.sourceKey}</b>
               <p>{record.description || record.project}</p>
+              {!!evidenceHoldReasons(record).length && (
+                <p>
+                  <b>Held for review:</b>{' '}
+                  {evidenceHoldReasons(record).join(', ')}
+                </p>
+              )}
               <small>
-                {dateLabel(record.observedAt)} · {record.provenance}
+                Source activity:{' '}
+                {record.sourceObservedAt
+                  ? dateLabel(record.sourceObservedAt)
+                  : 'Unknown'}{' '}
+                · Collected: {dateLabel(record.observedAt)} ·{' '}
+                {record.provenance}
               </small>
             </article>
           ))}

@@ -1,3 +1,4 @@
+import { isEvidenceEligible } from './evidence-eligibility';
 import { evidenceTimestamp } from './domain-hardening';
 import { groupReviewedOutcomes } from './calibration';
 import type { ProjectIntelligence } from './intelligence';
@@ -45,6 +46,7 @@ const clamp = (value: number, min: number, max: number) =>
 
 function projectText(project: ProjectIntelligence) {
   return project.records
+    .filter(isEvidenceEligible)
     .map(
       (record) => `${record.project} ${record.description} ${record.sourceKey}`,
     )
@@ -53,6 +55,9 @@ function projectText(project: ProjectIntelligence) {
 }
 
 function eventSignals(project: ProjectIntelligence) {
+  if (project.promotionEligible === false) return [];
+  const eligibleRecords = project.records.filter(isEvidenceEligible);
+  if (!eligibleRecords.length) return [];
   const text = projectText(project);
   const recordText = (record: ProjectIntelligence['records'][number]) =>
     `${record.project} ${record.description} ${record.sourceKey}`.toLowerCase();
@@ -61,7 +66,7 @@ function eventSignals(project: ProjectIntelligence) {
   ) => {
     const latest = Math.max(
       0,
-      ...project.records.filter(matches).map(evidenceTimestamp),
+      ...eligibleRecords.filter(matches).map(evidenceTimestamp),
     );
     return latest ? new Date(latest).toISOString() : '';
   };
@@ -94,7 +99,7 @@ function eventSignals(project: ProjectIntelligence) {
       ),
       reason,
       provenance: [
-        ...new Set(project.records.map((record) => record.provenance)),
+        ...new Set(eligibleRecords.map((record) => record.provenance)),
       ].slice(0, 4),
     });
   };
@@ -178,7 +183,7 @@ function eventSignals(project: ProjectIntelligence) {
       confidence: clamp(project.stageConfidence, 0, 96),
       reason: 'Project has evidence supporting an awarded-contract stage.',
       provenance: [
-        ...new Set(project.records.map((record) => record.provenance)),
+        ...new Set(eligibleRecords.map((record) => record.provenance)),
       ].slice(0, 4),
     });
   if (project.stageLabel === 'APPROVAL')
@@ -200,7 +205,7 @@ function eventSignals(project: ProjectIntelligence) {
       confidence: clamp(project.stageConfidence, 0, 96),
       reason: 'Project has approval/permit evidence.',
       provenance: [
-        ...new Set(project.records.map((record) => record.provenance)),
+        ...new Set(eligibleRecords.map((record) => record.provenance)),
       ].slice(0, 4),
     });
   add(
@@ -262,7 +267,12 @@ export function buildCommercialIntelligence(
   outcomes: CommercialOutcome[],
   sources: CommercialSource[],
 ) {
-  const pilotQueue = projects
+  const eligibleProjects = projects.filter(
+    (project) =>
+      project.promotionEligible !== false &&
+      project.records.some(isEvidenceEligible),
+  );
+  const pilotQueue = eligibleProjects
     .filter((project) => project.stageLabel !== 'COMPLETE')
     .slice(0, 50)
     .map((project, index) => ({
@@ -282,7 +292,7 @@ export function buildCommercialIntelligence(
       evidenceNeeded: evidenceNeeded(project),
     }));
 
-  const events = projects
+  const events = eligibleProjects
     .flatMap(eventSignals)
     .sort((a, b) => b.confidence - a.confidence)
     .slice(0, 100);
@@ -299,7 +309,7 @@ export function buildCommercialIntelligence(
       priorityTotal: number;
     }
   >();
-  for (const project of projects)
+  for (const project of eligibleProjects)
     for (const contractor of project.contractors) {
       const key = normalise(contractor);
       const item = contractorMap.get(key) || {
@@ -352,7 +362,7 @@ export function buildCommercialIntelligence(
       confidenceTotal: number;
     }
   >();
-  for (const project of projects)
+  for (const project of eligibleProjects)
     for (const equipmentClass of project.equipmentPrediction.classes) {
       const key = `${normalise(project.location)}|${equipmentClass}`;
       const item = clusterMap.get(key) || {
