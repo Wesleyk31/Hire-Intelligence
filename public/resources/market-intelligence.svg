@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="240" viewBox="0 0 520 240" fill="none">
+<title>Industrial market outlook with an illustrative trend line</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f4f1ec"/><stop offset="1" stop-color="#dedbd5"/></linearGradient>
+  <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#b8aa97"/><stop offset="1" stop-color="#8e8479"/></linearGradient>
+  <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#747f85"/><stop offset="1" stop-color="#3e484f"/></linearGradient>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#46515b" stroke-opacity=".06"/></pattern>
+</defs>
+
+<path fill="url(#sky)" d="M0 0h520v240H0z"/><path fill="url(#grid)" d="M0 0h520v240H0z"/>
+<path d="m0 173 77-23 84 14 77-24 76 16 92-16 114 19v81H0" fill="#c4c2bb"/>
+<path d="M0 205 223 175l297 14v51H0" fill="url(#ground)"/>
+<g fill="#a2aaa9"><path d="M57 144h36v51H57zm48-24h36v74h-36zm45 31h33v42h-33zm190-29h42v66h-42zm56-22h34v88h-34zm45 42h41v48h-41z"/></g>
+<g fill="#cdd1cb"><path d="M111 126h5v11h-5zm13 0h5v11h-5zm-13 23h5v11h-5zm13 0h5v11h-5zm222-20h6v12h-6zm16 0h6v12h-6zm-16 24h6v12h-6zm16 0h6v12h-6z"/></g>
+<path d="M171 181V94h137v87" fill="#edece5" fill-opacity=".78"/><path d="M177 181V102h125v79" stroke="#939e9f" stroke-width="1.5"/>
+<path d="M190 181v-28h20v28m15 0v-46h20v46m15 0v-67h20v67" fill="#56646e" fill-opacity=".75"/>
+<path d="m76 131 84-16 66 6 72-42 68 10 72-43v155H76z" fill="#ef2029" fill-opacity=".05"/>
+<path d="m76 131 84-16 66 6 72-42 68 10 72-43" stroke="#ef2029" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<g fill="#fff" stroke="#ef2029" stroke-width="3"><circle cx="76" cy="131" r="5"/><circle cx="160" cy="115" r="5"/><circle cx="226" cy="121" r="5"/><circle cx="298" cy="79" r="5"/><circle cx="366" cy="89" r="5"/><circle cx="438" cy="46" r="5"/></g>
+<circle cx="438" cy="46" r="18" stroke="#ef2029" stroke-opacity=".25"/>
+<path d="M66 202h394" stroke="#ebe5da" stroke-width="2"/><path d="m28 225 100-10m235 17 105-15" stroke="#d9d1c5" stroke-width="3"/>
+
+</svg>

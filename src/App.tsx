@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react';
-import FunctionalApp from './FunctionalApp';
+import { lazy, useEffect, useState } from 'react';
+import LazySection from './LazySection';
 import LandingPage from './LandingPage';
 import AuthGate from './AuthGate';
+
+const FunctionalApp = lazy(() => import('./FunctionalApp'));
 
 type Screen = 'home' | 'platform';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>(() => window.location.hash.startsWith('#platform') ? 'platform' : 'home');
+  const [screen, setScreen] = useState<Screen>(() =>
+    window.location.hash.startsWith('#platform') ? 'platform' : 'home',
+  );
 
   useEffect(() => {
-    const sync = () => setScreen(window.location.hash.startsWith('#platform') ? 'platform' : 'home');
+    const sync = () =>
+      setScreen(
+        window.location.hash.startsWith('#platform') ? 'platform' : 'home',
+      );
     window.addEventListener('hashchange', sync);
     return () => window.removeEventListener('hashchange', sync);
   }, []);
@@ -21,16 +28,26 @@ export default function App() {
   };
 
   const openHome = () => {
-    history.pushState(null, '', window.location.pathname + window.location.search);
+    history.pushState(
+      null,
+      '',
+      window.location.pathname + window.location.search,
+    );
     setScreen('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (screen === 'platform') {
-    return <div className='platform-root'>
-      <AuthGate onExit={openHome}><FunctionalApp/></AuthGate>
-    </div>;
+    return (
+      <div className="platform-root">
+        <AuthGate onExit={openHome}>
+          <LazySection label="Workspace">
+            <FunctionalApp />
+          </LazySection>
+        </AuthGate>
+      </div>
+    );
   }
 
-  return <LandingPage onExplore={openPlatform}/>;
+  return <LandingPage onExplore={openPlatform} />;
 }

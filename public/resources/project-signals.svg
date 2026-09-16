@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="240" viewBox="0 0 520 240" fill="none">
+<title>Construction site with crane and early project signal</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f4f1ec"/><stop offset="1" stop-color="#dedbd5"/></linearGradient>
+  <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#b8aa97"/><stop offset="1" stop-color="#8e8479"/></linearGradient>
+  <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#747f85"/><stop offset="1" stop-color="#3e484f"/></linearGradient>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#46515b" stroke-opacity=".06"/></pattern>
+</defs>
+
+<path fill="url(#sky)" d="M0 0h520v240H0z"/><path fill="url(#grid)" d="M0 0h520v240H0z"/>
+<circle cx="416" cy="50" r="28" fill="#fff" opacity=".6"/>
+<path d="m0 155 63-28 44 13 44-32 72 29 64-27 65 30 52-16 56 23 60-18v111H0" fill="#c9c6be"/>
+<path d="M0 180 158 153l121 17 241-26v96H0" fill="url(#ground)"/>
+<path d="m38 193 159-37 145 24-146 39z" fill="#ede8df"/><path d="m38 193 158 26v15L38 208zm158 26 146-39v16l-146 38" fill="#c0b7aa"/>
+<path d="m68 189 129-29 109 20-112 28z" fill="#a09b92"/>
+<g stroke="#5a636a" stroke-width="5"><path d="M169 174V67m22 102V67M156 70h200M179 34v138"/><path d="m179 34-18 36m18-36 96 36" stroke-width="2"/><path d="m168 78 24 21-24 21 24 21-24 21" stroke-width="2"/></g>
+<path d="M148 67h67v12h-67z" fill="#ef2029"/><path d="M215 68h147v7H215z" fill="#78838a"/>
+<path d="M315 74v74m-6 0h12l-6 9z" stroke="#424d55" stroke-width="2"/>
+<path d="m276 179 42-10 29 7-43 11z" fill="#535e65"/>
+<g fill="#d9d3c8"><path d="M72 150h28v35H72zm32-11h27v40h-27zm233-6h40v43h-40z"/><path d="M398 149h49v19h-49z"/></g>
+<g stroke="#ef2029"><circle cx="397" cy="91" r="34" stroke-opacity=".2"/><circle cx="397" cy="91" r="23" stroke-opacity=".35"/><path d="M397 57V45m0 92v-12m34-34h12m-92 0h12" stroke-opacity=".35"/></g>
+<circle cx="397" cy="91" r="6" fill="#ef2029"/><circle cx="397" cy="91" r="2" fill="#fff"/>
+<path d="m397 97-26 64" stroke="#ef2029" stroke-dasharray="3 5"/>
+<path d="m19 226 67-16m310 11 79-21" stroke="#ded7cb" stroke-width="3"/>
+
+</svg>

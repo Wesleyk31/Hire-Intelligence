@@ -3,36 +3,944 @@ import L, { LayerGroup, Map as LeafletMap } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
 
-type EvidencePoint = { location?: string; description?: string; project?: string; observedAt?: string; sourceObservedAt?: string };
-type ProjectPoint = { id: string; name: string; location: string; records?: EvidencePoint[]; contractors?: string[]; latitude?: number; longitude?: number; locationPrecision?: 'EXACT' | 'APPROXIMATE' | 'STATE_LEVEL'; stageLabel: string; bdmPriority: number; priorityBand: string; equipmentPrediction: { classes: string[] } };
-type OpportunityEvent = { projectId: string; project: string; location: string; type: string; confidence: number; detectedAt?: string; bdmPriority?: number; priorityBand?: string; action?: string };
+type EvidencePoint = {
+  location?: string;
+  description?: string;
+  project?: string;
+  observedAt?: string;
+  sourceObservedAt?: string;
+};
+type ProjectPoint = {
+  id: string;
+  name: string;
+  location: string;
+  records?: EvidencePoint[];
+  contractors?: string[];
+  latitude?: number;
+  longitude?: number;
+  locationPrecision?: 'EXACT' | 'APPROXIMATE' | 'STATE_LEVEL';
+  stageLabel: string;
+  bdmPriority: number;
+  priorityBand: string;
+  equipmentPrediction: { classes: string[] };
+};
+type OpportunityEvent = {
+  projectId: string;
+  project: string;
+  location: string;
+  type: string;
+  confidence: number;
+  detectedAt?: string;
+  bdmPriority?: number;
+  priorityBand?: string;
+  action?: string;
+};
 type Precision = 'EXACT' | 'APPROXIMATE' | 'STATE_LEVEL';
-type Resolution = { latitude: number; longitude: number; precision: Precision; label: string };
-type MapPoint = { id: string; projectId: string; kind: 'PROJECT' | 'OPPORTUNITY'; label: string; subtitle: string; latitude: number; longitude: number; precision: Precision; precisionLabel: string; priority: number; stage: string; equipment: string[]; contractors: string[]; detectedAt?: string; signalType?: string; action?: string };
-type GazetteerEntry = { aliases: string[]; latitude: number; longitude: number; label: string };
+type Resolution = {
+  latitude: number;
+  longitude: number;
+  precision: Precision;
+  label: string;
+};
+type MapPoint = {
+  id: string;
+  projectId: string;
+  kind: 'PROJECT' | 'OPPORTUNITY';
+  label: string;
+  subtitle: string;
+  latitude: number;
+  longitude: number;
+  precision: Precision;
+  precisionLabel: string;
+  priority: number;
+  stage: string;
+  equipment: string[];
+  contractors: string[];
+  detectedAt?: string;
+  signalType?: string;
+  action?: string;
+};
+type GazetteerEntry = {
+  aliases: string[];
+  latitude: number;
+  longitude: number;
+  label: string;
+};
 type Bounds = { south: number; west: number; north: number; east: number };
 const gazetteer: GazetteerEntry[] = [
-  { aliases: ['port hedland', 'south hedland', 'wedgefield'], latitude: -20.31, longitude: 118.58, label: 'Port Hedland' }, { aliases: ['east pilbara'], latitude: -22.70, longitude: 120.30, label: 'East Pilbara' }, { aliases: ['west pilbara'], latitude: -21.40, longitude: 116.90, label: 'West Pilbara' }, { aliases: ['pilbara'], latitude: -22.00, longitude: 118.50, label: 'Pilbara' }, { aliases: ['karratha', 'dampier'], latitude: -20.74, longitude: 116.85, label: 'Karratha' }, { aliases: ['newman'], latitude: -23.36, longitude: 119.73, label: 'Newman' }, { aliases: ['tom price'], latitude: -22.69, longitude: 117.79, label: 'Tom Price' }, { aliases: ['paraburdoo'], latitude: -23.20, longitude: 117.67, label: 'Paraburdoo' }, { aliases: ['goldfields esperance', 'goldfields-esperance'], latitude: -30.60, longitude: 121.30, label: 'Goldfields-Esperance' }, { aliases: ['kalgoorlie', 'boulder', 'goldfields'], latitude: -30.75, longitude: 121.47, label: 'Kalgoorlie-Goldfields' }, { aliases: ['kimberley'], latitude: -17.50, longitude: 123.50, label: 'Kimberley' }, { aliases: ['mid west', 'midwest'], latitude: -28.30, longitude: 116.30, label: 'Mid West WA' }, { aliases: ['geraldton'], latitude: -28.78, longitude: 114.61, label: 'Geraldton' }, { aliases: ['perth', 'peel'], latitude: -31.95, longitude: 115.86, label: 'Perth' }, { aliases: ['bunbury', 'south west'], latitude: -33.33, longitude: 115.64, label: 'South West WA' }, { aliases: ['albany', 'great southern'], latitude: -35.03, longitude: 117.88, label: 'Great Southern WA' }, { aliases: ['bowen basin'], latitude: -22.10, longitude: 148.10, label: 'Bowen Basin' }, { aliases: ['surat basin'], latitude: -27.10, longitude: 149.50, label: 'Surat Basin' }, { aliases: ['galilee basin'], latitude: -22.70, longitude: 145.90, label: 'Galilee Basin' }, { aliases: ['central queensland', 'central qld'], latitude: -23.40, longitude: 148.20, label: 'Central Queensland' }, { aliases: ['brisbane'], latitude: -27.47, longitude: 153.03, label: 'Brisbane' }, { aliases: ['gladstone'], latitude: -23.84, longitude: 151.26, label: 'Gladstone' }, { aliases: ['mount isa'], latitude: -20.73, longitude: 139.49, label: 'Mount Isa' }, { aliases: ['townsville'], latitude: -19.26, longitude: 146.82, label: 'Townsville' }, { aliases: ['mackay'], latitude: -21.14, longitude: 149.19, label: 'Mackay' }, { aliases: ['cairns'], latitude: -16.92, longitude: 145.78, label: 'Cairns' }, { aliases: ['toowoomba', 'darling downs'], latitude: -27.56, longitude: 151.95, label: 'Darling Downs' }, { aliases: ['rockhampton'], latitude: -23.38, longitude: 150.51, label: 'Rockhampton' }, { aliases: ['hunter valley', 'hunter region', 'hunter'], latitude: -32.65, longitude: 151.25, label: 'Hunter' }, { aliases: ['newcastle'], latitude: -32.93, longitude: 151.78, label: 'Newcastle' }, { aliases: ['sydney'], latitude: -33.87, longitude: 151.21, label: 'Sydney' }, { aliases: ['wollongong', 'illawarra'], latitude: -34.43, longitude: 150.89, label: 'Illawarra' }, { aliases: ['dubbo', 'central west'], latitude: -32.25, longitude: 148.60, label: 'Central West NSW' }, { aliases: ['orange'], latitude: -33.28, longitude: 149.10, label: 'Orange' }, { aliases: ['gippsland'], latitude: -38.10, longitude: 147.00, label: 'Gippsland' }, { aliases: ['latrobe valley', 'latrobe'], latitude: -38.24, longitude: 146.40, label: 'Latrobe Valley' }, { aliases: ['melbourne'], latitude: -37.81, longitude: 144.96, label: 'Melbourne' }, { aliases: ['geelong'], latitude: -38.15, longitude: 144.36, label: 'Geelong' }, { aliases: ['ballarat'], latitude: -37.56, longitude: 143.85, label: 'Ballarat' }, { aliases: ['olympic dam', 'roxby downs'], latitude: -30.45, longitude: 136.87, label: 'Olympic Dam / Roxby Downs' }, { aliases: ['whyalla'], latitude: -33.03, longitude: 137.58, label: 'Whyalla' }, { aliases: ['adelaide'], latitude: -34.93, longitude: 138.60, label: 'Adelaide' }, { aliases: ['darwin'], latitude: -12.46, longitude: 130.84, label: 'Darwin' }, { aliases: ['alice springs', 'central australia'], latitude: -23.70, longitude: 133.88, label: 'Central Australia' }, { aliases: ['hobart'], latitude: -42.88, longitude: 147.33, label: 'Hobart' }, { aliases: ['launceston'], latitude: -41.43, longitude: 147.14, label: 'Launceston' }, { aliases: ['canberra'], latitude: -35.28, longitude: 149.13, label: 'Canberra' }
-].sort((a, b) => Math.max(...b.aliases.map(alias => alias.length)) - Math.max(...a.aliases.map(alias => alias.length)));
-const states: Record<string, [number, number, string]> = { WA: [-25.27, 122.30, 'Western Australia'], QLD: [-22.16, 144.58, 'Queensland'], NSW: [-32.16, 147.02, 'New South Wales'], VIC: [-36.98, 144.64, 'Victoria'], SA: [-30.00, 135.76, 'South Australia'], NT: [-19.49, 132.55, 'Northern Territory'], TAS: [-41.45, 146.32, 'Tasmania'], ACT: [-35.47, 149.01, 'Australian Capital Territory'] };
-const quickRegions = [{ label: 'Australia', lat: -25.3, lng: 133.8, zoom: 4 }, { label: 'WA', lat: -25.3, lng: 122.3, zoom: 5 }, { label: 'Pilbara', lat: -22.0, lng: 118.5, zoom: 6 }, { label: 'Goldfields', lat: -30.7, lng: 121.4, zoom: 6 }, { label: 'QLD', lat: -22.2, lng: 144.6, zoom: 5 }, { label: 'Bowen Basin', lat: -22.1, lng: 148.1, zoom: 7 }, { label: 'NSW', lat: -32.2, lng: 147.0, zoom: 5 }, { label: 'Hunter', lat: -32.65, lng: 151.25, zoom: 8 }, { label: 'VIC', lat: -37.0, lng: 144.6, zoom: 6 }, { label: 'Gippsland', lat: -38.1, lng: 147.0, zoom: 8 }];
-function projectSearchText(project: ProjectPoint) { return [project.name, project.location, ...(project.records || []).flatMap(record => [record.project || '', record.location || '', record.description || ''])].join(' ').toLowerCase(); }
-function stateFromText(value: string) { const upper = value.toUpperCase(); const fullNames: Record<string, string> = { 'WESTERN AUSTRALIA': 'WA', QUEENSLAND: 'QLD', 'NEW SOUTH WALES': 'NSW', VICTORIA: 'VIC', 'SOUTH AUSTRALIA': 'SA', 'NORTHERN TERRITORY': 'NT', TASMANIA: 'TAS', 'AUSTRALIAN CAPITAL TERRITORY': 'ACT' }; for (const [name, code] of Object.entries(fullNames)) if (upper.includes(name)) return code; const match = upper.match(/(?:^|[\s,()\-])(?:WA|QLD|NSW|VIC|SA|NT|TAS|ACT)(?=$|[\s,()\-])/); return match ? match[0].trim().replace(/[,()\-]/g, '') : ''; }
-function locate(project: ProjectPoint): Resolution | null { if (typeof project.latitude === 'number' && typeof project.longitude === 'number' && project.latitude >= -45 && project.latitude <= -9 && project.longitude >= 110 && project.longitude <= 155) return { latitude: project.latitude, longitude: project.longitude, precision: project.locationPrecision || 'EXACT', label: 'Published coordinates' }; const text = projectSearchText(project); for (const entry of gazetteer) if (entry.aliases.some(alias => text.includes(alias))) return { latitude: entry.latitude, longitude: entry.longitude, precision: 'APPROXIMATE', label: entry.label }; const stateCode = stateFromText(text); const state = states[stateCode]; if (state) return { latitude: state[0], longitude: state[1], precision: 'STATE_LEVEL', label: `${state[2]} - state-level only` }; return null; }
-function newestProjectDate(project: ProjectPoint) { return [...(project.records || [])].map(record => record.sourceObservedAt || '').filter(value => Number.isFinite(Date.parse(value))).sort((a, b) => Date.parse(b) - Date.parse(a))[0] || ''; }
-function isRecent(value: string | undefined, days: number) { if (days <= 0) return true; if (!value) return false; const timestamp = Date.parse(value); const age = Date.now() - timestamp; return Number.isFinite(timestamp) && age >= 0 && age <= days * 86400000; }
-function inBounds(point: MapPoint, bounds: Bounds) { return point.latitude >= bounds.south && point.latitude <= bounds.north && point.longitude >= bounds.west && point.longitude <= bounds.east; }
-function clusterCell(zoom: number) { if (zoom <= 4) return 5; if (zoom <= 5) return 3; if (zoom <= 6) return 1.6; if (zoom <= 7) return 0.8; if (zoom <= 8) return 0.4; return 0.15; }
+  {
+    aliases: ['port hedland', 'south hedland', 'wedgefield'],
+    latitude: -20.31,
+    longitude: 118.58,
+    label: 'Port Hedland',
+  },
+  {
+    aliases: ['east pilbara'],
+    latitude: -22.7,
+    longitude: 120.3,
+    label: 'East Pilbara',
+  },
+  {
+    aliases: ['west pilbara'],
+    latitude: -21.4,
+    longitude: 116.9,
+    label: 'West Pilbara',
+  },
+  { aliases: ['pilbara'], latitude: -22.0, longitude: 118.5, label: 'Pilbara' },
+  {
+    aliases: ['karratha', 'dampier'],
+    latitude: -20.74,
+    longitude: 116.85,
+    label: 'Karratha',
+  },
+  { aliases: ['newman'], latitude: -23.36, longitude: 119.73, label: 'Newman' },
+  {
+    aliases: ['tom price'],
+    latitude: -22.69,
+    longitude: 117.79,
+    label: 'Tom Price',
+  },
+  {
+    aliases: ['paraburdoo'],
+    latitude: -23.2,
+    longitude: 117.67,
+    label: 'Paraburdoo',
+  },
+  {
+    aliases: ['goldfields esperance', 'goldfields-esperance'],
+    latitude: -30.6,
+    longitude: 121.3,
+    label: 'Goldfields-Esperance',
+  },
+  {
+    aliases: ['kalgoorlie', 'boulder', 'goldfields'],
+    latitude: -30.75,
+    longitude: 121.47,
+    label: 'Kalgoorlie-Goldfields',
+  },
+  {
+    aliases: ['kimberley'],
+    latitude: -17.5,
+    longitude: 123.5,
+    label: 'Kimberley',
+  },
+  {
+    aliases: ['mid west', 'midwest'],
+    latitude: -28.3,
+    longitude: 116.3,
+    label: 'Mid West WA',
+  },
+  {
+    aliases: ['geraldton'],
+    latitude: -28.78,
+    longitude: 114.61,
+    label: 'Geraldton',
+  },
+  {
+    aliases: ['perth', 'peel'],
+    latitude: -31.95,
+    longitude: 115.86,
+    label: 'Perth',
+  },
+  {
+    aliases: ['bunbury', 'south west'],
+    latitude: -33.33,
+    longitude: 115.64,
+    label: 'South West WA',
+  },
+  {
+    aliases: ['albany', 'great southern'],
+    latitude: -35.03,
+    longitude: 117.88,
+    label: 'Great Southern WA',
+  },
+  {
+    aliases: ['bowen basin'],
+    latitude: -22.1,
+    longitude: 148.1,
+    label: 'Bowen Basin',
+  },
+  {
+    aliases: ['surat basin'],
+    latitude: -27.1,
+    longitude: 149.5,
+    label: 'Surat Basin',
+  },
+  {
+    aliases: ['galilee basin'],
+    latitude: -22.7,
+    longitude: 145.9,
+    label: 'Galilee Basin',
+  },
+  {
+    aliases: ['central queensland', 'central qld'],
+    latitude: -23.4,
+    longitude: 148.2,
+    label: 'Central Queensland',
+  },
+  {
+    aliases: ['brisbane'],
+    latitude: -27.47,
+    longitude: 153.03,
+    label: 'Brisbane',
+  },
+  {
+    aliases: ['gladstone'],
+    latitude: -23.84,
+    longitude: 151.26,
+    label: 'Gladstone',
+  },
+  {
+    aliases: ['mount isa'],
+    latitude: -20.73,
+    longitude: 139.49,
+    label: 'Mount Isa',
+  },
+  {
+    aliases: ['townsville'],
+    latitude: -19.26,
+    longitude: 146.82,
+    label: 'Townsville',
+  },
+  { aliases: ['mackay'], latitude: -21.14, longitude: 149.19, label: 'Mackay' },
+  { aliases: ['cairns'], latitude: -16.92, longitude: 145.78, label: 'Cairns' },
+  {
+    aliases: ['toowoomba', 'darling downs'],
+    latitude: -27.56,
+    longitude: 151.95,
+    label: 'Darling Downs',
+  },
+  {
+    aliases: ['rockhampton'],
+    latitude: -23.38,
+    longitude: 150.51,
+    label: 'Rockhampton',
+  },
+  {
+    aliases: ['hunter valley', 'hunter region', 'hunter'],
+    latitude: -32.65,
+    longitude: 151.25,
+    label: 'Hunter',
+  },
+  {
+    aliases: ['newcastle'],
+    latitude: -32.93,
+    longitude: 151.78,
+    label: 'Newcastle',
+  },
+  { aliases: ['sydney'], latitude: -33.87, longitude: 151.21, label: 'Sydney' },
+  {
+    aliases: ['wollongong', 'illawarra'],
+    latitude: -34.43,
+    longitude: 150.89,
+    label: 'Illawarra',
+  },
+  {
+    aliases: ['dubbo', 'central west'],
+    latitude: -32.25,
+    longitude: 148.6,
+    label: 'Central West NSW',
+  },
+  { aliases: ['orange'], latitude: -33.28, longitude: 149.1, label: 'Orange' },
+  {
+    aliases: ['gippsland'],
+    latitude: -38.1,
+    longitude: 147.0,
+    label: 'Gippsland',
+  },
+  {
+    aliases: ['latrobe valley', 'latrobe'],
+    latitude: -38.24,
+    longitude: 146.4,
+    label: 'Latrobe Valley',
+  },
+  {
+    aliases: ['melbourne'],
+    latitude: -37.81,
+    longitude: 144.96,
+    label: 'Melbourne',
+  },
+  {
+    aliases: ['geelong'],
+    latitude: -38.15,
+    longitude: 144.36,
+    label: 'Geelong',
+  },
+  {
+    aliases: ['ballarat'],
+    latitude: -37.56,
+    longitude: 143.85,
+    label: 'Ballarat',
+  },
+  {
+    aliases: ['olympic dam', 'roxby downs'],
+    latitude: -30.45,
+    longitude: 136.87,
+    label: 'Olympic Dam / Roxby Downs',
+  },
+  {
+    aliases: ['whyalla'],
+    latitude: -33.03,
+    longitude: 137.58,
+    label: 'Whyalla',
+  },
+  {
+    aliases: ['adelaide'],
+    latitude: -34.93,
+    longitude: 138.6,
+    label: 'Adelaide',
+  },
+  { aliases: ['darwin'], latitude: -12.46, longitude: 130.84, label: 'Darwin' },
+  {
+    aliases: ['alice springs', 'central australia'],
+    latitude: -23.7,
+    longitude: 133.88,
+    label: 'Central Australia',
+  },
+  { aliases: ['hobart'], latitude: -42.88, longitude: 147.33, label: 'Hobart' },
+  {
+    aliases: ['launceston'],
+    latitude: -41.43,
+    longitude: 147.14,
+    label: 'Launceston',
+  },
+  {
+    aliases: ['canberra'],
+    latitude: -35.28,
+    longitude: 149.13,
+    label: 'Canberra',
+  },
+].sort(
+  (a, b) =>
+    Math.max(...b.aliases.map((alias) => alias.length)) -
+    Math.max(...a.aliases.map((alias) => alias.length)),
+);
+const states: Record<string, [number, number, string]> = {
+  WA: [-25.27, 122.3, 'Western Australia'],
+  QLD: [-22.16, 144.58, 'Queensland'],
+  NSW: [-32.16, 147.02, 'New South Wales'],
+  VIC: [-36.98, 144.64, 'Victoria'],
+  SA: [-30.0, 135.76, 'South Australia'],
+  NT: [-19.49, 132.55, 'Northern Territory'],
+  TAS: [-41.45, 146.32, 'Tasmania'],
+  ACT: [-35.47, 149.01, 'Australian Capital Territory'],
+};
+const quickRegions = [
+  { label: 'Australia', lat: -25.3, lng: 133.8, zoom: 4 },
+  { label: 'WA', lat: -25.3, lng: 122.3, zoom: 5 },
+  { label: 'Pilbara', lat: -22.0, lng: 118.5, zoom: 6 },
+  { label: 'Goldfields', lat: -30.7, lng: 121.4, zoom: 6 },
+  { label: 'QLD', lat: -22.2, lng: 144.6, zoom: 5 },
+  { label: 'Bowen Basin', lat: -22.1, lng: 148.1, zoom: 7 },
+  { label: 'NSW', lat: -32.2, lng: 147.0, zoom: 5 },
+  { label: 'Hunter', lat: -32.65, lng: 151.25, zoom: 8 },
+  { label: 'VIC', lat: -37.0, lng: 144.6, zoom: 6 },
+  { label: 'Gippsland', lat: -38.1, lng: 147.0, zoom: 8 },
+];
+function projectSearchText(project: ProjectPoint) {
+  return [
+    project.name,
+    project.location,
+    ...(project.records || []).flatMap((record) => [
+      record.project || '',
+      record.location || '',
+      record.description || '',
+    ]),
+  ]
+    .join(' ')
+    .toLowerCase();
+}
+function stateFromText(value: string) {
+  const upper = value.toUpperCase();
+  const fullNames: Record<string, string> = {
+    'WESTERN AUSTRALIA': 'WA',
+    QUEENSLAND: 'QLD',
+    'NEW SOUTH WALES': 'NSW',
+    VICTORIA: 'VIC',
+    'SOUTH AUSTRALIA': 'SA',
+    'NORTHERN TERRITORY': 'NT',
+    TASMANIA: 'TAS',
+    'AUSTRALIAN CAPITAL TERRITORY': 'ACT',
+  };
+  for (const [name, code] of Object.entries(fullNames))
+    if (upper.includes(name)) return code;
+  const match = upper.match(
+    /(?:^|[\s,()\-])(?:WA|QLD|NSW|VIC|SA|NT|TAS|ACT)(?=$|[\s,()\-])/,
+  );
+  return match ? match[0].trim().replace(/[,()\-]/g, '') : '';
+}
+function locate(project: ProjectPoint): Resolution | null {
+  if (
+    typeof project.latitude === 'number' &&
+    typeof project.longitude === 'number' &&
+    project.latitude >= -45 &&
+    project.latitude <= -9 &&
+    project.longitude >= 110 &&
+    project.longitude <= 155
+  )
+    return {
+      latitude: project.latitude,
+      longitude: project.longitude,
+      precision: project.locationPrecision || 'EXACT',
+      label: 'Published coordinates',
+    };
+  const text = projectSearchText(project);
+  for (const entry of gazetteer)
+    if (entry.aliases.some((alias) => text.includes(alias)))
+      return {
+        latitude: entry.latitude,
+        longitude: entry.longitude,
+        precision: 'APPROXIMATE',
+        label: entry.label,
+      };
+  const stateCode = stateFromText(text);
+  const state = states[stateCode];
+  if (state)
+    return {
+      latitude: state[0],
+      longitude: state[1],
+      precision: 'STATE_LEVEL',
+      label: `${state[2]} - state-level only`,
+    };
+  return null;
+}
+function newestProjectDate(project: ProjectPoint) {
+  return (
+    [...(project.records || [])]
+      .map((record) => record.sourceObservedAt || '')
+      .filter((value) => Number.isFinite(Date.parse(value)))
+      .sort((a, b) => Date.parse(b) - Date.parse(a))[0] || ''
+  );
+}
+function isRecent(value: string | undefined, days: number) {
+  if (days <= 0) return true;
+  if (!value) return false;
+  const timestamp = Date.parse(value);
+  const age = Date.now() - timestamp;
+  return Number.isFinite(timestamp) && age >= 0 && age <= days * 86400000;
+}
+function inBounds(point: MapPoint, bounds: Bounds) {
+  return (
+    point.latitude >= bounds.south &&
+    point.latitude <= bounds.north &&
+    point.longitude >= bounds.west &&
+    point.longitude <= bounds.east
+  );
+}
+function clusterCell(zoom: number) {
+  if (zoom <= 4) return 5;
+  if (zoom <= 5) return 3;
+  if (zoom <= 6) return 1.6;
+  if (zoom <= 7) return 0.8;
+  if (zoom <= 8) return 0.4;
+  return 0.15;
+}
 
-export default function GeoMap({ projects, events, openProject }: { projects: ProjectPoint[]; events: OpportunityEvent[]; openProject: (projectId: string) => void }) {
-  const containerRef = useRef<HTMLDivElement | null>(null); const mapRef = useRef<LeafletMap | null>(null); const layerRef = useRef<LayerGroup | null>(null);
-  const [mode, setMode] = useState<'BOTH' | 'PROJECTS' | 'OPPORTUNITIES'>('BOTH'); const [priority, setPriority] = useState('ALL'); const [stage, setStage] = useState('ALL'); const [equipment, setEquipment] = useState('ALL'); const [timeDays, setTimeDays] = useState(0); const [zoom, setZoom] = useState(4); const [selected, setSelected] = useState<MapPoint | null>(null); const [inspectedGroup, setInspectedGroup] = useState<MapPoint[]>([]); const [bounds, setBounds] = useState<Bounds>({ south: -45, west: 110, north: -9, east: 155 });
-  const projectById = useMemo(() => new Map(projects.map(project => [project.id, project])), [projects]); const equipmentOptions = useMemo(() => [...new Set(projects.flatMap(project => project.equipmentPrediction.classes))].sort(), [projects]); const stageOptions = useMemo(() => [...new Set(projects.map(project => project.stageLabel))].sort(), [projects]);
-  const points = useMemo<MapPoint[]>(() => { const projectPoints = projects.flatMap(project => { const geo = locate(project); if(!geo)return []; return [{ id: `project-${project.id}`, projectId: project.id, kind: 'PROJECT' as const, label: project.name, subtitle: `${project.location} · ${project.stageLabel}`, latitude: geo.latitude, longitude: geo.longitude, precision: geo.precision, precisionLabel: geo.label, priority: project.bdmPriority, stage: project.stageLabel, equipment: project.equipmentPrediction.classes, contractors: project.contractors || [], detectedAt: newestProjectDate(project) }]; }); const eventPoints = events.flatMap((event, index) => { const project = projectById.get(event.projectId); if (!project) return []; const geo = locate(project); if(!geo)return []; return [{ id: `event-${event.projectId}-${event.type}-${index}`, projectId: event.projectId, kind: 'OPPORTUNITY' as const, label: `${event.type} · ${event.project}`, subtitle: `${event.location} · ${event.confidence}% confidence`, latitude: geo.latitude, longitude: geo.longitude, precision: geo.precision, precisionLabel: geo.label, priority: event.bdmPriority ?? project.bdmPriority, stage: project.stageLabel, equipment: project.equipmentPrediction.classes, contractors: project.contractors || [], detectedAt: event.detectedAt, signalType: event.type, action: event.action }]; }); return [...projectPoints, ...eventPoints].filter(point => (mode === 'BOTH' || (mode === 'PROJECTS' ? point.kind === 'PROJECT' : point.kind === 'OPPORTUNITY')) && (priority === 'ALL' || (priority === 'HIGH' ? point.priority >= 80 : priority === 'MEDIUM' ? point.priority >= 60 && point.priority < 80 : point.priority < 60)) && (stage === 'ALL' || point.stage === stage) && (equipment === 'ALL' || point.equipment.includes(equipment)) && isRecent(point.detectedAt, timeDays)); }, [projects, events, projectById, mode, priority, stage, equipment, timeDays]);
-  useEffect(() => { const ids = new Set(points.map(point => point.id)); setSelected(current => current && ids.has(current.id) ? current : null); setInspectedGroup(current => current.filter(point => ids.has(point.id))); }, [points]);
-  const visiblePoints = useMemo(() => points.filter(point => inBounds(point, bounds)), [points, bounds]); const visibleProjectIds = useMemo(() => new Set(visiblePoints.map(point => point.projectId)), [visiblePoints]); const visibleProjects = projects.filter(project => visibleProjectIds.has(project.id)); const visibleEvents = visiblePoints.filter(point => point.kind === 'OPPORTUNITY'); const unmappedCount=projects.filter(project=>!locate(project)).length; const highCount = visibleProjects.filter(project => project.bdmPriority >= 80).length; const shutdownCount = new Set(visibleEvents.filter(point => /SHUTDOWN|OUTAGE/.test(point.signalType || '')).map(point=>point.projectId)).size; const procurementCount = visibleProjects.filter(project => /PROCUREMENT|AWARDED/.test(project.stageLabel)).length; const equipmentCounts=new Map<string,number>(); for(const project of visibleProjects)for(const item of project.equipmentPrediction.classes)equipmentCounts.set(item,(equipmentCounts.get(item)||0)+1); const equipmentSummary=[...equipmentCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,3); const contractorSummary = [...new Set(visibleProjects.flatMap(project => project.contractors || []))].slice(0, 4);
-  useEffect(() => { if (!containerRef.current || mapRef.current) return; const map = L.map(containerRef.current, { zoomControl: true, minZoom: 3, maxZoom: 15, worldCopyJump: false }); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map); map.fitBounds(L.latLngBounds([-44.5, 112], [-9.5, 154.5]), { padding: [24, 24] }); const sync = () => { const value = map.getBounds(); setZoom(map.getZoom()); setBounds({ south: value.getSouth(), west: value.getWest(), north: value.getNorth(), east: value.getEast() }); }; map.on('zoomend moveend', sync); sync(); mapRef.current = map; layerRef.current = L.layerGroup().addTo(map); return () => { map.remove(); mapRef.current = null; layerRef.current = null; }; }, []);
-  useEffect(() => { const map = mapRef.current; const layer = layerRef.current; if (!map || !layer) return; layer.clearLayers(); const cell = clusterCell(map.getZoom()); const groups = new Map<string, MapPoint[]>(); for (const point of points) { const key = point.precision === 'STATE_LEVEL' ? `state:${point.latitude}:${point.longitude}` : `${Math.floor(point.latitude / cell)}:${Math.floor(point.longitude / cell)}`; const group = groups.get(key) || []; group.push(point); groups.set(key, group); } for (const group of groups.values()) { const latitude = group.reduce((sum, point) => sum + point.latitude, 0) / group.length; const longitude = group.reduce((sum, point) => sum + point.longitude, 0) / group.length; const stateOnly = group.every(point => point.precision === 'STATE_LEVEL'); if (group.length > 1 && (map.getZoom() < 10 || stateOnly)) { const high = group.filter(point => point.priority >= 80).length; const marker = L.marker([latitude, longitude], { icon: L.divIcon({ className: 'map-cluster-wrap', html: `<div class="map-cluster${stateOnly ? ' state-level' : ''}"><b>${group.length}</b><span>${stateOnly ? 'state-level' : high ? `${high} high` : 'signals'}</span></div>`, iconSize: [52, 52], iconAnchor: [26, 26] }) }); marker.bindTooltip(stateOnly ? `${group.length} state-level records - click to inspect area` : `${group.length} projects/opportunities - click to inspect cluster`); marker.on('click', () => { setSelected(null); setInspectedGroup(group); map.setView([latitude, longitude], Math.min(stateOnly ? 6 : 12, map.getZoom() + 2)); }); marker.addTo(layer); continue; } for (const point of group) { const marker = L.circleMarker([point.latitude, point.longitude], { radius: point.kind === 'OPPORTUNITY' ? 8 : 6, color: point.precision === 'STATE_LEVEL' ? '#8a98aa' : point.priority >= 80 ? '#bb3e03' : point.kind === 'OPPORTUNITY' ? '#1769e0' : '#315c78', weight: point.precision === 'EXACT' ? 3 : 1.5, dashArray: point.precision === 'EXACT' ? undefined : '4 3', fillOpacity: point.precision === 'STATE_LEVEL' ? 0.45 : 0.82 }); const tooltip = document.createElement('div'); const title = document.createElement('b'); title.textContent = point.label; tooltip.append(title); for (const text of [point.subtitle, `${point.precision}: ${point.precisionLabel}`, `Priority ${point.priority}`]) { tooltip.append(document.createElement('br'), document.createTextNode(text)); } marker.bindTooltip(tooltip, { direction: 'top' }); marker.on('click', () => { setInspectedGroup([]); setSelected(point); }); marker.addTo(layer); } } }, [points, zoom]);
-  const flyTo = (point: MapPoint) => { mapRef.current?.flyTo([point.latitude, point.longitude], Math.max(point.precision === 'STATE_LEVEL' ? 6 : 9, mapRef.current?.getZoom() || 4), { duration: 0.5 }); setInspectedGroup([]); setSelected(point); }; const jumpRegion = (region: typeof quickRegions[number]) => { setInspectedGroup([]); setSelected(null); mapRef.current?.flyTo([region.lat, region.lng], region.zoom, { duration: 0.6 }); }; const whatChanged = () => { setMode('OPPORTUNITIES'); setTimeDays(30); setPriority('ALL'); };
-  return <section className='map-workspace'><div className='map-toolbar'><div><b>Australia BDM intelligence map</b><small>Pan/zoom changes the current regional intelligence summary and visible opportunity list.</small></div><div className='map-filters'><select value={mode} onChange={event => setMode(event.target.value as typeof mode)}><option value='BOTH'>Projects + Opportunities</option><option value='PROJECTS'>Projects only</option><option value='OPPORTUNITIES'>Opportunities only</option></select><select value={priority} onChange={event => setPriority(event.target.value)}><option value='ALL'>All priorities</option><option value='HIGH'>High priority</option><option value='MEDIUM'>Medium priority</option><option value='WATCH'>Watch</option></select><select value={stage} onChange={event => setStage(event.target.value)}><option value='ALL'>All stages</option>{stageOptions.map(value => <option key={value}>{value}</option>)}</select><select value={equipment} onChange={event => setEquipment(event.target.value)}><option value='ALL'>All equipment</option>{equipmentOptions.map(value => <option key={value}>{value}</option>)}</select><select value={timeDays} onChange={event => setTimeDays(Number(event.target.value))}><option value={0}>All dates</option><option value={7}>Last 7 days</option><option value={30}>Last 30 days</option><option value={90}>Last 90 days</option></select><button onClick={whatChanged}>What changed here?</button></div></div><div className='map-regions'>{quickRegions.map(region => <button key={region.label} onClick={() => jumpRegion(region)}>{region.label}</button>)}</div><div className='map-legend'><span><i className='legend-project'/>Project</span><span><i className='legend-opportunity'/>Opportunity</span><span><i className='legend-approx'/>Approximate</span><span><i className='legend-state'/>State-level</span><span>{visibleProjectIds.size} projects · {visibleEvents.length} signals · {unmappedCount} unmapped · {highCount} high · zoom {zoom}</span></div><div className='map-command-layout'><div ref={containerRef} className='australia-map'/><aside className='map-side'><section className='region-summary'><div className='eyebrow'>VISIBLE AREA</div><h3>{visibleProjectIds.size} projects · {visibleEvents.length} opportunities</h3><div className='region-kpis'><span><b>{highCount}</b> high priority</span><span><b>{procurementCount}</b> procurement/awarded</span><span><b>{shutdownCount}</b> shutdown/outage</span></div>{equipmentSummary.length > 0 && <p><b>PREDICTED demand:</b> {equipmentSummary.map(([name, count]) => `${name} (${count})`).join(' · ')}</p>}{contractorSummary.length > 0 && <p><b>Contractors:</b> {contractorSummary.join(' · ')}</p>}</section>{inspectedGroup.length > 0 && <section className='map-selection area-inspection'><div className='eyebrow'>AREA INSPECTION</div><h3>{inspectedGroup.length} records in this cluster</h3><p>These records share the current mapped area or state-level location. Select one to inspect its evidence and priority.</p><div className='area-records'>{inspectedGroup.slice(0, 24).map(point => <button key={point.id} onClick={() => flyTo(point)}><span><b>{point.kind === 'OPPORTUNITY' ? point.signalType || 'Opportunity' : point.label}</b><small>{point.subtitle} · {point.precision}</small></span><em>{point.priority}</em></button>)}</div></section>}{selected && <section className='map-selection'><div className='eyebrow'>{selected.kind} · {selected.precision}</div><h3>{selected.label}</h3><p>{selected.subtitle}</p><p><b>Priority {selected.priority}</b> · {selected.stage}</p><p>{selected.precisionLabel}</p>{selected.equipment.length > 0 && <p><b>PREDICTED:</b> {selected.equipment.join(' · ')}</p>}{selected.action && <p>{selected.action}</p>}<button onClick={() => openProject(selected.projectId)}>Open full project intelligence</button></section>}<section className='visible-list'><div className='eyebrow'>MAP-SYNCHRONISED LIST</div>{visiblePoints.slice(0, 18).map(point => <button key={point.id} onClick={() => flyTo(point)}><span><b>{point.kind === 'OPPORTUNITY' ? point.signalType || 'Opportunity' : point.label}</b><small>{point.kind === 'OPPORTUNITY' ? point.label.replace(`${point.signalType} · `, '') : point.subtitle}</small></span><em>{point.priority}</em></button>)}{visiblePoints.length === 0 && <p>No intelligence matches the current map extent and filters.</p>}</section></aside></div></section>;
+export default function GeoMap({
+  projects,
+  events,
+  openProject,
+}: {
+  projects: ProjectPoint[];
+  events: OpportunityEvent[];
+  openProject: (projectId: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const layerRef = useRef<LayerGroup | null>(null);
+  const [mode, setMode] = useState<'BOTH' | 'PROJECTS' | 'OPPORTUNITIES'>(
+    'BOTH',
+  );
+  const [priority, setPriority] = useState('ALL');
+  const [stage, setStage] = useState('ALL');
+  const [equipment, setEquipment] = useState('ALL');
+  const [timeDays, setTimeDays] = useState(0);
+  const [zoom, setZoom] = useState(4);
+  const [selected, setSelected] = useState<MapPoint | null>(null);
+  const [inspectedGroup, setInspectedGroup] = useState<MapPoint[]>([]);
+  const [bounds, setBounds] = useState<Bounds>({
+    south: -45,
+    west: 110,
+    north: -9,
+    east: 155,
+  });
+  const projectById = useMemo(
+    () => new Map(projects.map((project) => [project.id, project])),
+    [projects],
+  );
+  const equipmentOptions = useMemo(
+    () =>
+      [
+        ...new Set(
+          projects.flatMap((project) => project.equipmentPrediction.classes),
+        ),
+      ].sort(),
+    [projects],
+  );
+  const stageOptions = useMemo(
+    () => [...new Set(projects.map((project) => project.stageLabel))].sort(),
+    [projects],
+  );
+  const points = useMemo<MapPoint[]>(() => {
+    const projectPoints = projects.flatMap((project) => {
+      const geo = locate(project);
+      if (!geo) return [];
+      return [
+        {
+          id: `project-${project.id}`,
+          projectId: project.id,
+          kind: 'PROJECT' as const,
+          label: project.name,
+          subtitle: `${project.location} · ${project.stageLabel}`,
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+          precision: geo.precision,
+          precisionLabel: geo.label,
+          priority: project.bdmPriority,
+          stage: project.stageLabel,
+          equipment: project.equipmentPrediction.classes,
+          contractors: project.contractors || [],
+          detectedAt: newestProjectDate(project),
+        },
+      ];
+    });
+    const eventPoints = events.flatMap((event, index) => {
+      const project = projectById.get(event.projectId);
+      if (!project) return [];
+      const geo = locate(project);
+      if (!geo) return [];
+      return [
+        {
+          id: `event-${event.projectId}-${event.type}-${index}`,
+          projectId: event.projectId,
+          kind: 'OPPORTUNITY' as const,
+          label: `${event.type} · ${event.project}`,
+          subtitle: `${event.location} · ${event.confidence}% confidence`,
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+          precision: geo.precision,
+          precisionLabel: geo.label,
+          priority: event.bdmPriority ?? project.bdmPriority,
+          stage: project.stageLabel,
+          equipment: project.equipmentPrediction.classes,
+          contractors: project.contractors || [],
+          detectedAt: event.detectedAt,
+          signalType: event.type,
+          action: event.action,
+        },
+      ];
+    });
+    return [...projectPoints, ...eventPoints].filter(
+      (point) =>
+        (mode === 'BOTH' ||
+          (mode === 'PROJECTS'
+            ? point.kind === 'PROJECT'
+            : point.kind === 'OPPORTUNITY')) &&
+        (priority === 'ALL' ||
+          (priority === 'HIGH'
+            ? point.priority >= 80
+            : priority === 'MEDIUM'
+              ? point.priority >= 60 && point.priority < 80
+              : point.priority < 60)) &&
+        (stage === 'ALL' || point.stage === stage) &&
+        (equipment === 'ALL' || point.equipment.includes(equipment)) &&
+        isRecent(point.detectedAt, timeDays),
+    );
+  }, [
+    projects,
+    events,
+    projectById,
+    mode,
+    priority,
+    stage,
+    equipment,
+    timeDays,
+  ]);
+  useEffect(() => {
+    const ids = new Set(points.map((point) => point.id));
+    setSelected((current) => (current && ids.has(current.id) ? current : null));
+    setInspectedGroup((current) =>
+      current.filter((point) => ids.has(point.id)),
+    );
+  }, [points]);
+  const visiblePoints = useMemo(
+    () => points.filter((point) => inBounds(point, bounds)),
+    [points, bounds],
+  );
+  const visibleProjectIds = useMemo(
+    () => new Set(visiblePoints.map((point) => point.projectId)),
+    [visiblePoints],
+  );
+  const visibleProjects = projects.filter((project) =>
+    visibleProjectIds.has(project.id),
+  );
+  const visibleEvents = visiblePoints.filter(
+    (point) => point.kind === 'OPPORTUNITY',
+  );
+  const unmappedCount = projects.filter((project) => !locate(project)).length;
+  const highCount = visibleProjects.filter(
+    (project) => project.bdmPriority >= 80,
+  ).length;
+  const shutdownCount = new Set(
+    visibleEvents
+      .filter((point) => /SHUTDOWN|OUTAGE/.test(point.signalType || ''))
+      .map((point) => point.projectId),
+  ).size;
+  const procurementCount = visibleProjects.filter((project) =>
+    /PROCUREMENT|AWARDED/.test(project.stageLabel),
+  ).length;
+  const equipmentCounts = new Map<string, number>();
+  for (const project of visibleProjects)
+    for (const item of project.equipmentPrediction.classes)
+      equipmentCounts.set(item, (equipmentCounts.get(item) || 0) + 1);
+  const equipmentSummary = [...equipmentCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+  const contractorSummary = [
+    ...new Set(visibleProjects.flatMap((project) => project.contractors || [])),
+  ].slice(0, 4);
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
+    const map = L.map(containerRef.current, {
+      zoomControl: true,
+      minZoom: 3,
+      maxZoom: 15,
+      worldCopyJump: false,
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(map);
+    map.fitBounds(L.latLngBounds([-44.5, 112], [-9.5, 154.5]), {
+      padding: [24, 24],
+    });
+    const sync = () => {
+      const value = map.getBounds();
+      setZoom(map.getZoom());
+      setBounds({
+        south: value.getSouth(),
+        west: value.getWest(),
+        north: value.getNorth(),
+        east: value.getEast(),
+      });
+    };
+    map.on('zoomend moveend', sync);
+    sync();
+    mapRef.current = map;
+    layerRef.current = L.layerGroup().addTo(map);
+    return () => {
+      map.remove();
+      mapRef.current = null;
+      layerRef.current = null;
+    };
+  }, []);
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = layerRef.current;
+    if (!map || !layer) return;
+    layer.clearLayers();
+    const cell = clusterCell(map.getZoom());
+    const groups = new Map<string, MapPoint[]>();
+    for (const point of points) {
+      const key =
+        point.precision === 'STATE_LEVEL'
+          ? `state:${point.latitude}:${point.longitude}`
+          : `${Math.floor(point.latitude / cell)}:${Math.floor(point.longitude / cell)}`;
+      const group = groups.get(key) || [];
+      group.push(point);
+      groups.set(key, group);
+    }
+    for (const group of groups.values()) {
+      const latitude =
+        group.reduce((sum, point) => sum + point.latitude, 0) / group.length;
+      const longitude =
+        group.reduce((sum, point) => sum + point.longitude, 0) / group.length;
+      const stateOnly = group.every(
+        (point) => point.precision === 'STATE_LEVEL',
+      );
+      if (group.length > 1 && (map.getZoom() < 10 || stateOnly)) {
+        const high = group.filter((point) => point.priority >= 80).length;
+        const marker = L.marker([latitude, longitude], {
+          icon: L.divIcon({
+            className: 'map-cluster-wrap',
+            html: `<div class="map-cluster${stateOnly ? ' state-level' : ''}"><b>${group.length}</b><span>${stateOnly ? 'state-level' : high ? `${high} high` : 'signals'}</span></div>`,
+            iconSize: [52, 52],
+            iconAnchor: [26, 26],
+          }),
+        });
+        marker.bindTooltip(
+          stateOnly
+            ? `${group.length} state-level records - click to inspect area`
+            : `${group.length} projects/opportunities - click to inspect cluster`,
+        );
+        marker.on('click', () => {
+          setSelected(null);
+          setInspectedGroup(group);
+          map.setView(
+            [latitude, longitude],
+            Math.min(stateOnly ? 6 : 12, map.getZoom() + 2),
+          );
+        });
+        marker.addTo(layer);
+        continue;
+      }
+      for (const point of group) {
+        const marker = L.circleMarker([point.latitude, point.longitude], {
+          radius: point.kind === 'OPPORTUNITY' ? 8 : 6,
+          color:
+            point.precision === 'STATE_LEVEL'
+              ? '#8a98aa'
+              : point.priority >= 80
+                ? '#bb3e03'
+                : point.kind === 'OPPORTUNITY'
+                  ? '#1769e0'
+                  : '#315c78',
+          weight: point.precision === 'EXACT' ? 3 : 1.5,
+          dashArray: point.precision === 'EXACT' ? undefined : '4 3',
+          fillOpacity: point.precision === 'STATE_LEVEL' ? 0.45 : 0.82,
+        });
+        const tooltip = document.createElement('div');
+        const title = document.createElement('b');
+        title.textContent = point.label;
+        tooltip.append(title);
+        for (const text of [
+          point.subtitle,
+          `${point.precision}: ${point.precisionLabel}`,
+          `Priority ${point.priority}`,
+        ]) {
+          tooltip.append(
+            document.createElement('br'),
+            document.createTextNode(text),
+          );
+        }
+        marker.bindTooltip(tooltip, { direction: 'top' });
+        marker.on('click', () => {
+          setInspectedGroup([]);
+          setSelected(point);
+        });
+        marker.addTo(layer);
+      }
+    }
+  }, [points, zoom]);
+  const flyTo = (point: MapPoint) => {
+    mapRef.current?.flyTo(
+      [point.latitude, point.longitude],
+      Math.max(
+        point.precision === 'STATE_LEVEL' ? 6 : 9,
+        mapRef.current?.getZoom() || 4,
+      ),
+      { duration: 0.5 },
+    );
+    setInspectedGroup([]);
+    setSelected(point);
+  };
+  const jumpRegion = (region: (typeof quickRegions)[number]) => {
+    setInspectedGroup([]);
+    setSelected(null);
+    mapRef.current?.flyTo([region.lat, region.lng], region.zoom, {
+      duration: 0.6,
+    });
+  };
+  const whatChanged = () => {
+    setMode('OPPORTUNITIES');
+    setTimeDays(30);
+    setPriority('ALL');
+  };
+  return (
+    <section className="map-workspace">
+      <div className="map-toolbar">
+        <div>
+          <b>Australia BDM intelligence map</b>
+          <small>
+            Pan/zoom changes the current regional intelligence summary and
+            visible opportunity list.
+          </small>
+        </div>
+        <div className="map-filters">
+          <select
+            value={mode}
+            onChange={(event) => setMode(event.target.value as typeof mode)}
+          >
+            <option value="BOTH">Projects + Opportunities</option>
+            <option value="PROJECTS">Projects only</option>
+            <option value="OPPORTUNITIES">Opportunities only</option>
+          </select>
+          <select
+            value={priority}
+            onChange={(event) => setPriority(event.target.value)}
+          >
+            <option value="ALL">All priorities</option>
+            <option value="HIGH">High priority</option>
+            <option value="MEDIUM">Medium priority</option>
+            <option value="WATCH">Watch</option>
+          </select>
+          <select
+            value={stage}
+            onChange={(event) => setStage(event.target.value)}
+          >
+            <option value="ALL">All stages</option>
+            {stageOptions.map((value) => (
+              <option key={value}>{value}</option>
+            ))}
+          </select>
+          <select
+            value={equipment}
+            onChange={(event) => setEquipment(event.target.value)}
+          >
+            <option value="ALL">All equipment</option>
+            {equipmentOptions.map((value) => (
+              <option key={value}>{value}</option>
+            ))}
+          </select>
+          <select
+            value={timeDays}
+            onChange={(event) => setTimeDays(Number(event.target.value))}
+          >
+            <option value={0}>All dates</option>
+            <option value={7}>Last 7 days</option>
+            <option value={30}>Last 30 days</option>
+            <option value={90}>Last 90 days</option>
+          </select>
+          <button onClick={whatChanged}>What changed here?</button>
+        </div>
+      </div>
+      <div className="map-regions">
+        {quickRegions.map((region) => (
+          <button key={region.label} onClick={() => jumpRegion(region)}>
+            {region.label}
+          </button>
+        ))}
+      </div>
+      <div className="map-legend">
+        <span>
+          <i className="legend-project" />
+          Project
+        </span>
+        <span>
+          <i className="legend-opportunity" />
+          Opportunity
+        </span>
+        <span>
+          <i className="legend-approx" />
+          Approximate
+        </span>
+        <span>
+          <i className="legend-state" />
+          State-level
+        </span>
+        <span>
+          {visibleProjectIds.size} projects · {visibleEvents.length} signals ·{' '}
+          {unmappedCount} unmapped · {highCount} high · zoom {zoom}
+        </span>
+      </div>
+      <div className="map-command-layout">
+        <div ref={containerRef} className="australia-map" />
+        <aside className="map-side">
+          <section className="region-summary">
+            <div className="eyebrow">VISIBLE AREA</div>
+            <h3>
+              {visibleProjectIds.size} projects · {visibleEvents.length}{' '}
+              opportunities
+            </h3>
+            <div className="region-kpis">
+              <span>
+                <b>{highCount}</b> high priority
+              </span>
+              <span>
+                <b>{procurementCount}</b> procurement/awarded
+              </span>
+              <span>
+                <b>{shutdownCount}</b> shutdown/outage
+              </span>
+            </div>
+            {equipmentSummary.length > 0 && (
+              <p>
+                <b>PREDICTED demand:</b>{' '}
+                {equipmentSummary
+                  .map(([name, count]) => `${name} (${count})`)
+                  .join(' · ')}
+              </p>
+            )}
+            {contractorSummary.length > 0 && (
+              <p>
+                <b>Contractors:</b> {contractorSummary.join(' · ')}
+              </p>
+            )}
+          </section>
+          {inspectedGroup.length > 0 && (
+            <section className="map-selection area-inspection">
+              <div className="eyebrow">AREA INSPECTION</div>
+              <h3>{inspectedGroup.length} records in this cluster</h3>
+              <p>
+                These records share the current mapped area or state-level
+                location. Select one to inspect its evidence and priority.
+              </p>
+              <div className="area-records">
+                {inspectedGroup.slice(0, 24).map((point) => (
+                  <button key={point.id} onClick={() => flyTo(point)}>
+                    <span>
+                      <b>
+                        {point.kind === 'OPPORTUNITY'
+                          ? point.signalType || 'Opportunity'
+                          : point.label}
+                      </b>
+                      <small>
+                        {point.subtitle} · {point.precision}
+                      </small>
+                    </span>
+                    <em>{point.priority}</em>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+          {selected && (
+            <section className="map-selection">
+              <div className="eyebrow">
+                {selected.kind} · {selected.precision}
+              </div>
+              <h3>{selected.label}</h3>
+              <p>{selected.subtitle}</p>
+              <p>
+                <b>Priority {selected.priority}</b> · {selected.stage}
+              </p>
+              <p>{selected.precisionLabel}</p>
+              {selected.equipment.length > 0 && (
+                <p>
+                  <b>PREDICTED:</b> {selected.equipment.join(' · ')}
+                </p>
+              )}
+              {selected.action && <p>{selected.action}</p>}
+              <button onClick={() => openProject(selected.projectId)}>
+                Open full project intelligence
+              </button>
+            </section>
+          )}
+          <section className="visible-list">
+            <div className="eyebrow">MAP-SYNCHRONISED LIST</div>
+            {visiblePoints.slice(0, 18).map((point) => (
+              <button key={point.id} onClick={() => flyTo(point)}>
+                <span>
+                  <b>
+                    {point.kind === 'OPPORTUNITY'
+                      ? point.signalType || 'Opportunity'
+                      : point.label}
+                  </b>
+                  <small>
+                    {point.kind === 'OPPORTUNITY'
+                      ? point.label.replace(`${point.signalType} · `, '')
+                      : point.subtitle}
+                  </small>
+                </span>
+                <em>{point.priority}</em>
+              </button>
+            ))}
+            {visiblePoints.length === 0 && (
+              <p>No intelligence matches the current map extent and filters.</p>
+            )}
+          </section>
+        </aside>
+      </div>
+    </section>
+  );
 }

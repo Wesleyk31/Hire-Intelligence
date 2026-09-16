@@ -1,0 +1,1903 @@
+{
+  "startedAt": "2026-09-16T02:54:21.399Z",
+  "finishedAt": "2026-09-16T02:54:29.598Z",
+  "methodology": {
+    "readOnly": true,
+    "auditClock": "2026-09-16T02:54:21.399Z",
+    "concurrency": 3,
+    "sampleLimit": 5,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "redirects": "follow",
+    "parser": "Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.",
+    "scope": "All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted."
+  },
+  "codeHashes": {
+    "index": "cf07f52e46e04ce5454d761a4b60c3a1a67f4d809e4b18ca3932babeeeaf9e19",
+    "backfillFetch": "31e78b30cd95091ba1d6dafb29913354585c69cfb3fcce7a12117b885c51b1d0",
+    "domainHardening": "5e2b2ab0cd26b49245fa76341f85f7e7910fc226efc8f31a18d57ed591cbd9f4",
+    "sourceHelpers": "103d4796e916fb2f8d208cc5623c9556f8ca0ccf39a8bdcd97230de1768296fd"
+  },
+  "counts": {
+    "configured": 66,
+    "active": 53,
+    "disabled": 13,
+    "historicalOnly": 4,
+    "probed": 13,
+    "liveRows": 12,
+    "liveErrors": 1,
+    "liveEmpty": 0,
+    "metadataOnly": 0
+  },
+  "results": [
+    {
+      "key": "qld-environmental-authorities",
+      "name": "Queensland Environmental Authorities",
+      "mode": "active",
+      "method": "CKAN_DATASTORE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=a9658145-87bd-4258-a689-5aec29d49792&limit=40",
+      "provenance": "https://www.data.qld.gov.au/dataset/environmental-authorities",
+      "startedAt": "2026-09-16T02:54:21.740Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Permit Reference",
+          "Permit Type",
+          "Permit Holder(s)",
+          "Effective Date",
+          "Status",
+          "Condition Type",
+          "Industry",
+          "Activities",
+          "Locations"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2010-11-17T00:00:00.000Z",
+        "newestSourceDate": "2015-09-14T00:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "_id",
+          "Permit Reference",
+          "Permit Type",
+          "Permit Holder(s)",
+          "Effective Date",
+          "Status",
+          "Condition Type",
+          "Industry",
+          "Activities",
+          "Locations"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+          "startedAt": "2026-09-16T02:54:21.741Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+          "redirected": false,
+          "bytes": 2639,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Permit Reference",
+            "Permit Type",
+            "Permit Holder(s)",
+            "Effective Date",
+            "Status",
+            "Condition Type",
+            "Industry",
+            "Activities",
+            "Locations"
+          ],
+          "total": 15174,
+          "durationMs": 1095
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-granted-resource-authorities",
+      "name": "Queensland Recently Granted Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+      "provenance": "https://www.data.qld.gov.au/dataset/recently-granted-resource-authorities",
+      "startedAt": "2026-09-16T02:54:21.812Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "startedAt": "2026-09-16T02:54:21.812Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "redirected": false,
+          "bytes": 35839,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "46414b29-d9ca-4395-985b-690b5d9bd97b",
+              "name": "Permit granted in August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-09-15T23:28:03.143663",
+              "lastModified": "2026-09-15T23:28:46.606149"
+            },
+            {
+              "id": "a022159d-4be7-474f-ab42-6fdb7a2104f6",
+              "name": "Permit granted in July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a022159d-4be7-474f-ab42-6fdb7a2104f6/download/granted-permits-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T04:05:14.880672",
+              "lastModified": "2026-09-15T23:28:46.609922"
+            },
+            {
+              "id": "6a8b54e1-03bc-4955-96b5-847368253477",
+              "name": "Permit granted in June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/6a8b54e1-03bc-4955-96b5-847368253477/download/granted-permits-june-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-07-13T03:34:56.151905",
+              "lastModified": "2026-09-15T23:28:46.613648"
+            },
+            {
+              "id": "1e971178-58be-4415-ae40-8f0cfab476d9",
+              "name": "Permits granted in May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/1e971178-58be-4415-ae40-8f0cfab476d9/download/granted-permits-may-2026-.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:43:10.352639",
+              "lastModified": "2026-09-15T23:28:46.617419"
+            },
+            {
+              "id": "943d74ef-0003-4df9-9529-ebb09f8f58aa",
+              "name": "Permits granted in April 2026 ",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/943d74ef-0003-4df9-9529-ebb09f8f58aa/download/granted-permits-april-2026-.xlsx",
+              "datastoreActive": false,
+              "created": "2026-05-28T22:48:57.013449",
+              "lastModified": "2026-09-15T23:28:46.621767"
+            },
+            {
+              "id": "36cb6f97-7a6c-42af-bb49-cd09bae8645c",
+              "name": "Permits granted in March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/36cb6f97-7a6c-42af-bb49-cd09bae8645c/download/granted-permits-march-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-04-14T01:30:35.738328",
+              "lastModified": "2026-09-15T23:28:46.625637"
+            },
+            {
+              "id": "a4499aa1-3a01-4873-b753-8f1689057218",
+              "name": "Permits granted in February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a4499aa1-3a01-4873-b753-8f1689057218/download/granted-permits-february-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-03-23T22:31:07.094278",
+              "lastModified": "2026-09-15T23:28:46.629484"
+            },
+            {
+              "id": "20e66adf-8e73-4dc4-bb19-fc1cb49ef364",
+              "name": "Permits granted in January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/20e66adf-8e73-4dc4-bb19-fc1cb49ef364/download/granted-permits-january-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-19T01:53:14.380273",
+              "lastModified": "2026-09-15T23:28:46.633370"
+            },
+            {
+              "id": "b250ed4d-8b19-4bfc-9099-e26eca15040f",
+              "name": "Permits granted in 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/b250ed4d-8b19-4bfc-9099-e26eca15040f/download/granted-permits-2025.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-10T23:14:38.081070",
+              "lastModified": "2026-09-15T23:28:46.637238"
+            },
+            {
+              "id": "f7cf24bb-2ce4-40f9-b38f-1c0e3122b902",
+              "name": "Permits granted in 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/f7cf24bb-2ce4-40f9-b38f-1c0e3122b902/download/granted-permits-2024.xlsx",
+              "datastoreActive": false,
+              "created": "2025-01-22T03:44:23.980119",
+              "lastModified": "2026-09-15T23:28:46.641085"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:29:57.632644",
+          "durationMs": 413
+        },
+        {
+          "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "startedAt": "2026-09-16T02:54:22.228Z",
+          "status": 202,
+          "finalUrl": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "redirected": false,
+          "bytes": 0,
+          "contentType": "text/html; charset=UTF-8",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 46
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-renewed-resource-authorities",
+      "name": "Queensland Renewed Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+      "provenance": "https://www.data.qld.gov.au/dataset/renewed-resource-authority-reports",
+      "startedAt": "2026-09-16T02:54:21.817Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Authorised Holder",
+          "Completion Date",
+          "Granted Date",
+          "Permit Start Date",
+          "Permit End Date",
+          "Area Sub Blocks",
+          "Area",
+          "LGA",
+          "LGA Type"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2026-08-11T16:00:00.000Z",
+        "newestSourceDate": "2026-08-11T16:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "resourceId": "3ad9281c-c442-4817-8392-61ec6eda55a4",
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Authorised Holder",
+          "Completion Date",
+          "Granted Date",
+          "Permit Start Date",
+          "Permit End Date",
+          "Area Sub Blocks",
+          "Area",
+          "LGA",
+          "LGA Type"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+          "startedAt": "2026-09-16T02:54:21.818Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+          "redirected": false,
+          "bytes": 40137,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "3ad9281c-c442-4817-8392-61ec6eda55a4",
+              "name": "Renewals  Report - August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/3ad9281c-c442-4817-8392-61ec6eda55a4/download/renewals-report-august-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-09-15T23:42:30.379466",
+              "lastModified": "2026-09-15T23:45:33.712311"
+            },
+            {
+              "id": "19877139-bd34-4b5b-bd24-c45e90a7506f",
+              "name": "Permits renewed in July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/19877139-bd34-4b5b-bd24-c45e90a7506f/download/renewals-monthly-report-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T03:49:57.868446",
+              "lastModified": "2026-09-15T23:45:33.717527"
+            },
+            {
+              "id": "4912c788-2b9c-4749-8b08-06482149acc7",
+              "name": "Permits renewed in June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/4912c788-2b9c-4749-8b08-06482149acc7/download/renewals-report-june-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-13T05:36:22.190041",
+              "lastModified": "2026-09-15T23:45:33.722545"
+            },
+            {
+              "id": "e4d42748-dc20-4e4f-9b36-768729242c01",
+              "name": "Permits renewed in May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/e4d42748-dc20-4e4f-9b36-768729242c01/download/renewals-report-may-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:40:49.174638",
+              "lastModified": "2026-09-15T23:45:33.727900"
+            },
+            {
+              "id": "e79f7faf-79d3-42db-ad56-33ce08ec0024",
+              "name": "Permits renewed in April 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/e79f7faf-79d3-42db-ad56-33ce08ec0024/download/renewals-monthly-report-april-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-05-29T06:51:11.213887",
+              "lastModified": "2026-09-15T23:45:33.732983"
+            },
+            {
+              "id": "7ff4ae8f-3921-46b3-b6a4-9511dda549c9",
+              "name": "Permits renewed in March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/7ff4ae8f-3921-46b3-b6a4-9511dda549c9/download/renewals-monthly-report-march-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-13T22:43:53.323925",
+              "lastModified": "2026-09-15T23:45:33.738151"
+            },
+            {
+              "id": "f708b14f-4dc8-47ae-960e-d7cba568f432",
+              "name": "Permits renewed in February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/f708b14f-4dc8-47ae-960e-d7cba568f432/download/renewals-report-february-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-23T22:35:53.977621",
+              "lastModified": "2026-09-15T23:45:33.743322"
+            },
+            {
+              "id": "ca7b0181-21ff-491c-9d69-cfad2b0d7b40",
+              "name": "Permits renewed in January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/ca7b0181-21ff-491c-9d69-cfad2b0d7b40/download/renewals-report-january-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-19T01:50:49.186721",
+              "lastModified": "2026-09-15T23:45:33.748495"
+            },
+            {
+              "id": "7be8d738-b563-434c-a4cb-8107b62dd173",
+              "name": "Permits renewed in 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/7be8d738-b563-434c-a4cb-8107b62dd173/download/renewals-report-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-10T21:57:49.916959",
+              "lastModified": "2026-09-15T23:45:33.753477"
+            },
+            {
+              "id": "fdd94b3d-15b8-4d63-905c-e51977bd44c1",
+              "name": "Permits renewed in 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/fdd94b3d-15b8-4d63-905c-e51977bd44c1/download/renewed-permits-report-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2025-01-22T04:44:31.245769",
+              "lastModified": "2026-09-15T23:45:33.758438"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:46:39.891847",
+          "durationMs": 1176
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=3ad9281c-c442-4817-8392-61ec6eda55a4",
+          "startedAt": "2026-09-16T02:54:22.996Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=3ad9281c-c442-4817-8392-61ec6eda55a4",
+          "redirected": false,
+          "bytes": 2877,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Permit Number",
+            "Authorised Holder",
+            "Completion Date",
+            "Granted Date",
+            "Permit Start Date",
+            "Permit End Date",
+            "Area Sub Blocks",
+            "Area",
+            "LGA",
+            "LGA Type"
+          ],
+          "total": 64,
+          "durationMs": 309
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-transferred-resource-authorities",
+      "name": "Queensland Transferred Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=transferred-resource-authorities-report",
+      "provenance": "https://www.data.qld.gov.au/dataset/transferred-resource-authorities-report",
+      "startedAt": "2026-09-16T02:54:22.279Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Tenure  Type",
+          "Tenure Number",
+          "ActivityID1",
+          "Received Date1",
+          "Actua Completion Date1",
+          "Remarks1",
+          "LGA",
+          "Client Name",
+          "Address Line1",
+          "Address Line2",
+          "Addres Line3",
+          "Address Line4",
+          "Locality",
+          "State",
+          "Postcode",
+          "Country"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "resourceId": "1931e1e8-6cc3-428d-9a25-7c8b4508323f",
+        "rawFieldNames": [
+          "_id",
+          "Tenure  Type",
+          "Tenure Number",
+          "ActivityID1",
+          "Received Date1",
+          "Actua Completion Date1",
+          "Remarks1",
+          "LGA",
+          "Client Name",
+          "Address Line1",
+          "Address Line2",
+          "Addres Line3",
+          "Address Line4",
+          "Locality",
+          "State",
+          "Postcode",
+          "Country"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=transferred-resource-authorities-report",
+          "startedAt": "2026-09-16T02:54:22.280Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=transferred-resource-authorities-report",
+          "redirected": false,
+          "bytes": 42323,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "1931e1e8-6cc3-428d-9a25-7c8b4508323f",
+              "name": "Transferred resource authorities report - August 2026 ",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/1931e1e8-6cc3-428d-9a25-7c8b4508323f/download/transfers-approved-august-2026-.xlsx",
+              "datastoreActive": true,
+              "created": "2026-09-15T23:50:27.245377",
+              "lastModified": "2026-09-15T23:50:42.813234"
+            },
+            {
+              "id": "e744b239-532b-4672-b0d4-d3e6e3308472",
+              "name": "Transferred resource authorities report -July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/e744b239-532b-4672-b0d4-d3e6e3308472/download/transfers-approved-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T03:05:24.177083",
+              "lastModified": "2026-09-15T23:50:42.819760"
+            },
+            {
+              "id": "0abd3d82-cc91-46c1-941c-8f1a79388d01",
+              "name": "Transferred resource authorities report - June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/0abd3d82-cc91-46c1-941c-8f1a79388d01/download/transfers-approved-june-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-13T05:51:19.606865",
+              "lastModified": "2026-09-15T23:50:42.826312"
+            },
+            {
+              "id": "49aa8ed3-8223-41c2-ba63-da22b17852ab",
+              "name": "Transferred resource authorities report- May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/49aa8ed3-8223-41c2-ba63-da22b17852ab/download/transfers-approved-may-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:38:38.045883",
+              "lastModified": "2026-09-15T23:50:42.832564"
+            },
+            {
+              "id": "1d0d5034-3aee-4a0c-836c-895495849012",
+              "name": "Transferred resource authorities report - April 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/1d0d5034-3aee-4a0c-836c-895495849012/download/transfers-approved-april-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-05-29T07:03:06.180459",
+              "lastModified": "2026-09-15T23:50:42.838842"
+            },
+            {
+              "id": "0fd0f7c3-785c-48bc-8f50-511414898e39",
+              "name": "Transferred resource authorities report - March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/0fd0f7c3-785c-48bc-8f50-511414898e39/download/transfers-approved-march-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-14T01:29:05.088134",
+              "lastModified": "2026-09-15T23:50:42.845206"
+            },
+            {
+              "id": "213cdaf5-3026-4d7d-90af-11722ee7546a",
+              "name": "Transferred resource authorities report - February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/213cdaf5-3026-4d7d-90af-11722ee7546a/download/transfers-approved-february-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-23T22:42:44.025642",
+              "lastModified": "2026-09-15T23:50:42.851435"
+            },
+            {
+              "id": "f9c17d6a-69ab-4658-b4c5-0b3af092c2de",
+              "name": "Transferred resource authorities report - January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/f9c17d6a-69ab-4658-b4c5-0b3af092c2de/download/transfers-approved-january-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-19T01:46:40.970203",
+              "lastModified": "2026-09-15T23:50:42.857788"
+            },
+            {
+              "id": "6cd27ac0-31cc-4bb1-ba8c-92312819c7bf",
+              "name": "Transferred resource authorities report - 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/6cd27ac0-31cc-4bb1-ba8c-92312819c7bf/download/transfers-approved-report-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-10T23:44:39.582044",
+              "lastModified": "2026-09-15T23:50:42.864030"
+            },
+            {
+              "id": "752375d2-1894-4bad-b6fa-cee8e7dd583c",
+              "name": "Transferred resource authorities report - 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/9b8d4317-a31a-4b84-972c-b0b652788fee/resource/752375d2-1894-4bad-b6fa-cee8e7dd583c/download/transfers-approved-report-2024-v2.xlsx",
+              "datastoreActive": true,
+              "created": "2025-01-22T07:01:33.306785",
+              "lastModified": "2026-09-15T23:50:42.870117"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:51:33.088404",
+          "durationMs": 1041
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=1931e1e8-6cc3-428d-9a25-7c8b4508323f",
+          "startedAt": "2026-09-16T02:54:23.322Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=1931e1e8-6cc3-428d-9a25-7c8b4508323f",
+          "redirected": false,
+          "bytes": 4029,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Tenure  Type",
+            "Tenure Number",
+            "ActivityID1",
+            "Received Date1",
+            "Actua Completion Date1",
+            "Remarks1",
+            "LGA",
+            "Client Name",
+            "Address Line1",
+            "Address Line2",
+            "Addres Line3",
+            "Address Line4",
+            "Locality",
+            "State",
+            "Postcode",
+            "Country"
+          ],
+          "total": 67,
+          "durationMs": 339
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-non-current-resource-authorities",
+      "name": "Queensland Non-current Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=non-current-resource-authorities",
+      "provenance": "https://www.data.qld.gov.au/dataset/non-current-resource-authorities",
+      "startedAt": "2026-09-16T02:54:22.847Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Permit Pipeline Status Type",
+          "Permit Termination Reason Type",
+          "Authorised Holder",
+          "Non Current Date",
+          "LGA",
+          "LGA Type",
+          "Area",
+          "Area Sub Blocks"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "resourceId": "c63b9fc1-7cc2-4cca-9482-c6bf031ab946",
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Permit Pipeline Status Type",
+          "Permit Termination Reason Type",
+          "Authorised Holder",
+          "Non Current Date",
+          "LGA",
+          "LGA Type",
+          "Area",
+          "Area Sub Blocks"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=non-current-resource-authorities",
+          "startedAt": "2026-09-16T02:54:22.847Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=non-current-resource-authorities",
+          "redirected": false,
+          "bytes": 38308,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "c63b9fc1-7cc2-4cca-9482-c6bf031ab946",
+              "name": "Resource authorities made non-current - August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/c63b9fc1-7cc2-4cca-9482-c6bf031ab946/download/non-current-permits-report-august-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-09-15T23:32:38.714331",
+              "lastModified": "2026-09-15T23:33:03.436623"
+            },
+            {
+              "id": "52055405-73f1-499b-845d-ac489912f378",
+              "name": "Resource authorities made non-current - July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/52055405-73f1-499b-845d-ac489912f378/download/non-current-permits-report-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T03:59:51.770271",
+              "lastModified": "2026-09-15T23:33:03.441742"
+            },
+            {
+              "id": "449f91fe-cc9a-40ab-879f-a40ed6d63428",
+              "name": "Resource authorities made non-current - June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/449f91fe-cc9a-40ab-879f-a40ed6d63428/download/non-current-permits-report-june-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-13T05:29:25.085717",
+              "lastModified": "2026-09-15T23:33:03.447217"
+            },
+            {
+              "id": "74290d7d-db38-407b-9d11-ee849327cefd",
+              "name": "Resource authorities made non-current- May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/74290d7d-db38-407b-9d11-ee849327cefd/download/non-current-permits-report-may-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:45:39.893309",
+              "lastModified": "2026-09-15T23:33:03.452289"
+            },
+            {
+              "id": "f5459591-7de0-4ee9-9d4e-161229e32220",
+              "name": "Resource authorities made non-current April 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/f5459591-7de0-4ee9-9d4e-161229e32220/download/non-current-permits-report-april-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-05-28T21:34:33.431154",
+              "lastModified": "2026-09-15T23:33:03.457318"
+            },
+            {
+              "id": "eb6063fe-ac3f-40c6-ac1f-9e7756b6da73",
+              "name": "Resource authorities made non-current March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/eb6063fe-ac3f-40c6-ac1f-9e7756b6da73/download/non-current-permits-report-march-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-13T22:20:20.356045",
+              "lastModified": "2026-09-15T23:33:03.462400"
+            },
+            {
+              "id": "6913dc7b-c623-4714-a81a-3d258ef86163",
+              "name": "Resource authorities made non-current February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/6913dc7b-c623-4714-a81a-3d258ef86163/download/non-current-permits-report-february-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-23T22:51:52.424648",
+              "lastModified": "2026-09-15T23:33:03.467529"
+            },
+            {
+              "id": "635d99c3-2881-44e5-bec1-f659f4e576d8",
+              "name": "Resource authorities made non-current - January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/635d99c3-2881-44e5-bec1-f659f4e576d8/download/non-current-permits-report-january-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-19T01:41:37.154606",
+              "lastModified": "2026-09-15T23:33:03.472657"
+            },
+            {
+              "id": "771e220c-1ab5-4149-b811-64cdb90ca0c4",
+              "name": "Resource authorities made non-current - 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/771e220c-1ab5-4149-b811-64cdb90ca0c4/download/non-current-permits-report-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-19T01:40:52.682642",
+              "lastModified": "2026-09-15T23:33:03.477826"
+            },
+            {
+              "id": "d6c188e7-fd59-4598-b17b-04407c6c087f",
+              "name": "Resource authorities made non-current -2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/cc3e8381-a0f1-4ef0-8afa-80842cc4fb84/resource/d6c188e7-fd59-4598-b17b-04407c6c087f/download/non-current-permits-report-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2025-01-22T06:44:33.932239",
+              "lastModified": "2026-09-15T23:33:03.482628"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:33:56.765492",
+          "durationMs": 532
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=c63b9fc1-7cc2-4cca-9482-c6bf031ab946",
+          "startedAt": "2026-09-16T02:54:23.380Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=c63b9fc1-7cc2-4cca-9482-c6bf031ab946",
+          "redirected": false,
+          "bytes": 2566,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Permit Number",
+            "Permit Pipeline Status Type",
+            "Permit Termination Reason Type",
+            "Authorised Holder",
+            "Non Current Date",
+            "LGA",
+            "LGA Type",
+            "Area",
+            "Area Sub Blocks"
+          ],
+          "total": 33,
+          "durationMs": 326
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "sa-mining-projects",
+      "name": "South Australia Major Mineral Mines",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://services.sarig.sa.gov.au/vector/south_australia_mining_projects/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=south_australia_mining_projects%3Amajor_mines___minerals&outputFormat=application%2Fjson&sortBy=OBJECTID",
+      "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+      "disableReason": "Public WFS2 pages verified 2026-09-16; stable domain identity, field semantics, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:23.316Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "SITE_NO",
+          "EASTING",
+          "NORTHING",
+          "ZONE",
+          "LONGITUDE",
+          "LATITUDE",
+          "PROJECT_STATUS",
+          "PROJECT_TYPE",
+          "DEVELOPMENT_STATUS",
+          "PROJECT_NAME",
+          "COMPANY_WEBSITE",
+          "PACE_COFUNDED",
+          "MINE_EXPANSION",
+          "COMMODITIES",
+          "OPERATING_COMPANY",
+          "ASX_CODE",
+          "PROJECT_DESCRIPTION",
+          "RESOURCE_SUMMARY",
+          "RESERVE_SUMMARY",
+          "RESOURCE_CONTAINED_COMMODITY",
+          "RESERVE_CONTAINED_COMMODITY",
+          "PRODUCTION_SUMMARY",
+          "MINING_START_DATE",
+          "DRILLING_HIGHLIGHTS",
+          "DISTRICT_NO",
+          "MINERAL_DEPOSIT_NUMBER",
+          "LOCATION",
+          "ICN_FLAG",
+          "STOCK_EXCHANGE_CODE_OTHER",
+          "COMMODITY_LONG",
+          "PRODUCTION_SUMMARY_DATA_ORIG",
+          "RESOURCE_SUMMARY_DATA_ORIG",
+          "RESERVE_SUMMARY_DATA_ORIG",
+          "RESOURCE_COM_CON_DATA_ORIG",
+          "RESERVE_COM_CON_DATA_ORIG",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "SITE_NO",
+          "EASTING",
+          "NORTHING",
+          "ZONE",
+          "LONGITUDE",
+          "LATITUDE",
+          "PROJECT_STATUS",
+          "PROJECT_TYPE",
+          "DEVELOPMENT_STATUS",
+          "PROJECT_NAME",
+          "COMPANY_WEBSITE",
+          "PACE_COFUNDED",
+          "MINE_EXPANSION",
+          "COMMODITIES",
+          "OPERATING_COMPANY",
+          "ASX_CODE",
+          "PROJECT_DESCRIPTION",
+          "RESOURCE_SUMMARY",
+          "RESERVE_SUMMARY",
+          "RESOURCE_CONTAINED_COMMODITY",
+          "RESERVE_CONTAINED_COMMODITY",
+          "PRODUCTION_SUMMARY",
+          "MINING_START_DATE",
+          "DRILLING_HIGHLIGHTS",
+          "DISTRICT_NO",
+          "MINERAL_DEPOSIT_NUMBER",
+          "LOCATION",
+          "ICN_FLAG",
+          "STOCK_EXCHANGE_CODE_OTHER",
+          "COMMODITY_LONG",
+          "PRODUCTION_SUMMARY_DATA_ORIG",
+          "RESOURCE_SUMMARY_DATA_ORIG",
+          "RESERVE_SUMMARY_DATA_ORIG",
+          "RESOURCE_COM_CON_DATA_ORIG",
+          "RESERVE_COM_CON_DATA_ORIG",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://services.sarig.sa.gov.au/vector/south_australia_mining_projects/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=south_australia_mining_projects%3Amajor_mines___minerals&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:23.317Z",
+          "status": 200,
+          "finalUrl": "https://services.sarig.sa.gov.au/vector/south_australia_mining_projects/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=south_australia_mining_projects%3Amajor_mines___minerals&version=2.0.0",
+          "redirected": false,
+          "bytes": 8272,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "SITE_NO",
+            "EASTING",
+            "NORTHING",
+            "ZONE",
+            "LONGITUDE",
+            "LATITUDE",
+            "PROJECT_STATUS",
+            "PROJECT_TYPE",
+            "DEVELOPMENT_STATUS",
+            "PROJECT_NAME",
+            "COMPANY_WEBSITE",
+            "PACE_COFUNDED",
+            "MINE_EXPANSION",
+            "COMMODITIES",
+            "OPERATING_COMPANY",
+            "ASX_CODE",
+            "PROJECT_DESCRIPTION",
+            "RESOURCE_SUMMARY",
+            "RESERVE_SUMMARY",
+            "RESOURCE_CONTAINED_COMMODITY",
+            "RESERVE_CONTAINED_COMMODITY",
+            "PRODUCTION_SUMMARY",
+            "MINING_START_DATE",
+            "DRILLING_HIGHLIGHTS",
+            "DISTRICT_NO",
+            "MINERAL_DEPOSIT_NUMBER",
+            "LOCATION",
+            "ICN_FLAG",
+            "STOCK_EXCHANGE_CODE_OTHER",
+            "COMMODITY_LONG",
+            "PRODUCTION_SUMMARY_DATA_ORIG",
+            "RESOURCE_SUMMARY_DATA_ORIG",
+            "RESERVE_SUMMARY_DATA_ORIG",
+            "RESOURCE_COM_CON_DATA_ORIG",
+            "RESERVE_COM_CON_DATA_ORIG",
+            "OBJECTID",
+            "NAME",
+            "TIME_SLICE",
+            "SHAPE_LENG",
+            "SHAPE_LENGTH",
+            "SHAPE_AREA"
+          ],
+          "total": 31,
+          "durationMs": 4966
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "sa-mineral-tenements",
+      "name": "South Australia Mineral and Opal Exploration Licence Applications",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://services.sarig.sa.gov.au/vector/mineral_tenements/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=mineral_tenements%3Amineral_and_or_opal_exploration_licence_applications&outputFormat=application%2Fjson&sortBy=OBJECTID",
+      "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+      "disableReason": "Public WFS2 pages verified 2026-09-16; stable domain identity, field semantics, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:23.669Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "APPLICATION_TYPE",
+          "FILE_REFERENCE",
+          "APPLICANTS",
+          "APPLICATION_RECEIVED_DATE",
+          "LOCATION",
+          "MINERAL_TYPE",
+          "COMMODITIES_SOUGHT",
+          "LEGAL_AREA",
+          "AREA_UNIT",
+          "PRIOR_TENEMENT",
+          "SPECIAL_LOCATIONS",
+          "DATE_OFFERED",
+          "DATE_ACCEPTED",
+          "OUTCOME",
+          "OUTCOME_DATE",
+          "RESULTING_TENEMENT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 5
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "APPLICATION_TYPE",
+          "FILE_REFERENCE",
+          "APPLICANTS",
+          "APPLICATION_RECEIVED_DATE",
+          "LOCATION",
+          "MINERAL_TYPE",
+          "COMMODITIES_SOUGHT",
+          "LEGAL_AREA",
+          "AREA_UNIT",
+          "PRIOR_TENEMENT",
+          "SPECIAL_LOCATIONS",
+          "DATE_OFFERED",
+          "DATE_ACCEPTED",
+          "OUTCOME",
+          "OUTCOME_DATE",
+          "RESULTING_TENEMENT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://services.sarig.sa.gov.au/vector/mineral_tenements/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=mineral_tenements%3Amineral_and_or_opal_exploration_licence_applications&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:23.669Z",
+          "status": 200,
+          "finalUrl": "https://services.sarig.sa.gov.au/vector/mineral_tenements/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=mineral_tenements%3Amineral_and_or_opal_exploration_licence_applications&version=2.0.0",
+          "redirected": false,
+          "bytes": 13831,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "APPLICATION_TYPE",
+            "FILE_REFERENCE",
+            "APPLICANTS",
+            "APPLICATION_RECEIVED_DATE",
+            "LOCATION",
+            "MINERAL_TYPE",
+            "COMMODITIES_SOUGHT",
+            "LEGAL_AREA",
+            "AREA_UNIT",
+            "PRIOR_TENEMENT",
+            "SPECIAL_LOCATIONS",
+            "DATE_OFFERED",
+            "DATE_ACCEPTED",
+            "OUTCOME",
+            "OUTCOME_DATE",
+            "RESULTING_TENEMENT",
+            "OBJECTID",
+            "NAME",
+            "TIME_SLICE",
+            "SHAPE_LENG",
+            "SHAPE_LENGTH",
+            "SHAPE_AREA"
+          ],
+          "total": 173,
+          "durationMs": 669
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "sa-petroleum-tenements",
+      "name": "South Australia Associated Facility and Infrastructure Licence Applications",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://services.sarig.sa.gov.au/vector/petroleum_tenements/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=petroleum_tenements%3Aassociated_facility_and_infrastructure_licence_applications&outputFormat=application%2Fjson&sortBy=OBJECTID",
+      "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+      "disableReason": "Public WFS2 pages verified 2026-09-16; stable domain identity, field semantics, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:23.713Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 3,
+        "usableRows": 3,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "TENEMENT_TYPE___NOT_USED",
+          "TENEMENT_NUMBER___NOT_USED",
+          "FILE_REFERENCE",
+          "APPLICANT",
+          "APPLICATION_DATE",
+          "DATE_TO",
+          "AREA_KM2",
+          "NO_BLOCKS",
+          "TENEMENT_NO",
+          "STATUS",
+          "ACT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 3
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 3,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 3,
+        "next": 3,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "TENEMENT_TYPE___NOT_USED",
+          "TENEMENT_NUMBER___NOT_USED",
+          "FILE_REFERENCE",
+          "APPLICANT",
+          "APPLICATION_DATE",
+          "DATE_TO",
+          "AREA_KM2",
+          "NO_BLOCKS",
+          "TENEMENT_NO",
+          "STATUS",
+          "ACT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://services.sarig.sa.gov.au/vector/petroleum_tenements/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=petroleum_tenements%3Aassociated_facility_and_infrastructure_licence_applications&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:23.713Z",
+          "status": 200,
+          "finalUrl": "https://services.sarig.sa.gov.au/vector/petroleum_tenements/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=petroleum_tenements%3Aassociated_facility_and_infrastructure_licence_applications&version=2.0.0",
+          "redirected": false,
+          "bytes": 4521,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs"
+          ],
+          "responseRows": 3,
+          "sampleFieldNames": [
+            "TENEMENT_TYPE___NOT_USED",
+            "TENEMENT_NUMBER___NOT_USED",
+            "FILE_REFERENCE",
+            "APPLICANT",
+            "APPLICATION_DATE",
+            "DATE_TO",
+            "AREA_KM2",
+            "NO_BLOCKS",
+            "TENEMENT_NO",
+            "STATUS",
+            "ACT",
+            "OBJECTID",
+            "NAME",
+            "TIME_SLICE",
+            "SHAPE_LENG",
+            "SHAPE_LENGTH",
+            "SHAPE_AREA"
+          ],
+          "total": 3,
+          "durationMs": 429
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "sa-power-generation",
+      "name": "South Australia Power Generation Projects",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://services.sarig.sa.gov.au/vector/renewable_energy_and_storage/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=renewable_energy_and_storage%3Apower_generation___all&outputFormat=application%2Fjson&sortBy=OBJECTID",
+      "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+      "disableReason": "Public WFS2 pages verified 2026-09-16; stable domain identity, field semantics, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:24.150Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "STATION_NAME",
+          "OWNER_DEVELOPER",
+          "FUEL_SOURCE",
+          "PRIMARY_FUEL_SOURCE",
+          "FUEL_DESCRIPTION",
+          "TECHNOLOGY",
+          "DEVELOPMENT_STATUS",
+          "DEVELOPMENT_STATUS_DETAIL",
+          "GENERATION_CAPACITY__MW",
+          "STORAGE_GENERATION__MW",
+          "STORAGE__MWH",
+          "HOURS_STORAGE",
+          "TOTAL_CAPACITY__MW",
+          "WIND__MW",
+          "SOLAR_PV__MW",
+          "OTHER__MW",
+          "OTHER_TECH_DESCRIPTION",
+          "BATTERY__MW",
+          "PUMPED_HYDRO__MW",
+          "HYDROGEN__MW",
+          "OTHER_MW_STORAGE",
+          "ESTIMATED_COMMERCIAL_OPERATION",
+          "PUBLICALLY_ANNOUNCED",
+          "SA_GOVERNMENT_REGION",
+          "LOCAL_GOVERNMENT_AREA",
+          "SUBURB",
+          "LATITUDE",
+          "LONGITUDE",
+          "COLLECTION_DATE",
+          "SCALE",
+          "CONNECTION",
+          "SOURCE",
+          "CAPACITY_MW_FLOAT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "STATION_NAME",
+          "OWNER_DEVELOPER",
+          "FUEL_SOURCE",
+          "PRIMARY_FUEL_SOURCE",
+          "FUEL_DESCRIPTION",
+          "TECHNOLOGY",
+          "DEVELOPMENT_STATUS",
+          "DEVELOPMENT_STATUS_DETAIL",
+          "GENERATION_CAPACITY__MW",
+          "STORAGE_GENERATION__MW",
+          "STORAGE__MWH",
+          "HOURS_STORAGE",
+          "TOTAL_CAPACITY__MW",
+          "WIND__MW",
+          "SOLAR_PV__MW",
+          "OTHER__MW",
+          "OTHER_TECH_DESCRIPTION",
+          "BATTERY__MW",
+          "PUMPED_HYDRO__MW",
+          "HYDROGEN__MW",
+          "OTHER_MW_STORAGE",
+          "ESTIMATED_COMMERCIAL_OPERATION",
+          "PUBLICALLY_ANNOUNCED",
+          "SA_GOVERNMENT_REGION",
+          "LOCAL_GOVERNMENT_AREA",
+          "SUBURB",
+          "LATITUDE",
+          "LONGITUDE",
+          "COLLECTION_DATE",
+          "SCALE",
+          "CONNECTION",
+          "SOURCE",
+          "CAPACITY_MW_FLOAT",
+          "OBJECTID",
+          "NAME",
+          "TIME_SLICE",
+          "SHAPE_LENG",
+          "SHAPE_LENGTH",
+          "SHAPE_AREA"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://services.sarig.sa.gov.au/vector/renewable_energy_and_storage/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=renewable_energy_and_storage%3Apower_generation___all&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:24.151Z",
+          "status": 200,
+          "finalUrl": "https://services.sarig.sa.gov.au/vector/renewable_energy_and_storage/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=OBJECTID&typeNames=renewable_energy_and_storage%3Apower_generation___all&version=2.0.0",
+          "redirected": false,
+          "bytes": 6115,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "STATION_NAME",
+            "OWNER_DEVELOPER",
+            "FUEL_SOURCE",
+            "PRIMARY_FUEL_SOURCE",
+            "FUEL_DESCRIPTION",
+            "TECHNOLOGY",
+            "DEVELOPMENT_STATUS",
+            "DEVELOPMENT_STATUS_DETAIL",
+            "GENERATION_CAPACITY__MW",
+            "STORAGE_GENERATION__MW",
+            "STORAGE__MWH",
+            "HOURS_STORAGE",
+            "TOTAL_CAPACITY__MW",
+            "WIND__MW",
+            "SOLAR_PV__MW",
+            "OTHER__MW",
+            "OTHER_TECH_DESCRIPTION",
+            "BATTERY__MW",
+            "PUMPED_HYDRO__MW",
+            "HYDROGEN__MW",
+            "OTHER_MW_STORAGE",
+            "ESTIMATED_COMMERCIAL_OPERATION",
+            "PUBLICALLY_ANNOUNCED",
+            "SA_GOVERNMENT_REGION",
+            "LOCAL_GOVERNMENT_AREA",
+            "SUBURB",
+            "LATITUDE",
+            "LONGITUDE",
+            "COLLECTION_DATE",
+            "SCALE",
+            "CONNECTION",
+            "SOURCE",
+            "CAPACITY_MW_FLOAT",
+            "OBJECTID",
+            "NAME",
+            "TIME_SLICE",
+            "SHAPE_LENG",
+            "SHAPE_LENGTH",
+            "SHAPE_AREA"
+          ],
+          "total": 140,
+          "durationMs": 156
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "au-resources-energy-major-projects",
+      "name": "Australian Resources and Energy Major Projects 2025",
+      "mode": "disabled",
+      "method": "XLSX_PROJECT",
+      "endpoint": "https://www.industry.gov.au/sites/default/files/2025-12/resources-and-energy-major-projects-2025-data.xlsx",
+      "provenance": "https://data.gov.au/data/dataset/resources-and-energy-major-projects",
+      "disableReason": "2025 workbook read verified 2026-09-16; dedicated Consolidated sheet parsing, stable project identity, attribution exceptions and production canary gates remain.",
+      "startedAt": "2026-09-16T02:54:24.318Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "Commodity Group",
+          "Project",
+          "Company",
+          "State",
+          "Latitude",
+          "Longitude",
+          "Type",
+          "Status",
+          "Annual Estimated New Capacity",
+          "Capacity Unit",
+          "Resource",
+          "Cost Estimate $Am",
+          "Estimated Start Commercial Operation",
+          "Critical mineral"
+        ],
+        "roles": {
+          "UNKNOWN": 40
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 100,
+        "next": 100,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "Commodity Group",
+          "Project",
+          "Company",
+          "State",
+          "Latitude",
+          "Longitude",
+          "Type",
+          "Status",
+          "Annual Estimated New Capacity",
+          "Capacity Unit",
+          "Resource",
+          "Cost Estimate $Am",
+          "Estimated Start Commercial Operation",
+          "Critical mineral"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.industry.gov.au/sites/default/files/2025-12/resources-and-energy-major-projects-2025-data.xlsx",
+          "startedAt": "2026-09-16T02:54:24.318Z",
+          "status": 200,
+          "finalUrl": "https://www.industry.gov.au/sites/default/files/2025-12/resources-and-energy-major-projects-2025-data.xlsx",
+          "redirected": false,
+          "bytes": 1961926,
+          "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 880
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nsw-current-mining-titles",
+      "name": "NSW Exploration and Mining Titles",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_granted&outputFormat=application%2Fjson&sortBy=tas_id",
+      "provenance": "https://data.nsw.gov.au/data/en/dataset/nsw-mining-titles",
+      "disableReason": "Corrected public WFS2 layer verified 2026-09-16; field semantics, exact attribution/licence, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:24.350Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "tas_id",
+          "title",
+          "holder",
+          "company",
+          "grant_date",
+          "expiry_date",
+          "last_renewed",
+          "groups",
+          "minerals",
+          "act_year",
+          "title_code",
+          "title_no",
+          "resource",
+          "title_area",
+          "operation",
+          "location_distance"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "1917-04-18T00:00:00.000Z",
+        "newestSourceDate": "1922-03-14T00:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "tas_id",
+          "title",
+          "holder",
+          "company",
+          "grant_date",
+          "expiry_date",
+          "last_renewed",
+          "groups",
+          "minerals",
+          "act_year",
+          "title_code",
+          "title_no",
+          "resource",
+          "title_area",
+          "operation",
+          "location_distance"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=tas_id&typeNames=mining-and-exploration%3Atitles_title_granted&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:24.351Z",
+          "status": 200,
+          "finalUrl": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=tas_id&typeNames=mining-and-exploration%3Atitles_title_granted&version=2.0.0",
+          "redirected": false,
+          "bytes": 8745,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs",
+            "bbox"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "tas_id",
+            "title",
+            "holder",
+            "company",
+            "grant_date",
+            "expiry_date",
+            "last_renewed",
+            "groups",
+            "minerals",
+            "act_year",
+            "title_code",
+            "title_no",
+            "resource",
+            "title_area",
+            "operation",
+            "location_distance"
+          ],
+          "total": 2300,
+          "durationMs": 4564
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nsw-mining-title-applications",
+      "name": "NSW Exploration and Mining Title Applications",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_applications&outputFormat=application%2Fjson&sortBy=tas_id",
+      "provenance": "https://data.nsw.gov.au/data/en/dataset/nsw-exploration-and-mining-titles-applications",
+      "disableReason": "Corrected public WFS2 layer verified 2026-09-16; field semantics, exact attribution/licence, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:28.269Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "tas_id",
+          "application",
+          "appl_code",
+          "appl_no",
+          "applicant",
+          "appl_date",
+          "groups",
+          "minerals",
+          "act_year",
+          "resource",
+          "title_area",
+          "operation",
+          "location_distance"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "tas_id",
+          "application",
+          "appl_code",
+          "appl_no",
+          "applicant",
+          "appl_date",
+          "groups",
+          "minerals",
+          "act_year",
+          "resource",
+          "title_area",
+          "operation",
+          "location_distance"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=tas_id&typeNames=mining-and-exploration%3Atitles_title_applications&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:28.270Z",
+          "status": 200,
+          "finalUrl": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=tas_id&typeNames=mining-and-exploration%3Atitles_title_applications&version=2.0.0",
+          "redirected": false,
+          "bytes": 13720,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs",
+            "bbox"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "tas_id",
+            "application",
+            "appl_code",
+            "appl_no",
+            "applicant",
+            "appl_date",
+            "groups",
+            "minerals",
+            "act_year",
+            "resource",
+            "title_area",
+            "operation",
+            "location_distance"
+          ],
+          "total": 113,
+          "durationMs": 1280
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nsw-major-operating-mines",
+      "name": "NSW Major Operating Mines",
+      "mode": "disabled",
+      "method": "WFS_DIRECT",
+      "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mineral-occurrence%3Amineral_occurrence_operating_mines&outputFormat=application%2Fjson&sortBy=occurrence_id",
+      "provenance": "https://www.data.nsw.gov.au/data/dataset/nsw-major-operating-mines",
+      "disableReason": "Corrected public WFS2 layer verified 2026-09-16; field semantics, exact attribution/licence, production canary and scheduled ingestion gates remain.",
+      "startedAt": "2026-09-16T02:54:28.317Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "occurrence_id",
+          "comm_type",
+          "operation",
+          "deposit_name",
+          "operation_state",
+          "number_of_mines",
+          "colour"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "occurrence_id",
+          "comm_type",
+          "operation",
+          "deposit_name",
+          "operation_state",
+          "number_of_mines",
+          "colour"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=occurrence_id&typeNames=mineral-occurrence%3Amineral_occurrence_operating_mines&version=2.0.0",
+          "startedAt": "2026-09-16T02:54:28.318Z",
+          "status": 200,
+          "finalUrl": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&sortBy=occurrence_id&typeNames=mineral-occurrence%3Amineral_occurrence_operating_mines&version=2.0.0",
+          "redirected": false,
+          "bytes": 2555,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "type",
+            "features",
+            "totalFeatures",
+            "numberMatched",
+            "numberReturned",
+            "timeStamp",
+            "crs",
+            "bbox"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "occurrence_id",
+            "comm_type",
+            "operation",
+            "deposit_name",
+            "operation_state",
+            "number_of_mines",
+            "colour"
+          ],
+          "total": 52,
+          "durationMs": 1273
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    }
+  ]
+}

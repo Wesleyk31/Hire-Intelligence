@@ -4,9 +4,13 @@ Restored and continued locally on 16 September 2026 from `Hire-Intelligence-Code
 
 The supplied archive was a hardening overlay, not a standalone application. All 31 baseline files were retrieved, the 21 supplied handoff checksums were verified, and the baseline was saved in commit `ee19a02`. Work continues on `codex/hire-production-hardening`.
 
-## Current state
+## Latest scopes 1–4 results
 
-The historical-evidence continuation connects archived records to the dashboard and CRM, adds checked archive checkpoints and byte limits, and discloses coverage bounds. Verification: **70 unit/API tests pass; 92 of 93 browser tests pass**. The remaining browser failure is the corrupt approved homepage JPEG. TypeScript, 24 static checks, 21 handoff hashes and the verification build pass. Read the [continuation results](docs/audit/HISTORICAL_EVIDENCE_PROGRESS.md), [full-site audit](docs/audit/2026-09-16-SITE_AUDIT.md) and [next scope](docs/audit/NEXT_SCOPE.md).
+Local repairs pass **182 unit/API tests, 112 Chrome checks and 18 Edge checks**, plus TypeScript, 24 static checks, 21 handoff hashes and PDF bounds. Broken artwork is replaced; evidence pagination, data review, recovered collectors, source previews and performance improvements are implemented. **Staging deployment was rejected by automatic approval review's 200,000-byte request limit; no live release or database mutation occurred.** See [scope status, evidence and remaining acceptance](docs/audit/SCOPES_1_TO_4_PROGRESS.md).
+
+## Earlier audit state (superseded)
+
+The historical-evidence continuation connects archived records to the dashboard and CRM, adds checked archive checkpoints and byte limits, and discloses coverage bounds. Verification: **70 unit/API tests pass; 92 of 93 browser tests pass**. That earlier run failed on the corrupt original homepage JPEG; the replacement artwork now passes. TypeScript, 24 static checks, 21 handoff hashes and the verification build pass. Read the [continuation results](docs/audit/HISTORICAL_EVIDENCE_PROGRESS.md), [full-site audit](docs/audit/2026-09-16-SITE_AUDIT.md) and [next scope](docs/audit/NEXT_SCOPE.md).
 
 The 28-item hardening overlay is integrated into the application. Additional tested repairs address project identity collisions, source-date and contractor-role accuracy, ingestion during dashboard reads, report history isolation, failed report saves, session recovery and mobile sign-in layout. See [build status](docs/BUILD_STATUS.md) for verification evidence and remaining work.
 
@@ -20,7 +24,7 @@ Use Node.js 22 or newer, pnpm 11.19.0, Python 3 and Chrome for the browser tests
 pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm test
-python -X utf8 hardening/tests/audit_static.py .
+python -X utf8 scripts/audit-static.py .
 pnpm test:browser
 pnpm build:verification
 ```
@@ -46,4 +50,4 @@ The production application imports `@appdeploy/client` and `@appdeploy/sdk`. The
 
 ## Continue production validation
 
-Provide the real AppDeploy runtime in its supported build environment, run a production build, then repeat `tests/tests.txt` against a staging deployment with separate test accounts. Verify auth-provider behavior, database isolation, real source collection and scheduled refreshes there. Deployment capacity must be checked with the account owner; the handoff reports an exhausted deployment allowance, which has not been independently rechecked.
+The reviewed source bundle and five new-app workflow tests are ready. Automatic approval review rejected the isolated staging request because it exceeded its 200,000-byte review limit, before a platform build or capacity check. Resolve that specific approval block, then follow [staging acceptance](docs/audit/STAGING_ACCEPTANCE.md) and [remaining scope acceptance](docs/audit/SCOPES_1_TO_4_PROGRESS.md). The old production Markdown test contract remains preserved for a future production update.

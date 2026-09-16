@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 it('registers SDK authentication on every operational route', () => {
-  for (const path of ['GET /api/dashboard', 'GET /api/pilot/outcomes', 'POST /api/pilot/outcomes', 'GET /api/reports/history', 'POST /api/reports/history']) expect(routes[path][0]).toBe('SDK_AUTH_REQUIRED');
+  for (const path of ['GET /api/dashboard', 'GET /api/evidence/review', 'GET /api/sources/pilots/:key', 'GET /api/sources/:key/diagnostic', 'GET /api/pilot/outcomes', 'POST /api/pilot/outcomes', 'GET /api/reports/history', 'POST /api/reports/history']) expect(routes[path][0]).toBe('SDK_AUTH_REQUIRED');
 });
 it('does not run ingestion while reading a dashboard', async () => {
   const response = await routes['GET /api/dashboard'][1]({ user: { userId: 'qa-a' } });
@@ -41,4 +41,32 @@ it('rejects invalid demo data without storing it', async () => {
   const result = await saveDemoRequest({ name: 'QA', company: 'QA company', email: 'invalid' });
   expect(result.ok).toBe(false);
   expect(doubles.add).not.toHaveBeenCalled();
+});
+
+it('rejects invalid evidence limits and unknown pilots without storage or network activity', async () => {
+  const fetch = vi.spyOn(globalThis, 'fetch');
+  const review = await routes['GET /api/evidence/review'][1]({ user: { userId: 'qa-a' }, query: { limit: '100000' } });
+  const pilot = await routes['GET /api/sources/pilots/:key'][1]({ user: { userId: 'qa-a' }, params: { key: 'unregistered-host' } });
+  expect(review.statusCode).toBe(400); expect(pilot.statusCode).toBe(404);
+  expect(doubles.list).not.toHaveBeenCalled(); expect(fetch).not.toHaveBeenCalled();
+  fetch.mockRestore();
+});
+
+it('validates CRM linkage against the selected later evidence window and rejects malformed cursors',async()=>{
+  const rows=Array.from({length:1501},(_,i)=>({id:'qa-'+i,externalId:'stable-'+i,sourceKey:'qa-source',project:i===1500?'QA Later Window Bridge':'QA First Window Bridge',location:'Perth WA',company:'',description:'Bridge approval',value:'Not stated',sourceObservedAt:'2026-08-01',observedAt:'2026-09-16',provenance:'https://example.test/qa'}));
+  doubles.list.mockImplementation(async(table,options:any={})=>{
+    if(table!=='opportunities')return {items:[],nextToken:undefined};
+    const start=Number(options.nextToken||0),end=start+(options.limit||100);
+    return {items:rows.slice(start,end),nextToken:end<rows.length?String(end):undefined} as any;
+  });
+  const first=JSON.parse((await routes['GET /api/dashboard'][1]({user:{userId:'qa-a'},query:{}})).body);
+  expect(first.universe.nextCursor).toBeTruthy();
+  const later=JSON.parse((await routes['GET /api/dashboard'][1]({user:{userId:'qa-a'},query:{cursor:first.universe.nextCursor}})).body);
+  expect(later.projects).toHaveLength(1);expect(later.projects[0].name).toBe('QA Later Window Bridge');
+  const valid=await routes['POST /api/pilot/outcomes'][1]({user:{userId:'qa-a'},body:{projectId:later.projects[0].id,result:'CONTACTED',qa:'true',evidenceCursor:first.universe.nextCursor}});
+  expect(valid.statusCode).toBe(201);
+  expect(doubles.add).toHaveBeenCalledWith('pilot_outcomes:qa-a',[expect.objectContaining({projectId:later.projects[0].id,qa:true})]);
+  doubles.add.mockClear();
+  const bad=await routes['POST /api/pilot/outcomes'][1]({user:{userId:'qa-a'},body:{projectId:later.projects[0].id,result:'CONTACTED',evidenceCursor:'not-a-valid-cursor'}});
+  expect(bad.statusCode).toBe(400);expect(doubles.add).not.toHaveBeenCalled();
 });

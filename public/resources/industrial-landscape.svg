@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="500" viewBox="0 0 1260 500" fill="none">
+<title>Australian industrial landscape with earthworks and mining equipment</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f4f1ec"/><stop offset="1" stop-color="#dedbd5"/></linearGradient>
+  <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#b8aa97"/><stop offset="1" stop-color="#8e8479"/></linearGradient>
+  <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#747f85"/><stop offset="1" stop-color="#3e484f"/></linearGradient>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#46515b" stroke-opacity=".06"/></pattern>
+</defs>
+
+<path fill="url(#sky)" d="M0 0h1260v500H0z"/><circle cx="1030" cy="94" r="54" fill="#fff" opacity=".6"/>
+<path d="m0 205 90-40 98 24 106-80 118 76 126-63 104 67 106-91 100 83 80-26 106 60 126-55v340H0" fill="#c7b5a0"/>
+<path d="m0 246 159-35 114 28 114-53 97 61 169-42 112 23 122-46 155 60 218-48v306H0" fill="#b09074"/>
+<path d="m0 307 114-31 159 17 145-44 146 43 133-29 140 25 142-26 119 17 162-33v254H0" fill="#917361"/>
+<path d="m0 351 253-24 173 40 178-39 206 31 151-43 299 30v154H0" fill="#6d6159"/>
+<path d="m0 398 255-31 186 45 184-39 222 29 204-20 209 25v93H0" fill="#a28c76"/>
+<path d="m0 444 280-38 162 50 218-36 198 35 197-33 205 26v52H0" fill="#c1ac91"/>
+<g stroke="#e6d7c3" stroke-opacity=".55" stroke-width="3"><path d="m49 309 221 12 151-39 134 40m225-5 119-26 286 3M33 369l218-17 181 40 191-40m223 30 209-24 160 19"/><path d="m66 454 211-29 164 49 220-36 186 34"/></g>
+<g fill="#39454c"><path d="M729 227h21v115h-21zm241-37h18v151h-18z"/><path d="m722 233 251-52 11 13-250 53z"/><path d="M771 233h5v109h-5zm45-10h5v119h-5zm44-10h5v128h-5zm46-10h5v139h-5z"/></g>
+<path d="m733 227 239-48" stroke="#8a9698" stroke-width="5"/>
+<path d="M992 251h146v73H992z" fill="#59636a"/><path d="m978 253 45-28h93l36 28" fill="#85908f"/><path d="M1009 272h34v52h-34m67-52h34v18h-34" fill="#aeb6b0"/>
+<path d="M185 289v-87h105v70" stroke="#455159" stroke-width="6"/><path d="M164 203h219" stroke="#455159" stroke-width="8"/><path d="m208 159-33 44m33-44 111 44" stroke="#58656b" stroke-width="3"/><path d="M208 160v133" stroke="#455159" stroke-width="7"/><path d="M178 199h61v12h-61" fill="#ef2029"/><path d="M350 207v51" stroke="#455159" stroke-width="3"/>
+<g transform="translate(479 317)"><path d="M0 27h108a14 14 0 0 1 0 28H0a14 14 0 0 1 0-28" fill="#344047"/><path d="M3 35h100a6 6 0 0 1 0 12H3a6 6 0 0 1 0-12" fill="#758084"/><path d="M2 23V-4h52l25 27z" fill="#ef2029"/><path d="M27-5v-41h37L78 3H54z" fill="#3d4b55"/><path d="M34-39h24l10 30H34z" fill="#acbbbc"/><path d="m74 12 42-79 61 29 28 49" stroke="#ef2029" stroke-width="15" stroke-linejoin="round"/><path d="m81-8 33-44m30-1 25 12m17 17 13 23" stroke="#aeb5b5" stroke-width="3"/><path d="m194 9 22-11 21 28-37 3z" fill="#38464f"/></g>
+<g transform="translate(918 374)"><path d="M0-3h76l-10 40H13z" fill="#ef2029"/><path d="M73 5h33l20 23v19H72z" fill="#c61924"/><path d="M81 11h21l16 18H81z" fill="#9badb4"/><path d="M8 39h111v11H8z" fill="#3d4b53"/><circle cx="26" cy="54" r="16" fill="#303b43"/><circle cx="102" cy="54" r="16" fill="#303b43"/><circle cx="26" cy="54" r="7" fill="#89979c"/><circle cx="102" cy="54" r="7" fill="#89979c"/></g>
+
+</svg>

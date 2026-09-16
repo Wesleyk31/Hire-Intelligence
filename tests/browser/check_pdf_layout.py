@@ -20,7 +20,7 @@ with pdfplumber.open(path) as pdf:
         for index in range(1, 16):
             if f"AUDIT-FLEET-{index}-END" in text:
                 fleet_markers.add(index)
-        calibration_found |= "Linked genuine reviewed outcomes: 15" in text
+        calibration_found |= "Reviewed outcomes linked to this evidence window: 15" in text
     result = {"pages": len(pdf.pages), "glyphs_outside_margins": len(outside), "first_outside": outside[:5], "fleet_notes_present": len(fleet_markers), "calibration_present": calibration_found}
 print(json.dumps(result, indent=2))
 assert len(fleet_markers) == 15, "One or more fleet recommendations disappeared from the report"

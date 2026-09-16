@@ -9,11 +9,18 @@ export function useDialogFocus(open: boolean, close: () => void) {
   useEffect(() => {
     const element = container.current;
     if (!open || !element) return;
-    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const focusable = () => Array.from(element.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled):not([tabindex="-1"]), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]'))
-      .filter(item => item.getClientRects().length > 0);
+    const focusable = () =>
+      Array.from(
+        element.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), a[href], input:not(:disabled):not([tabindex="-1"]), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]',
+        ),
+      ).filter((item) => item.getClientRects().length > 0);
     (focusable()[0] || element).focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -21,12 +28,22 @@ export function useDialogFocus(open: boolean, close: () => void) {
         onClose.current();
       } else if (event.key === 'Tab') {
         const items = focusable();
-        const first = items[0], last = items[items.length - 1];
-        if (!first) { event.preventDefault(); element.focus(); return; }
-        if (!element.contains(document.activeElement) || (event.shiftKey && document.activeElement === first)) {
-          event.preventDefault(); (event.shiftKey ? last : first).focus();
+        const first = items[0],
+          last = items[items.length - 1];
+        if (!first) {
+          event.preventDefault();
+          element.focus();
+          return;
+        }
+        if (
+          !element.contains(document.activeElement) ||
+          (event.shiftKey && document.activeElement === first)
+        ) {
+          event.preventDefault();
+          (event.shiftKey ? last : first).focus();
         } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault(); first.focus();
+          event.preventDefault();
+          first.focus();
         }
       }
     };
@@ -34,7 +51,8 @@ export function useDialogFocus(open: boolean, close: () => void) {
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = previousOverflow;
-      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+      if (previousFocus?.isConnected)
+        previousFocus.focus({ preventScroll: true });
     };
   }, [open]);
   return container;

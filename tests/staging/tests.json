@@ -1,0 +1,137 @@
+[
+  {
+    "name": "Public site, replacement artwork, navigation and anonymous protection",
+    "viewport": "desktop",
+    "sanity": true,
+    "covers": [
+      "public navigation",
+      "replacement SVG image decoding",
+      "GET /api/public/summary",
+      "anonymous GET /api/dashboard",
+      "anonymous GET /api/evidence/review",
+      "anonymous GET /api/sources/pilots/:key",
+      "anonymous GET /api/pilot/outcomes",
+      "anonymous GET /api/reports/history",
+      "authentication gate",
+      "anonymous GET /api/sources/:key/diagnostic"
+    ],
+    "description": "Independent unauthenticated staging check. Start in a fresh browser context with no account session. This workflow does not require or bypass provider login.",
+    "steps": [
+      "Open the isolated staging homepage in a fresh signed-out browser context. Confirm the five feature illustrations and the hero/CTA landscape load; check the referenced SVG resources return success and decode with positive dimensions.",
+      "Navigate through Products, Solutions, Industries, Insights and About using the visible links, then return to Home. Confirm text and controls render and browser Back/Forward keeps navigation coherent.",
+      "Inspect the public summary response and public Insights page. They may show zero aggregates on an empty staging database, but must not expose canonical project names, contractor names, CRM outcomes, report history or raw provenance records.",
+      "Using the staging origin without an authenticated session, request GET /api/dashboard, GET /api/evidence/review?origin=ARCHIVE&limit=100, GET /api/sources/pilots/logan-development-applications, GET /api/sources/sa-mining-projects/diagnostic, GET /api/pilot/outcomes and GET /api/reports/history. Confirm each rejects unauthenticated access and returns no operational records.",
+      "Choose Log in or Explore the platform and confirm the real provider sign-in gate appears before Decision Desk. Do not invent credentials, inject a test session, or bypass login. Record unavailable provider login as blocked for the signed-in workflows."
+    ],
+    "expected": "Public pages and newly authored SVG artwork work; public data remains aggregate-only; all protected reads deny anonymous access; the real sign-in gate is present. No claim of successful authentication is made by this sanity workflow."
+  },
+  {
+    "name": "Authenticated modules, stored evidence and source pilot read failures",
+    "viewport": "desktop",
+    "covers": [
+      "real authentication",
+      "GET /api/dashboard",
+      "operational module navigation",
+      "GET /api/evidence/review",
+      "evidence pagination and export",
+      "source health",
+      "GET /api/sources/pilots/logan-development-applications",
+      "GET /api/sources/pilots/qld-coordinated-projects",
+      "source pilot error and retry states",
+      "dashboard evidence windows",
+      "CRM evidence cursor linkage",
+      "collector diagnostic GET and retry"
+    ],
+    "description": "Independent signed-in workflow using an authorized staging account and the real AppDeploy runtime. Authentication unavailable means blocked, not a mock or bypass. Scheduled ingestion is disabled; an empty database is a legitimate starting state.",
+    "steps": [
+      "Open a new browser context and sign in through the actual provider using an authorized staging account supplied by the owner. If account access or provider sign-in is unavailable, report this workflow blocked and do not continue with synthetic authentication.",
+      "Visit Decision Desk, Commercial Intelligence, Projects, Map, Organisations & Delivery Teams, Equipment Demand, Resources and Source Admin. Verify loading/error/empty states finish, navigation works and no data is fabricated. On nonempty data, check source attribution, PREDICTED equipment wording, window disclosure, unique-project map counts and unresolved locations.",
+      "Use Next evidence window and Previous evidence window if continuation exists. Verify project evidence changes, returning restores the prior window, the project/search/report scope is disclosed, and invalid/changed cursors display a restart path. With no continuation, confirm disabled controls. Missing large-volume data is a blocked pagination check, not a pass.",
+      "In Source Admin open Browse stored evidence. Exercise Historical archive and Current evidence independently. Inspect row details and original-source links when rows exist. Export the reviewed page and verify origin, page number, original provenance, source dates, content hashes and quality findings match the visible page.",
+      "Use Next page and Previous page when an actual continuation cursor exists; verify later pages differ and returning restores the earlier page. Use Start again. If the store is empty or has no continuation, verify the disclosed empty state and disabled controls, and record populated-pagination acceptance blocked by insufficient staging records. Do not seed through a hidden API or enable cron to satisfy the test.",
+      "Open Preview Logan sample under the injected 503 GET fault: verify an accessible failure, cleared stale result, enabled controls and a working retry action (the fixed fault may remain on retry). Then open Preview Queensland projects separately and record the actual provider status, counts, attribution and unknown activity dates. A successful read-only sample must not schedule ingestion or promote a demand alert.",
+      "Verify the injected failed Logan read never appears as success and does not write evidence. Preserve the real Queensland provider result, including a truthful provider failure when applicable.",
+      "In Source Admin select a known Collector diagnostics source and run the check. Verify the request is authenticated GET, row count/sample and source activity dates are separate from checked-at time, and no database write or activation occurs. On zero rows, the UI must not claim ingestion success; a failed provider check must expose retry."
+    ],
+    "expected": "Real authenticated modules render; stored evidence remains read-only with correct provenance and page boundaries; empty or limited stores are disclosed; source pilots remain read-only and recover visibly from failed reads. Record live provider acceptance, pagination prerequisites and any blocked subchecks separately.",
+    "qa_faults": [
+      {
+        "method": "GET",
+        "path": "/api/sources/pilots/logan-development-applications",
+        "status": 503,
+        "body_json": {
+          "error": "STAGING_SOURCE_READ_FAILURE"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Account-scoped CRM, durable report history and PDF with Actor A and Actor B",
+    "viewport": "desktop",
+    "covers": [
+      "two real authenticated accounts",
+      "GET /api/pilot/outcomes",
+      "POST /api/pilot/outcomes",
+      "canonical project validation",
+      "QA-excluded CRM outcomes",
+      "GET /api/reports/history",
+      "POST /api/reports/history",
+      "report persistence",
+      "account isolation",
+      "PDF generation and content"
+    ],
+    "description": "Independent durability and isolation check in the isolated staging app. Requires two owner-authorized real accounts in separate browser contexts. Actor A and Actor B are role labels, not supplied credentials. Report checks can run on an empty database; canonical CRM checks cannot.",
+    "steps": [
+      "Create separate fresh browser contexts for owner-authorized Actor A and Actor B and sign each in with the real provider. If either login is unavailable, report two-account acceptance blocked. Do not use synthetic users, token injection or another person's credentials.",
+      "As Actor A open Reports, inspect Current Report Preview and save a report snapshot. Reload, sign out and sign back in through the provider, then confirm the saved snapshot remains. Record its visible timestamp/identifier and the save response; zero-project reports must disclose their empty evidence window.",
+      "As Actor A download the PDF and confirm it is a nonempty valid PDF, opens successfully and contains report date, CALL NOW/priority context, regional intelligence, source health/provenance and governance/coverage disclosure without clipped text. Confirm generated-report history survives a further reload; distinguish a downloaded PDF from a failed history save.",
+      "As Actor B open Reports and CRM and confirm Actor A's report and any Actor A outcomes are absent. Save a distinct Actor B report; reload each account separately and confirm each sees only its own history. Do not treat identical aggregate project data as an account-isolation failure.",
+      "For CRM, use only a canonical project already available through the normal staging UI. A new app with cron disabled normally has none, and the current UI does not create canonical projects. If none exists, record CRM write/funnel/isolation checks blocked by missing canonical data. Do not invent project IDs, add hidden seed routes, call direct database writes, or enable scheduled ingestion. Any future record-seeding setup must use an existing authorized visible UI and clearly labelled QA data.",
+      "If a canonical project is available, as Actor A select it in CRM and choose QA excluded. Verify QUOTED with zero value and WON with zero value are rejected, then record clearly labelled QA CONTACTED, QUOTED and WON outcomes with positive test values through the visible form. Reload and confirm outcomes persist and remain excluded from real commercial metrics. Confirm Actor B cannot see these outcomes in its UI or authenticated outcome response; record unique-project real-measurement funnel acceptance separately if only QA-excluded records were entered."
+    ],
+    "expected": "Reports and valid PDF generation persist through real storage and session reloads; each account sees only its own history/outcomes. QA records remain excluded from real commercial metrics. Missing accounts or canonical projects produce explicit blocked results, never fabricated acceptance."
+  },
+  {
+    "name": "Public demo and Contact validation and truthful save feedback",
+    "viewport": "desktop",
+    "covers": [
+      "demo request modal",
+      "Contact",
+      "POST /api/demo-request",
+      "required fields and email validation",
+      "save success and failure feedback",
+      "no external notification claim"
+    ],
+    "description": "Independent public conversion check. Valid submissions require owner-authorized QA contact details. Do not invent a reachable identity or claim an email/CRM notification was sent when this app only stores the request.",
+    "steps": [
+      "Start signed out and open Get a demo. Submit with required fields empty, then with a malformed email such as invalid-address. Confirm visible validation prevents an invalid success state.",
+      "If the owner has supplied authorized QA name/company/business-email details, submit one clearly labelled staging QA request. Inspect POST /api/demo-request and confirm success is shown only after successful storage acknowledgement. Reload and verify the public form remains usable. If suitable contact details are unavailable, mark the successful-save subcheck blocked.",
+      "Open Contact independently and repeat validation. With authorized QA details, submit a separately labelled request through this form and confirm the storage acknowledgement and visible feedback.",
+      "Where the runner supports an explicit one-request transport fault, fail one staging POST /api/demo-request and confirm the form reports that recording failed, does not claim success and permits a later retry after restoring transport. If no failure can be exercised, record that subcheck blocked. Do not submit repeatedly without purpose.",
+      "Confirm the success wording describes a recorded request for follow-up and does not promise that an email, ticket or external CRM delivery occurred. Inspect Privacy and Terms links reachable from these flows."
+    ],
+    "expected": "Invalid requests cannot appear successful; authorized QA submissions receive truthful storage-backed acknowledgement; failed writes show an actionable error. Lack of authorized contact details or fault support is reported as a blocked subcheck."
+  },
+  {
+    "name": "Mobile keyboard, dialogs, navigation and legal paths",
+    "viewport": "mobile",
+    "covers": [
+      "mobile public navigation",
+      "mobile SVG artwork",
+      "keyboard focus and Escape",
+      "demo dialog focus restoration",
+      "Privacy and Terms",
+      "Contact path",
+      "mobile operational access gate"
+    ],
+    "description": "Independent mobile-width workflow using keyboard inspection where the runner supports it. Legal content rendering is checked without treating unresolved business details as approved policy.",
+    "steps": [
+      "Open the signed-out homepage at a mobile viewport. Confirm the new illustrations, hero, feature copy, CTA and footer fit without horizontal page overflow; public navigation can be reached and activated.",
+      "Use keyboard focus to reach Get a demo and open the dialog. Confirm focus enters it, Tab and Shift+Tab remain within it, Escape closes it and focus returns to the triggering control. If keyboard automation is unavailable on the runner, record that subcheck blocked and retain a manual verification task.",
+      "Navigate Products, Solutions, Industries, Insights, About and Contact from their visible controls; verify browser Back returns to the previous public view. Open Explore the platform and verify the authenticated workspace is gated rather than exposed.",
+      "Open Privacy and Terms from the footer. Confirm substantive sections render, links work and users can return to Home. Do not invent a legal entity, administrator contact or retention period; flag these owner-supplied business facts as pending approval.",
+      "Open Contact and verify required-field/email validation remains visible and usable at mobile width. Close and reopen the demo dialog to confirm no stale success message or unreachable control blocks normal use."
+    ],
+    "expected": "Mobile content and replacement artwork fit; navigation, legal routes, validation and supported keyboard behavior work; anonymous operational access remains gated. Legal-entity/admin/retention approval and unavailable runner capabilities stay explicitly pending or blocked."
+  }
+]

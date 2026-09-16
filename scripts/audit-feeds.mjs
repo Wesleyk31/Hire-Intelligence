@@ -20,11 +20,16 @@ const helperText = fs.readFileSync(path.join(root, 'backend/source-helpers.ts'),
 const domainText = fs.readFileSync(path.join(root, 'backend/domain-hardening.ts'), 'utf8');
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const compile = text => ts.transpileModule(text, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
-const stripImports = text => text.replace(/^import .*?;\r?\n/gm, '');
+const stripImports = text => {
+  const sourceFile=ts.createSourceFile('audit.ts',text,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);
+  const spans=sourceFile.statements.filter(node=>ts.isImportDeclaration(node)).map(node=>[node.getStart(sourceFile),node.end]);
+  for(const [start,end] of spans.reverse())text=text.slice(0,start)+text.slice(end);
+  return text;
+};
 const domainCode = compile(domainText);
 const helperCode = compile(stripImports(helperText));
 let liveCode = indexText.slice(0, indexText.indexOf('async function upsertState'));
-liveCode = stripImports(liveCode).replace('const opportunities=rows.filter', 'globalThis.__rawRows=rows;const opportunities=rows.filter');
+liveCode = stripImports(liveCode).replace(/const\s+opportunities\s*=\s*rows\s*\.filter/, 'globalThis.__rawRows=rows;const opportunities=rows.filter');
 liveCode += '\nglobalThis.liveAudit={SOURCES,HISTORICAL_SOURCES,collect};';
 liveCode = compile(liveCode);
 const historicalCode = compile(stripImports(backfillText));
@@ -65,7 +70,7 @@ function responseShape(buffer, contentType) {
 }
 function makeContext(fetcher) {
   const domain = { exports: {}, Date: AuditDate, Set, Map, console }; vm.runInNewContext(domainCode, domain);
-  const helperContext = { exports: {}, fetch: fetcher, URL, AbortController, setTimeout, clearTimeout, Date: AuditDate, TextDecoder, Uint8Array, read: xlsx.read, utils: xlsx.utils };
+  const helperContext = { exports: {}, createHash:crypto.createHash, fetch: fetcher, URL, AbortController, setTimeout, clearTimeout, Date: AuditDate, TextDecoder, Uint8Array, read: xlsx.read, utils: xlsx.utils };
   vm.runInNewContext(helperCode, helperContext);
   const context = vm.createContext({ ...helperContext.exports, exports: {}, fetch: fetcher, URL, AbortController, AbortSignal, setTimeout, clearTimeout, Date: AuditDate, console, read: xlsx.read, utils: xlsx.utils, ...domain.exports });
   vm.runInContext(liveCode, context);
@@ -125,7 +130,7 @@ fs.mkdirSync(outDir,{recursive:true});
 const basename=`FEED_AUDIT_${timestamp}`;
 fs.writeFileSync(path.join(outDir,basename+'.json'),JSON.stringify(report,null,2)+'\n');
 const cell=s=>String(s??'').replace(/\|/g,'/').replace(/[\r\n]+/g,' ');
-const lines=[`# Feed audit â€” ${startedAt}`,'',`Configured: ${report.counts.configured}; active: ${report.counts.active}; disabled: ${report.counts.disabled}; historical only: ${report.counts.historicalOnly}; probed: ${metadata.length}.`,'',`Read-only external requests. Actual collectors were exercised with five-row query limits, ${concurrency} concurrent source probes and an 18-second full-body timeout. XLSX parsing needs the workbook and can return up to the collector limit. This does not verify deployed ingestion, authentication or scheduler execution. Backfill completion flags from this reduced sample do not establish complete historical coverage. AusTender additionally verifies the next provider page when advertised. Raw personal data is not stored.`,'','| Source | Mode | Method | Endpoint | Live parser / rows | Historical parser / rows | Source dates | HTTP / reason |','|---|---|---|---|---|---|---|---|'];
+const lines=[`# Feed audit — ${startedAt}`,'',`Configured: ${report.counts.configured}; active: ${report.counts.active}; disabled: ${report.counts.disabled}; historical only: ${report.counts.historicalOnly}; probed: ${metadata.length}.`,'',`Read-only external requests. Actual collectors were exercised with five-row query limits, ${concurrency} concurrent source probes and an 18-second full-body timeout. XLSX parsing needs the workbook and can return up to the collector limit. This does not verify deployed ingestion, authentication or scheduler execution. Backfill completion flags from this reduced sample do not establish complete historical coverage. AusTender additionally verifies the next provider page when advertised. Raw personal data is not stored.`,'','| Source | Mode | Method | Endpoint | Live parser / rows | Historical parser / rows | Source dates | HTTP / reason |','|---|---|---|---|---|---|---|---|'];
 for(const r of metadata) lines.push(`| ${r.key} | ${r.mode} | ${r.method} | [Endpoint](${r.endpoint}) | ${r.live.status} / ${r.live.usableRows??0} | ${r.backfill.status} / ${r.backfill.rows??0} | ${cell(r.live.newestSourceDate||'Unestablished')} | ${cell(r.live.error||r.requests.map(q=>q.status||q.error).join(', '))} |`);
 lines.push('','## Interpretation','','- ROWS confirms the parser emitted records; domain fit, event freshness and complete coverage still need review.','- METADATA_ONLY is a catalogue response without project rows and must not count as a working opportunity feed.','- EMPTY can be legitimate, but is not evidence of an active supply of usable records.','- A disabled source stays disabled regardless of local accessibility until its full ingestion path is approved and verified.','- The JSON includes request URLs, response shapes, field names, source-date coverage and parser results for reproduction.');
 fs.writeFileSync(path.join(outDir,basename+'.md'),lines.join('\n')+'\n');

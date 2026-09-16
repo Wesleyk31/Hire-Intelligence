@@ -68,7 +68,7 @@ it('accepts WFS feature types carrying namespace attributes', async () => {
   vi.stubGlobal('fetch', vi.fn(async (url: string | URL) => String(url).includes('GetCapabilities')
     ? new Response('<wfs:WFS_Capabilities><FeatureType xmlns:mine="https://example.test"><Name>mine:projects</Name><Title>Major mines</Title></FeatureType></wfs:WFS_Capabilities>')
     : json({ features: [{ id: 'mine.1', properties: { name: 'QA mine' } }] })));
-  const s = source('sa-mining-projects');
+  const s = { ...source('sa-mining-projects'), key: 'generic-wfs-projects', method: 'WFS' as const, endpoint: 'https://example.test/wfs' };
   expect((await collect(s)).opportunities).toHaveLength(1);
   expect((await collectBackfillPage(s, 0)).rows).toHaveLength(1);
 });
@@ -123,15 +123,16 @@ it('rejects unsupported backfill methods instead of marking an unprocessed sourc
 });
 
 
-it('degrades a source when storage only acknowledges part of the fetched records', async () => {
+it('preserves fetched and acknowledged counts but stops insertion retries after partial storage acknowledgements', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => json({ features: [{ attributes: { objectid: 1, name: 'QA bridge' } }, { attributes: { objectid: 2, name: 'QA road' } }] })));
   vi.spyOn(db, 'list').mockResolvedValue({ items: [] });
   vi.spyOn(db, 'add').mockImplementation(async (table: string) => table === 'opportunities' ? ['saved-one', null] : ['saved-state']);
   const state = await runSource(source('wa-mining-tenements'));
   expect(state.recordsFetched).toBe(2);
   expect(state.opportunitiesPromoted).toBe(1);
-  expect(state.status).toBe('DEGRADED');
-  expect(state.message).toMatch(/persist|stor|saved/i);
+  expect(state.status).toBe('FAILED');
+  expect(state.persistenceUncertain).toBe(true);
+  expect(state.message).toContain('OPPORTUNITY_PENDING_ADDS_RECONCILIATION_REQUIRED');
 });
 
 it('persists the provider next page between separate historical scheduler batches', async () => {

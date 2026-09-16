@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="240" viewBox="0 0 520 240" fill="none">
+<title>Excavator and haul truck ready for site work</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f4f1ec"/><stop offset="1" stop-color="#dedbd5"/></linearGradient>
+  <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#b8aa97"/><stop offset="1" stop-color="#8e8479"/></linearGradient>
+  <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#747f85"/><stop offset="1" stop-color="#3e484f"/></linearGradient>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#46515b" stroke-opacity=".06"/></pattern>
+</defs>
+
+<path fill="url(#sky)" d="M0 0h520v240H0z"/><path fill="url(#grid)" d="M0 0h520v240H0z"/>
+<path d="m0 145 62-33 67 15 77-34 66 31 57-25 83 38 49-8 59 16v95H0" fill="#bdb6ab"/>
+<path d="m0 172 110-25 124 18 130-26 156 21v80H0" fill="#9f9689"/>
+<path d="M0 204 180 168l340 18v54H0" fill="url(#ground)"/>
+<ellipse cx="200" cy="216" rx="124" ry="12" fill="#4c555a" opacity=".2"/>
+<path d="M105 184h125a16 16 0 0 1 0 32H105a16 16 0 0 1 0-32" fill="#333e46"/><path d="M108 191h117a9 9 0 0 1 0 18H108a9 9 0 0 1 0-18" fill="#778086"/>
+<g fill="#444f57"><circle cx="113" cy="200" r="7"/><circle cx="139" cy="200" r="7"/><circle cx="165" cy="200" r="7"/><circle cx="191" cy="200" r="7"/><circle cx="220" cy="200" r="7"/></g>
+<path d="M105 180v-31h63l23 31z" fill="#ef2029"/><path d="M133 150v-44h44l16 58-25-14z" fill="#414e58"/><path d="M141 113h28l10 37h-38z" fill="#a4b4b8"/><path d="M154 113v35" stroke="#54636c" stroke-width="3"/>
+<path d="M97 164h59v18H97z" fill="#c81923"/><path d="m185 169 43-85 76 29 28 58" stroke="#b71823" stroke-width="18" stroke-linejoin="round"/>
+<path d="m185 165 46-77 69 29 27 51" stroke="#f1454a" stroke-width="9" stroke-linejoin="round"/>
+<path d="m194 144 32-39m28-5 36 17m18 16 14 28" stroke="#a4abb0" stroke-width="4"/>
+<path d="m318 170 23-12 23 32-37 4z" fill="#424e56"/><path d="m325 191 30 1" stroke="#7a858c" stroke-width="4"/>
+<circle cx="185" cy="168" r="8" fill="#3d4952"/><circle cx="230" cy="89" r="5" fill="#3d4952"/>
+<g transform="translate(360 122)"><path d="M0 18h56l-8 32H9z" fill="#ef2029"/><path d="M56 22h30l17 22v16H53z" fill="#c81923"/><path d="M63 27h19l13 18H63z" fill="#91a4ad"/><path d="M8 53h89v10H8z" fill="#424e57"/><circle cx="23" cy="65" r="12" fill="#303b44"/><circle cx="81" cy="65" r="12" fill="#303b44"/><circle cx="23" cy="65" r="5" fill="#9ca5a7"/><circle cx="81" cy="65" r="5" fill="#9ca5a7"/></g>
+<path d="m18 231 75-11m301 10 102-11" stroke="#d2c7b7" stroke-width="3"/>
+
+</svg>

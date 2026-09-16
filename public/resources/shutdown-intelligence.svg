@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="240" viewBox="0 0 520 240" fill="none">
+<title>Industrial plant and scheduled maintenance</title>
+<defs>
+  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f4f1ec"/><stop offset="1" stop-color="#dedbd5"/></linearGradient>
+  <linearGradient id="ground" x2="1" y2="1"><stop stop-color="#b8aa97"/><stop offset="1" stop-color="#8e8479"/></linearGradient>
+  <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#747f85"/><stop offset="1" stop-color="#3e484f"/></linearGradient>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#46515b" stroke-opacity=".06"/></pattern>
+</defs>
+
+<path fill="url(#sky)" d="M0 0h520v240H0z"/><path fill="url(#grid)" d="M0 0h520v240H0z"/>
+<path d="m0 159 65-18 48 12 73-25 54 29 68-19 61 22 70-33 81 18v95H0" fill="#c8c5bd"/>
+<path d="M0 190 245 161l275 20v59H0" fill="url(#ground)"/>
+<g stroke="#9b9e9b" stroke-width="3"><path d="M90 176V59h83v116M83 77h99M83 107h99M83 137h99"/><path d="m90 77 83 30-83 30 83 30" stroke-width="1.5"/></g>
+<path d="M111 59h27v111h-27z" fill="#707a7e"/><path d="M111 51h27v11h-27z" fill="#ef2029"/>
+<path d="M201 164V89a27 27 0 0 1 54 0v75" fill="url(#steel)"/><ellipse cx="228" cy="165" rx="27" ry="7" fill="#39444c"/><path d="M208 111h40m-40 15h40m-40 15h40" stroke="#9fa8aa"/>
+<path d="M54 178v-34q0-8 8-8h129m61 26h47v-35" stroke="#70797e" stroke-width="9"/><path d="M54 176v-31q0-7 8-7h129" stroke="#c0c6c5" stroke-width="2"/>
+<path d="M285 108h25v20h-25z" fill="#ef2029"/><path d="M298 98v-10" stroke="#39444c" stroke-width="5"/>
+<ellipse cx="298" cy="84" rx="20" ry="6" stroke="#ef2029" stroke-width="4"/>
+<path d="M348 177v-58l15-8h92l13 8v58z" fill="#a5aaa7"/><ellipse cx="408" cy="119" rx="60" ry="10" fill="#d6d9d3"/><path d="M358 142h101m-101 21h101" stroke="#7c8586"/><path d="M463 116V80h-21" stroke="#747e81" stroke-width="6"/>
+<g transform="translate(394 53)"><circle r="31" fill="#fff" fill-opacity=".88"/><circle r="23" stroke="#ef2029" stroke-width="2"/><path d="M0-14V0l10 7" stroke="#ef2029" stroke-width="3" stroke-linecap="round"/><circle r="3" fill="#ef2029"/></g>
+<path d="m32 216 443-9" stroke="#dfd8ce" stroke-width="3"/><path d="m357 217 23-4 27 8-23 4z" fill="#505b62"/>
+
+</svg>

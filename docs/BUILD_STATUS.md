@@ -1,5 +1,10 @@
 # Local build status — 16 September 2026
 
+## Latest scopes 1–4 verification
+
+**182 unit/API tests, 112 Chrome checks and 18 Edge checks pass.** Frontend/backend types, 24 static checks, 21 original hashes, verification build and 15-page PDF checks pass. Homepage artwork is fixed. Automatic approval review rejected the isolated staging request because it exceeded 200,000 bytes; no app was created and no production release occurred. [Current status and external acceptance](audit/SCOPES_1_TO_4_PROGRESS.md) supersedes the historical counts below.
+
+
 ## Historical evidence continuation — latest results
 
 Archived evidence now feeds the operational dashboard and CRM through a shared bounded view. Checked checkpoints, pinned provider context, byte-limited archive writes and coverage disclosures are implemented. Verification: **70 unit tests pass; 92 browser tests pass and 1 fails** for the existing corrupt homepage artwork. TypeScript, 24 static checks, 21 original hashes and the verification build pass; the 15-page PDF retains all tested content within margins. No deployment or live mutation occurred. See [continuation results and limitations](audit/HISTORICAL_EVIDENCE_PROGRESS.md). The sections below retain earlier integration/audit evidence.

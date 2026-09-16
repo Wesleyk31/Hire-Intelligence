@@ -1,5 +1,10 @@
 # Next scope — production release and trustworthy data
 
+## Current execution status
+
+Local implementation across these scopes is now delivered and verified (182 unit/API, 112 Chrome and 18 Edge checks). [Detailed status](SCOPES_1_TO_4_PROGRESS.md) records each implementation and remaining acceptance gate. The isolated staging request was rejected by automatic approval review's 200,000-byte limit; production is unchanged. Next: resolve that deployment review, real authentication/storage acceptance, actual-data reconciliation and scheduled canaries, then approved business/retention details. The acceptance targets below remain authoritative; they are not marked complete from local fixtures.
+
+
 ## 1. Close release blockers
 
 - Restore the intact approved homepage artwork and pass its image-decode/visual check.
