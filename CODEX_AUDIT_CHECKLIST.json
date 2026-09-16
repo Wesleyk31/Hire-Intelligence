@@ -1,0 +1,29 @@
+{
+  "required_reaudit_areas": [
+    "public navigation",
+    "footer/legal/contact/demo",
+    "authentication and authorization",
+    "all 12 internal modules",
+    "project canonicalisation",
+    "entity roles",
+    "stage/freshness scoring",
+    "CALL NOW evidence gate",
+    "map geospatial precision and deduplication",
+    "CRM lifecycle/calibration",
+    "reports/PDF/history",
+    "source refresh isolation",
+    "historical backfill",
+    "mobile navigation",
+    "marketing/data claim consistency"
+  ],
+  "forbidden_regressions": [
+    "fabricated contacts",
+    "fabricated BDM outcomes",
+    "fabricated commercial values",
+    "unlabelled predicted equipment demand",
+    "high-priority automatically becoming CALL NOW",
+    "static fake regional counts",
+    "silent collector failure",
+    "claiming E2E success without an E2E run"
+  ]
+}

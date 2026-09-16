@@ -1,0 +1,90 @@
+{
+  "base_snapshot": "1789467699311",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "3ad36267776380edda61de72510b2550c2138481e03bf9ace83cc989b5ffa92e",
+      "bytes": 2580
+    },
+    {
+      "path": "backend/data-access.ts",
+      "sha256": "79101c32f8cac54ad4dc25db373cbbb26d254b60a7cf18ab4c571e5db7997712",
+      "bytes": 896
+    },
+    {
+      "path": "backend/domain-hardening.ts",
+      "sha256": "09e569e2a9627e8e2d020137d4d85f65115c1e633eb39550b1d58ff78d382031",
+      "bytes": 11440
+    },
+    {
+      "path": "backend/operations.ts",
+      "sha256": "44bbe12a91185e1f7f93d631524d7a456469e1e8be45cef9f4a13a6c0401ceb4",
+      "bytes": 1835
+    },
+    {
+      "path": "docs/MASTER_REPAIR_PLAN.md",
+      "sha256": "575b8c742b1d074fd8331508f104bb84a9281826225e014a7e641a420db6d6f1",
+      "bytes": 5285
+    },
+    {
+      "path": "docs/REASSESSMENT.md",
+      "sha256": "c1949c7ff16b570fbcbe637e83e20d0f7e21f8c2c7c38387ccfdf6a6d362a8dd",
+      "bytes": 4120
+    },
+    {
+      "path": "patches/__pycache__/apply_repairs.cpython-313.pyc",
+      "sha256": "be3186a6e3fc205b50dda003a3cb0bc32462214fb1786cf628947d82643390f5",
+      "bytes": 54140
+    },
+    {
+      "path": "patches/apply_repairs.py",
+      "sha256": "416a09bc63bf56a78e102912cb7854dce2328a0738d30b8e41bb6a162f781fbc",
+      "bytes": 49749
+    },
+    {
+      "path": "src/AuthGate.tsx",
+      "sha256": "78b4fd4f02196efe488bdc3b7a5a9f2c23d107ad8eea5ac61ac6b9ff17b128a7",
+      "bytes": 2093
+    },
+    {
+      "path": "src/DemoRequestForm.tsx",
+      "sha256": "d868609fdef7b4e2bfb09cd5ec713938e7ecc6cd8eb52c148cdfe79b3e1d1c82",
+      "bytes": 1615
+    },
+    {
+      "path": "src/legal-content.ts",
+      "sha256": "393a8e2d0cb29edd1185f8d64676f5d5a986ff03dff9e378c6755e57150b41c9",
+      "bytes": 2830
+    },
+    {
+      "path": "src/reporting.hardened.ts",
+      "sha256": "4440ce8170334eb052753161cf1e756e03090be3ed5737e505abcfbf261ef2e2",
+      "bytes": 10704
+    },
+    {
+      "path": "tests/__pycache__/audit_static.cpython-313.pyc",
+      "sha256": "ec850673fb2fc348dfaaa1bf65d023c6efa6ea3d4e0e5aacdd49d6f157a28c21",
+      "bytes": 3897
+    },
+    {
+      "path": "tests/audit_static.py",
+      "sha256": "c0103f8feebb466f8fb05e63acec5483c61f356d13be36ad2f4a4d590157ad25",
+      "bytes": 2747
+    },
+    {
+      "path": "tests/domain-hardening.test.ts",
+      "sha256": "d5c0f23e870180c2f71b38875dfc9b4038ece4e910f8186be299e2266dc9c6ac",
+      "bytes": 3828
+    },
+    {
+      "path": "tests/tests.txt.replacement",
+      "sha256": "ed8b24c556947e07c335ee03ef91849712dd4927fd56860b170e31a3108a70b5",
+      "bytes": 5264
+    },
+    {
+      "path": "tsconfig.tests.json",
+      "sha256": "dfd830852e4936b2daea451788561e8b142dc7eeb7d043a49def7cee32cda842",
+      "bytes": 270
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+# Tests
+
+## Test 1 - Public header opens distinct populated pages [sanity]
+Viewport: desktop
+Covers: Products, Solutions, Industries, Insights, About, public navigation state, live dashboard population
+Description: Verifies the public header no longer behaves as same-page scroll links and instead opens distinct populated public pages.
+
+Steps:
+1. Open the public homepage and click Products, then confirm a Products page with platform-module cards is visible
+2. Click Solutions, Industries, Insights and About in sequence
+3. On each selection confirm the selected header item becomes active and the page heading/content changes; on Insights confirm live project/signal/feed metrics and current project intelligence are visible when dashboard data exists
+
+Expected: Products, Solutions, Industries, Insights and About are all clickable; each opens its own populated page and changes the URL hash to its page name; the previous page is replaced; browser back/forward can restore page state; the approved homepage returns when the Hire Intelligence logo is clicked; the full 'Turn signals into opportunity.' hero callout is visible without clipping or being obscured.
+
+## Test 2 - Footer destinations and public CTAs work
+Viewport: desktop
+Covers: Privacy, Terms, Contact, Get a demo, Log in, Explore the platform
+Description: Verifies footer destinations are no longer dead controls and the main public calls to action remain operational.
+
+Steps:
+1. Click Privacy, Terms and Contact from the footer and confirm each opens distinct page content
+2. On Contact click Request a demo and confirm the demo modal opens; close it
+3. Return Home with the logo, then click Explore the platform or Log in
+
+Expected: Privacy, Terms and Contact each render their own content; demo opens from Contact; Log in / Explore the platform still opens the internal Decision Desk.
+
+## Test 3 - Every internal module opens its own operational view
+Viewport: desktop
+Covers: Decision Desk, Commercial Intelligence, Opportunities, Projects, Map, Companies & Contacts, Equipment Demand, Resources, CRM, Reports, Alerts, Source Admin
+Description: Verifies public-page changes do not regress the internal application and every module changes the active view.
+
+Steps:
+1. Enter the internal platform from the public site
+2. Click all 12 internal module navigation items in sequence
+3. For each module confirm the page title changes and module-specific content, a working control, or an explicit governed empty state is visible
+
+Expected: All internal modules remain reachable, each updates the URL to a #platform/<module> destination, and no module remains stuck on the previous page; reload restores the selected module.
+
+## Test 4 - Project, Map, CRM and Reports retain operational workflows
+Viewport: desktop
+Covers: project drill-down, evidence/provenance, Map controls, POST /api/pilot/outcomes, report preview, PDF generation
+Description: Verifies the core internal workflows remain intact after the public-navigation repair.
+
+Steps:
+1. Open Projects and open an available project, confirming stage, priority, PREDICTED equipment and evidence/provenance in the drawer
+2. Open Map and use an available region/filter control; open an available project from the map or synchronized list
+3. Open CRM and confirm the outcome form is available; open Reports, generate a preview, then click Download PDF
+
+Expected: Project/map drill-downs work, CRM retains its governed human-entered outcome workflow, and Reports retains preview and PDF actions.
+
+## Test 5 - Public and internal navigation remain usable on mobile
+Viewport: mobile
+Covers: public header horizontal navigation, Products/Insights pages, mobile internal page selector, Source Admin
+Description: Verifies the new public pages and existing internal modules are usable on a narrow screen.
+
+Steps:
+1. Open the public site on mobile and use the horizontal header to open Products and Insights
+2. Return Home with the logo and enter the internal platform
+3. Use the mobile selector to open Projects, Reports and Source Admin
+
+Expected: Public page content stacks without page-level horizontal overflow; public navigation changes pages; the internal mobile selector continues to change modules and show source/project/report content.
