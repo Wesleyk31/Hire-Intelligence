@@ -1,4 +1,4 @@
-import { db, ws, json, error } from "@appdeploy/sdk";
+import { db, ws, json, error, type RouterRoutes } from "@appdeploy/sdk";
 
 const SUBSCRIPTIONS_TABLE = "entity_subscriptions";
 
@@ -87,7 +87,7 @@ export async function notifySubscribers(
     });
 }
 
-export const realtimeSubscriptionRoutes = {
+export const realtimeSubscriptionRoutes: RouterRoutes = {
     "POST /api/subscriptions": [
         async ({ body }) => {
             const { entity_type, entity_id, connection_id } = (body || {}) as Record<

@@ -1,0 +1,42 @@
+# Local build status — 16 September 2026
+
+## Integrated changes
+
+The supplied [repair matrix](../hardening/docs/MASTER_REPAIR_PLAN.md) is applied to the exact baseline. It adds authenticated operational access, scoped CRM/report history, bounded pagination, evidence-based prioritisation, provenance-aware reports, unique-project map statistics, demo/contact forms and truthful public labels.
+
+Further issues reproduced and repaired during integration:
+
+- The patch script renamed the same string twice and stopped midway. The wrapper validates the exact baseline and completes integration in a temporary directory first.
+- Full localities now distinguish otherwise identical project names; input order and long title prefixes no longer change or overwrite groups.
+- Snapshot reuse reserves canonical keys for direct matches and checks emitted keys as well as database row IDs, preventing duplicate IDs when groups split. A title-only change can retain a previous identity through source evidence.
+- Source freshness uses validated source dates, not collection time, future expiry fields or ambiguous spreadsheet numbers.
+- Only explicit named delivery roles populate delivery contractors; generic organisations and contractor counts cannot do so.
+- Dashboard reads no longer start backfill/ingestion.
+- Report history loads from the signed-in account's API. Shared browser storage is no longer a fallback. Save success is displayed only after server confirmation; failures are visible.
+- Authentication restoration/sign-out failures are handled, and the mobile sign-in panel fits its container.
+
+## Verification
+
+| Check | Result and scope |
+| --- | --- |
+| Handoff integrity | All 21 SHA-256 entries match the supplied archive. |
+| Static audit | 24/24 checks pass; baseline had 23 failures. Static checks alone do not prove runtime behavior. |
+| TypeScript | Frontend and backend pass with documented platform SDK declarations. |
+| Unit/API tests | 16 tests pass on the maintained root implementation. The platform SDK boundary is mocked. |
+| Browser workflows | 5 Playwright tests pass in Chrome with isolated test fixtures, including desktop and 375px mobile flows. |
+| Verification build | Vite succeeds with the explicit test configuration. Production runtime resolution remains unavailable locally. |
+| Focused review | Independent review reproductions are fixed, including split-group IDs and duplicate snapshot keys; no remaining P1/P2 issue identified within that focused review. |
+
+Browser coverage includes five public navigation pages, all 12 operational modules, sign-in gating, project provenance, unique mapped-project counts, map filtering, CRM validation, report preview/save/reload, a downloaded PDF, account switching, report API failures, demo validation, footer pages and expired-session recovery. Report and CRM fixtures are explicitly synthetic and exist only under `tests/`.
+
+Browser output is written to the ignored `test-results/` directory, including `browser-results.json`, the downloaded QA PDF and a mobile screenshot. Vite reports a bundle-size warning (main JavaScript approximately 885 KB before gzip); code splitting remains a performance follow-up.
+
+## Still requiring the real platform
+
+- Successful production build with the actual AppDeploy client runtime.
+- Provider sign-in, token expiry/revocation and anonymous API denial enforced by the real SDK.
+- Actual database persistence and two-account data isolation under deployed authentication.
+- Live source availability, provenance, scheduled ingestion/backfill and degraded-source recovery.
+- Staging acceptance and authorised deployment. No changes have been pushed or deployed.
+
+The supplied Privacy/Terms text still requires the business owner's final review. This local verification is not a claim that all production behavior or every external source has been validated.

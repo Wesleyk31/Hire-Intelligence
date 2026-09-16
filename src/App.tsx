@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import FunctionalApp from './FunctionalApp';
 import LandingPage from './LandingPage';
+import AuthGate from './AuthGate';
 
 type Screen = 'home' | 'platform';
 
@@ -28,7 +29,7 @@ export default function App() {
   if (screen === 'platform') {
     return <div className='platform-root'>
       <button className='public-site-button' onClick={openHome}>Public site</button>
-      <FunctionalApp/>
+      <AuthGate onExit={openHome}><FunctionalApp/></AuthGate>
     </div>;
   }
 

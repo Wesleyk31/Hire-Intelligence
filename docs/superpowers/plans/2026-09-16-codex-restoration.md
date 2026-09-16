@@ -14,12 +14,12 @@ Spec: CODEX_HANDOFF.md and hardening/docs/MASTER_REPAIR_PLAN.md.
 ## Work
 - [x] Restore and verify all 31 baseline files and the handoff checksums.
 - [x] Run the supplied static audit against the baseline; 23 failures reproduce the documented gaps.
-- [ ] Apply hardening/patches/apply_repairs.py with UTF-8 mode.
-- [ ] Install dependencies; run TypeScript, Vite, static and domain checks.
-- [ ] Repair reproducible build or runtime defects with regression coverage.
-- [ ] Run desktop/mobile browser workflows and document any platform-only verification limits.
-- [ ] Review the resulting changes and save a reproducible local handoff.
+- [x] Apply the hardening overlay through the baseline-checked atomic wrapper (duplicate patch anchor repaired in memory).
+- [x] Install dependencies; run TypeScript, Vite verification build, static and domain checks; record the unavailable production SDK runtime.
+- [x] Repair reproducible build or runtime defects with regression coverage.
+- [x] Run desktop/mobile browser workflows and document any platform-only verification limits.
+- [x] Review the resulting changes and save a reproducible local handoff.
 
 ## Verification
-Run python -X utf8 hardening/tests/audit_static.py ., compile the domain suite with hardening/tsconfig.tests.json, run TypeScript and npm run build, then exercise the five workflows in tests/tests.txt.
+Verification evidence and reproducible commands are in README.md and docs/BUILD_STATUS.md. Production compilation and live platform acceptance remain pending the actual AppDeploy runtime.
 External deployment remains a separate step after verification.

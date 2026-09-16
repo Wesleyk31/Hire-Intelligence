@@ -1,61 +1,61 @@
 # Tests
 
-## Test 1 - Public header opens distinct populated pages [sanity]
+## Test 1 - Public site is aggregate-only and operational workspace requires sign-in [sanity]
 Viewport: desktop
-Covers: Products, Solutions, Industries, Insights, About, public navigation state, live dashboard population
-Description: Verifies the public header no longer behaves as same-page scroll links and instead opens distinct populated public pages.
+Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, GET /api/public/summary, protected GET /api/dashboard
+Description: Verifies public marketing pages remain usable without leaking project-level intelligence and the operational workspace is gated by authentication.
 
 Steps:
-1. Open the public homepage and click Products, then confirm a Products page with platform-module cards is visible
-2. Click Solutions, Industries, Insights and About in sequence
-3. On each selection confirm the selected header item becomes active and the page heading/content changes; on Insights confirm live project/signal/feed metrics and current project intelligence are visible when dashboard data exists
+1. Open the public homepage and navigate through Products, Solutions, Industries, Insights and About
+2. Confirm public Insights shows aggregate project-signal, source and regional counts but no canonical project names, contractor names, CRM records or evidence provenance
+3. Click Log in / Explore the platform and confirm a secure-workspace sign-in gate appears before Decision Desk; after authenticating, confirm Decision Desk loads
 
-Expected: Products, Solutions, Industries, Insights and About are all clickable; each opens its own populated page and changes the URL hash to its page name; the previous page is replaced; browser back/forward can restore page state; the approved homepage returns when the Hire Intelligence logo is clicked; the full 'Turn signals into opportunity.' hero callout is visible without clipping or being obscured.
+Expected: Public pages are aggregate-only; project-level workspace data is not returned until authenticated; successful sign-in opens the operational platform.
 
-## Test 2 - Footer destinations and public CTAs work
+## Test 2 - Internal modules use corrected entity roles, current lifecycle evidence and CALL NOW gating
 Viewport: desktop
-Covers: Privacy, Terms, Contact, Get a demo, Log in, Explore the platform
-Description: Verifies footer destinations are no longer dead controls and the main public calls to action remain operational.
+Covers: canonical project resolution, stage recency, delivery organisation roles, Decision Desk, Commercial Intelligence, Projects, Organisations & Delivery Teams, Equipment Demand, CALL NOW
+Description: Verifies the main intelligence engine does not treat every organisation as a contractor, does not let stale lifecycle evidence dominate, and only promotes evidence-qualified CALL NOW records.
 
 Steps:
-1. Click Privacy, Terms and Contact from the footer and confirm each opens distinct page content
-2. On Contact click Request a demo and confirm the demo modal opens; close it
-3. Return Home with the logo, then click Explore the platform or Log in
+1. Open Decision Desk and inspect CALL NOW plus a high-priority project
+2. Open Organisations & Delivery Teams and confirm owners/applicants/suppliers are not presented as delivery contractors unless the source explicitly identifies a contractor
+3. Open a project with multiple evidence dates and confirm current stage reflects recent qualified evidence; inspect PREDICTED equipment wording and heuristic-confidence disclosure
 
-Expected: Privacy, Terms and Contact each render their own content; demo opens from Contact; Log in / Explore the platform still opens the internal Decision Desk.
+Expected: Contractor workload is evidence-role filtered; lifecycle state is recency-aware; CALL NOW is non-zero only when its explicit gate is satisfied; equipment remains PREDICTED.
 
-## Test 3 - Every internal module opens its own operational view
+## Test 3 - Map and source pathways avoid false precision and duplicate counts
 Viewport: desktop
-Covers: Decision Desk, Commercial Intelligence, Opportunities, Projects, Map, Companies & Contacts, Equipment Demand, Resources, CRM, Reports, Alerts, Source Admin
-Description: Verifies public-page changes do not regress the internal application and every module changes the active view.
+Covers: Map, unmapped records, unique-project map statistics, source health, resilient scheduled refresh, historical backfill
+Description: Verifies unresolved locations are not plotted at the centre of Australia, map KPIs count unique projects, and individual source failures do not fail the entire refresh cycle.
 
 Steps:
-1. Enter the internal platform from the public site
-2. Click all 12 internal module navigation items in sequence
-3. For each module confirm the page title changes and module-specific content, a working control, or an explicit governed empty state is visible
+1. Open Map and compare the visible project count with project rows; confirm event points do not multiply high-priority/equipment project counts
+2. Confirm records without resolvable location are disclosed as unmapped rather than shown at an Australia-centre point
+3. Open Source Admin and confirm Active/Degraded/Failed/Deferred terminology, current source statuses and backfill status are visible without customer-facing scope-number jargon
 
-Expected: All internal modules remain reachable, each updates the URL to a #platform/<module> destination, and no module remains stuck on the previous page; reload restores the selected module.
+Expected: Map statistics are unique-project based; unresolved records are disclosed and not falsely geocoded; source failures remain visible while the cycle can complete in degraded mode.
 
-## Test 4 - Project, Map, CRM and Reports retain operational workflows
+## Test 4 - CRM and reports are authenticated, user-scoped and commercially coherent
 Viewport: desktop
-Covers: project drill-down, evidence/provenance, Map controls, POST /api/pilot/outcomes, report preview, PDF generation
-Description: Verifies the core internal workflows remain intact after the public-navigation repair.
+Covers: POST /api/pilot/outcomes, unique-project CRM funnel, user data isolation, report preview, report history, PDF generation, provenance
+Description: Verifies authenticated operational records cannot contaminate another account and report generation produces a real preview plus persistent user-scoped history.
 
 Steps:
-1. Open Projects and open an available project, confirming stage, priority, PREDICTED equipment and evidence/provenance in the drawer
-2. Open Map and use an available region/filter control; open an available project from the map or synchronized list
-3. Open CRM and confirm the outcome form is available; open Reports, generate a preview, then click Download PDF
+1. Record CONTACTED then QUOTED then WON for one canonical project and confirm the CRM contacted count remains one project rather than three rows
+2. Confirm quote/won values are not double-counted and a second authenticated account does not see the first account's CRM/report history
+3. Open Reports, inspect Current Report Preview, save a report snapshot, reload the application and confirm report history remains; download the PDF and confirm CALL NOW, regional intelligence, source health/provenance and governance sections exist
 
-Expected: Project/map drill-downs work, CRM retains its governed human-entered outcome workflow, and Reports retains preview and PDF actions.
+Expected: Funnel metrics are unique-project based and user scoped; report history persists per authenticated user; preview and PDF contain current governed intelligence.
 
-## Test 5 - Public and internal navigation remain usable on mobile
+## Test 5 - Public conversion and legal pathways are real, not dead controls
 Viewport: mobile
-Covers: public header horizontal navigation, Products/Insights pages, mobile internal page selector, Source Admin
-Description: Verifies the new public pages and existing internal modules are usable on a narrow screen.
+Covers: Request demo, Contact, Privacy, Terms, mobile navigation, validation guardrail
+Description: Verifies public conversion controls collect valid requests, reject invalid submissions and legal/footer pathways contain substantive content.
 
 Steps:
-1. Open the public site on mobile and use the horizontal header to open Products and Insights
-2. Return Home with the logo and enter the internal platform
-3. Use the mobile selector to open Projects, Reports and Source Admin
+1. Open Get a demo and submit an invalid email; confirm the request is rejected visibly
+2. Submit a valid name, company and business email; confirm the request is recorded and a success message appears; repeat from Contact
+3. Open Privacy and Terms and confirm substantive policy sections render; verify the footer contains no dead LinkedIn mark and mobile public navigation remains usable
 
-Expected: Public page content stacks without page-level horizontal overflow; public navigation changes pages; the internal mobile selector continues to change modules and show source/project/report content.
+Expected: Demo and Contact are functional request workflows with validation; Privacy/Terms are substantive; no fake social control remains; mobile pathways remain usable.

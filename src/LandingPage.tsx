@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@appdeploy/client';
+import DemoRequestForm from './DemoRequestForm';
+import { PRIVACY_SECTIONS, TERMS_SECTIONS } from './legal-content';
 import { ArrowRight, BarChart3, BellRing, Building2, HardHat, LineChart, Radar, ShieldCheck, Target, Users, Wrench, X } from 'lucide-react';
 import './landing.css';
 
 type LandingDashboard = {
   metrics?: Record<string, number>;
-  projects?: Array<{ id: string; name: string; location: string; stageLabel: string; bdmPriority: number }>;
+  regionalCounts?: Record<string, number>;
+  universe?: { loaded?: number; truncated?: boolean };
   commercial?: { events?: Array<unknown> };
   sources?: { active?: number; configured?: number };
   coverage?: string;
@@ -23,9 +26,9 @@ type Feature = {
 };
 
 const FEATURES: Feature[] = [
-  { key: 'early', eyebrow: 'EARLY PROJECT SIGNALS', title: 'Be first to see what’s coming.', copy: 'Get ahead with early-stage project intelligence, from public and private sources, before demand hits.', icon: 'signal' },
-  { key: 'shutdown', eyebrow: 'SHUTDOWN INTELLIGENCE', title: 'Turn maintenance into opportunity.', copy: 'Track planned shutdowns and major maintenance across mining, energy and industrial sites.', icon: 'shutdown' },
-  { key: 'contractor', eyebrow: 'CONTRACTOR ACTIVITY', title: 'Follow the work, follow the demand.', copy: 'See which contractors are active, where they’re working and what they’re likely to need.', icon: 'contractor' },
+  { key: 'early', eyebrow: 'EARLY PROJECT SIGNALS', title: 'Be first to see what’s coming.', copy: 'Get ahead with early-stage project intelligence, from lawful public sources and user-entered commercial outcomes, before demand hits.', icon: 'signal' },
+  { key: 'shutdown', eyebrow: 'SHUTDOWN INTELLIGENCE', title: 'Turn maintenance into opportunity.', copy: 'Surface published shutdown, outage and maintenance signals across mining, energy and industrial evidence sources.', icon: 'shutdown' },
+  { key: 'contractor', eyebrow: 'CONTRACTOR ACTIVITY', title: 'Follow the work, follow the demand.', copy: 'See evidence-backed delivery organisations, where work is appearing and what equipment classes may be relevant.', icon: 'contractor' },
   { key: 'fleet', eyebrow: 'PREDICTED FLEET DEMAND', title: 'Plan your fleet with confidence.', copy: 'Evidence-driven demand forecasts help you optimise fleet mix, utilisation and investment.', icon: 'fleet' },
   { key: 'market', eyebrow: 'MARKET INTELLIGENCE', title: 'A clearer view of what’s next.', copy: 'Combine project, contractor and market intelligence for a complete picture of demand.', icon: 'market' }
 ];
@@ -54,7 +57,6 @@ function AustraliaGraphic({ compact = false }: { compact?: boolean }) {
 }
 
 type PublicStats = { projects: number; events: number; feeds: number; configured: number; high: number };
-type PublicProject = { id: string; name: string; location: string; stageLabel: string; bdmPriority: number };
 
 const PUBLIC_DETAILS: Record<Exclude<PublicPage, 'home'>, { eyebrow: string; title: string; copy: string; cards: Array<{ title: string; copy: string }> }> = {
   products: {
@@ -67,7 +69,7 @@ const PUBLIC_DETAILS: Record<Exclude<PublicPage, 'home'>, { eyebrow: string; tit
       { title: 'Opportunities', copy: 'Evidence-derived commercial events such as approvals, procurement, awards, mobilisation, shutdowns and maintenance.' },
       { title: 'Projects', copy: 'Canonical project records consolidating stage, priority, value, contractors and source evidence.' },
       { title: 'Interactive Map', copy: 'Geographic project and opportunity intelligence with regional filters and precision disclosure.' },
-      { title: 'Companies & Contacts', copy: 'Evidence-backed organisations linked to projects; personal contacts are not invented.' },
+      { title: 'Organisations & Delivery Teams', copy: 'Evidence-backed organisations linked to projects; personal contacts are not invented.' },
       { title: 'Equipment Demand', copy: 'Explicitly PREDICTED equipment classes and confidence derived from observed work evidence.' },
       { title: 'CRM', copy: 'Human-entered BDM outcomes linked back to canonical projects for measured commercial calibration.' },
       { title: 'Reports', copy: 'Executive intelligence previews and downloadable PDF reporting from the current evidence set.' },
@@ -161,8 +163,9 @@ const PUBLIC_DETAILS: Record<Exclude<PublicPage, 'home'>, { eyebrow: string; tit
   }
 };
 
-function PublicPageView({ page, stats, projects, onExplore, onDemo }: { page: Exclude<PublicPage, 'home'>; stats: PublicStats; projects: PublicProject[]; onExplore: () => void; onDemo: () => void }) {
+function PublicPageView({ page, stats, onExplore, onDemo }: { page: Exclude<PublicPage, 'home'>; stats: PublicStats; onExplore: () => void; onDemo: () => void }) {
   const detail = PUBLIC_DETAILS[page];
+  const cards = page==='privacy' ? PRIVACY_SECTIONS.map(([title,copy])=>({title,copy})) : page==='terms' ? TERMS_SECTIONS.map(([title,copy])=>({title,copy})) : detail.cards;
   return <main className='hi2-public-page' data-public-page={page}>
     <section className='hi2-public-hero'>
       <div>
@@ -178,28 +181,18 @@ function PublicPageView({ page, stats, projects, onExplore, onDemo }: { page: Ex
     </section>
 
     {page === 'insights' && <section className='hi2-public-stats'>
-      <div><strong>{stats.projects || '—'}</strong><span>Canonical projects</span></div>
+      <div><strong>{stats.projects || '—'}</strong><span>Project signals</span></div>
       <div><strong>{stats.events || '—'}</strong><span>Opportunity signals</span></div>
-      <div><strong>{stats.high || '—'}</strong><span>High-priority projects</span></div>
+      <div><strong>{stats.high || '—'}</strong><span>Priority-stage signals</span></div>
       <div><strong>{stats.feeds || '—'}/{stats.configured || '—'}</strong><span>Successful / configured feeds</span></div>
     </section>}
 
     <section className='hi2-public-grid'>
-      {detail.cards.map(card => <article key={card.title}><div className='hi2-public-card-mark'/><h2>{card.title}</h2><p>{card.copy}</p></article>)}
+      {cards.map(card => <article key={card.title}><div className='hi2-public-card-mark'/><h2>{card.title}</h2><p>{card.copy}</p></article>)}
     </section>
+    {page === 'insights' && <section className='hi2-public-projects'><div className='hi2-public-section-head'><div className='hi2-eyebrow'>SECURE DETAIL</div><h2>Project-level intelligence is available after sign-in.</h2><p>Public pages show aggregate coverage only. Canonical projects, organisations, map drill-downs, CRM and evidence provenance are protected inside the operational workspace.</p></div></section>}
 
-    {page === 'insights' && <section className='hi2-public-projects'>
-      <div className='hi2-public-section-head'><div className='hi2-eyebrow'>CURRENT PROJECT INTELLIGENCE</div><h2>Projects visible in the live dashboard.</h2></div>
-      <div className='hi2-public-project-list'>
-        {projects.slice(0, 8).map(project => <div key={project.id}><span><b>{project.name}</b><small>{project.location}</small></span><em>{project.stageLabel}</em><strong>{project.bdmPriority}</strong></div>)}
-        {!projects.length && <p>Live dashboard data is currently unavailable.</p>}
-      </div>
-    </section>}
-
-    {page === 'contact' && <section className='hi2-public-contact-actions'>
-      <button className='hi2-red-button hi2-large' onClick={onDemo}>Request a demo <ArrowRight size={16}/></button>
-      <button className='hi2-outline-button hi2-large' onClick={onExplore}>Open live platform</button>
-    </section>}
+    {page === 'contact' && <section className='hi2-public-contact-actions'><DemoRequestForm/><button className='hi2-outline-button hi2-large' onClick={onExplore}>Open secure workspace</button></section>}
   </main>;
 }
 
@@ -215,7 +208,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
 
   useEffect(() => {
     let active = true;
-    api.get('/api/dashboard').then(response => {
+    api.get('/api/public/summary').then(response => {
       if (active) setDashboard(response.data as LandingDashboard);
     }).catch(() => {
       if (active) setDashboard(null);
@@ -230,14 +223,14 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
   }, []);
 
   const stats = useMemo(() => ({
-    projects: dashboard?.projects?.length || 0,
+    projects: dashboard?.metrics?.active || 0,
     events: dashboard?.metrics?.eventSignals || dashboard?.commercial?.events?.length || 0,
     feeds: dashboard?.sources?.active || 0,
     configured: dashboard?.sources?.configured || 0,
     high: dashboard?.metrics?.highPriority || 0
   }), [dashboard]);
 
-  const topProject = dashboard?.projects?.[0];
+  const regionCount = (code: string) => dashboard?.regionalCounts?.[code] || 0;
   const openPublicPage = (next: PublicPage) => {
     setPublicPage(next);
     if (next === 'home') {
@@ -280,7 +273,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
           </div>
           <div className='hi2-benefits'>
             <div><span><BarChart3 size={17}/></span><b>Earlier opportunities</b><small>Spot projects before they hit the market.</small></div>
-            <div><span><Target size={17}/></span><b>Smarter decisions</b><small>Backed by real-time data.</small></div>
+            <div><span><Target size={17}/></span><b>Smarter decisions</b><small>Backed by current scheduled source data.</small></div>
             <div><span><ShieldCheck size={17}/></span><b>A stronger, more resilient business</b><small>From pipeline to plant.</small></div>
           </div>
         </div>
@@ -296,26 +289,26 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
             </div>
             <div className='hi2-dashboard-body'>
               <div className='hi2-dashboard-nav'>
-                {['Decision Desk','Commercial Intelligence','Opportunities','Projects','Map','Companies & Contacts','Equipment Demand','Resources','CRM','Reports','Alerts','Source Admin'].map((item, index) => <span key={item} className={index === 0 ? 'active' : ''}>{item}</span>)}
+                {['Decision Desk','Commercial Intelligence','Opportunities','Projects','Map','Organisations & Delivery Teams','Equipment Demand','Resources','CRM','Reports','Alerts','Source Admin'].map((item, index) => <span key={item} className={index === 0 ? 'active' : ''}>{item}</span>)}
               </div>
               <div className='hi2-dashboard-main'>
                 <div className='hi2-dashboard-heading'>
-                  <div><b>Project Activity</b><small>Real-time signals across Australia</small></div>
+                  <div><b>Project Activity</b><small>Current signals across Australia</small></div>
                   <span>Map</span>
                 </div>
                 <div className='hi2-map-stage'>
                   <AustraliaGraphic/>
-                  <div className='hi2-map-pill wa'>WA<br/><b>142</b></div>
-                  <div className='hi2-map-pill qld'>QLD<br/><b>311</b></div>
-                  <div className='hi2-map-pill nsw'>NSW<br/><b>198</b></div>
+                  <div className='hi2-map-pill wa'>WA<br/><b>{regionCount('WA') || '—'}</b></div>
+                  <div className='hi2-map-pill qld'>QLD<br/><b>{regionCount('QLD') || '—'}</b></div>
+                  <div className='hi2-map-pill nsw'>NSW<br/><b>{regionCount('NSW') || '—'}</b></div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='hi2-floating-card card-live'><BellRing size={17}/><div><small>Live Feeds</small><b>{stats.feeds || '—'}/{stats.configured || '—'}</b><span>production feeds</span></div></div>
-          <div className='hi2-floating-card card-high'><Building2 size={17}/><div><small>High-Priority Projects</small><b>{stats.high || '—'}</b><span>evidence-ranked</span></div></div>
+          <div className='hi2-floating-card card-live'><BellRing size={17}/><div><small>Current Feeds</small><b>{stats.feeds || '—'}/{stats.configured || '—'}</b><span>production feeds</span></div></div>
+          <div className='hi2-floating-card card-high'><Building2 size={17}/><div><small>Priority-Stage Signals</small><b>{stats.high || '—'}</b><span>evidence-ranked</span></div></div>
           <div className='hi2-floating-card card-signal'><Radar size={17}/><div><small>Signal Events</small><b>{stats.events || '—'}</b><span>current intelligence</span></div></div>
-          <div className='hi2-project-card'><span>NEW PROJECT SIGNAL</span><b>{topProject?.name || 'Priority project signal'}</b><small>{topProject ? `${topProject.location} · ${topProject.stageLabel}` : 'Evidence-linked project intelligence'}</small></div>
+          <div className='hi2-project-card'><span>CURRENT INTELLIGENCE</span><b>{stats.high || '—'} priority-stage signals</b><small>{stats.events || '—'} current evidence-derived signals · sign in for project detail</small></div>
           <div className='hi2-hand-note'>Turn signals<br/>into opportunity.</div>
         </div>
       </section>
@@ -336,7 +329,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
           <p>Hire Intelligence gives rental teams a genuine head start: earlier visibility, clearer fleet planning and stronger focus on the opportunities that matter.</p>
           <small>Product positioning — evidence governed</small>
         </div>
-        <div className='hi2-stat'><strong>{stats.projects || '—'}</strong><span>Canonical projects<br/>currently tracked</span></div>
+        <div className='hi2-stat'><strong>{stats.projects || '—'}</strong><span>Project signals<br/>in current public window</span></div>
         <div className='hi2-stat'><strong>{stats.events || '—'}</strong><span>Current opportunity<br/>event signals</span></div>
         <div className='hi2-stat'><strong>{stats.feeds || '—'}/{stats.configured || '—'}</strong><span>Successful / configured<br/>live feeds</span></div>
         <div className='hi2-australia-card'>
@@ -349,20 +342,20 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
         <div><h2>See further. <span>Hire smarter.</span></h2><p>Turn market signals into real business advantage.</p></div>
         <button className='hi2-red-button hi2-large' onClick={() => setDemoOpen(true)}>Get a demo <ArrowRight size={16}/></button>
       </section>
-    </main> : <PublicPageView page={publicPage} stats={stats} projects={dashboard?.projects || []} onExplore={onExplore} onDemo={() => setDemoOpen(true)}/>} 
+    </main> : <PublicPageView page={publicPage} stats={stats} onExplore={onExplore} onDemo={() => setDemoOpen(true)}/>}
 
     <footer className='hi2-footer' id='about'>
       <div className='hi2-footer-brand'><span className='hi2-slash'/><strong>Hire Intelligence</strong><small>A clearer tomorrow for the hire industry.</small></div>
-      <div className='hi2-footer-links'><button onClick={() => openPublicPage('privacy')}>Privacy</button><button onClick={() => openPublicPage('terms')}>Terms</button><button onClick={() => openPublicPage('contact')}>Contact</button><span>in</span></div>
+      <div className='hi2-footer-links'><button onClick={() => openPublicPage('privacy')}>Privacy</button><button onClick={() => openPublicPage('terms')}>Terms</button><button onClick={() => openPublicPage('contact')}>Contact</button></div>
     </footer>
 
     {demoOpen && <div className='hi2-modal-backdrop' onClick={() => setDemoOpen(false)}>
       <section className='hi2-modal' onClick={event => event.stopPropagation()} aria-modal='true' role='dialog' aria-label='Request a Hire Intelligence demo'>
         <button className='hi2-modal-close' onClick={() => setDemoOpen(false)} aria-label='Close'><X size={18}/></button>
-        <div className='hi2-eyebrow'>HIRE INTELLIGENCE</div>
-        <h2>See the platform in action.</h2>
-        <p>Open the live platform now to explore the current intelligence workspace and its existing modules.</p>
-        <button className='hi2-red-button hi2-large' onClick={onExplore}>Explore the live platform <ArrowRight size={16}/></button>
+        <div className='hi2-eyebrow'>REQUEST A DEMO</div>
+        <h2>See Hire Intelligence in action.</h2>
+        <p>Tell us who you are and what you want to evaluate. The request is recorded for follow-up; the operational workspace remains sign-in protected.</p>
+        <DemoRequestForm compact/>
       </section>
     </div>}
   </div>;

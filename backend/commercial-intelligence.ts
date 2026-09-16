@@ -64,7 +64,7 @@ export function buildCommercialIntelligence(projects: ProjectIntelligence[], out
   const realOutcomes = outcomes.filter(outcome => !outcome.qa);
   const projectById = new Map(projects.map(project => [project.id, project]));
   const projectByName = new Map(projects.map(project => [normalise(project.name), project]));
-  const resolveProject = (outcome: CommercialOutcome) => outcome.projectId ? projectById.get(outcome.projectId) : projectByName.get(normalise(outcome.project));
+  const resolveProject = (outcome: CommercialOutcome) => (outcome.projectId ? projectById.get(outcome.projectId) : undefined) || projectByName.get(normalise(outcome.project));
 
   const pilotQueue = projects.filter(project => project.stageLabel !== 'COMPLETE').slice(0, 50).map((project, index) => ({ rank: index + 1, projectId: project.id, project: project.name, location: project.location, stage: project.stageLabel, bdmPriority: project.bdmPriority, priorityBand: project.priorityBand, signalQuality: project.signalQualityScore, signalBand: project.signalQualityBand, contractors: project.contractors, equipment: project.equipmentPrediction.classes, equipmentLabel: 'PREDICTED' as const, action: actionFor(project), evidenceNeeded: evidenceNeeded(project) }));
 

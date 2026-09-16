@@ -12,7 +12,6 @@ import {
   LayoutDashboard,
   Map as MapIcon,
   MapPin,
-  RefreshCw,
   Search,
   Settings,
   Target,
@@ -129,6 +128,7 @@ type Dashboard = {
     lastError: string;
   };
   coverage: string;
+  universe?: { loaded?: number; truncated?: boolean; pagesRead?: number; outcomesLoaded?: number; outcomesTruncated?: boolean };
 };
 
 type SavedReport = {
@@ -144,7 +144,7 @@ type ViewName =
   | 'Opportunities'
   | 'Projects'
   | 'Map'
-  | 'Companies & Contacts'
+  | 'Organisations & Delivery Teams'
   | 'Equipment Demand'
   | 'Resources'
   | 'CRM'
@@ -164,7 +164,7 @@ const VIEWS: ViewDefinition[] = [
   { name: 'Opportunities', description: 'Evidence-derived events that may create future hire demand.', icon: Target },
   { name: 'Projects', description: 'Canonical project records consolidating evidence, stage and priority.', icon: FolderKanban },
   { name: 'Map', description: 'Geographic project and opportunity intelligence.', icon: MapIcon },
-  { name: 'Companies & Contacts', description: 'Evidence-backed organisations linked to active projects.', icon: Building2 },
+  { name: 'Organisations & Delivery Teams', description: 'Evidence-backed organisations linked to active projects.', icon: Building2 },
   { name: 'Equipment Demand', description: 'Explicitly PREDICTED equipment classes and regional clusters.', icon: Truck },
   { name: 'Resources', description: 'Resource-sector projects and source coverage.', icon: FileText },
   { name: 'CRM', description: 'Human-entered BDM outcomes and calibration.', icon: Users },
@@ -192,23 +192,6 @@ function safeArray<T>(value: T[] | undefined | null): T[] {
   return Array.isArray(value) ? value : [];
 }
 
-function stateCode(value: string) {
-  const upper = value.toUpperCase();
-  const names: Array<[string, string]> = [
-    ['WESTERN AUSTRALIA', 'WA'],
-    ['QUEENSLAND', 'QLD'],
-    ['NEW SOUTH WALES', 'NSW'],
-    ['VICTORIA', 'VIC'],
-    ['SOUTH AUSTRALIA', 'SA'],
-    ['NORTHERN TERRITORY', 'NT'],
-    ['TASMANIA', 'TAS'],
-    ['AUSTRALIAN CAPITAL TERRITORY', 'ACT'],
-  ];
-  for (const [name, code] of names) {
-    if (upper.includes(name)) return code;
-  }
-  return upper.match(/\b(WA|QLD|NSW|VIC|SA|NT|TAS|ACT)\b/)?.[1] || 'AU';
-}
 
 function initials(value: string) {
   return value
@@ -235,7 +218,7 @@ const VIEW_SLUGS: Record<ViewName, string> = {
   'Opportunities': 'opportunities',
   'Projects': 'projects',
   'Map': 'map',
-  'Companies & Contacts': 'companies-contacts',
+  'Organisations & Delivery Teams': 'organisations-delivery-teams',
   'Equipment Demand': 'equipment-demand',
   'Resources': 'resources',
   'CRM': 'crm',
@@ -257,14 +240,7 @@ export default function FunctionalApp() {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Project | null>(null);
   const [message, setMessage] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
-  const [reports, setReports] = useState<SavedReport[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem('hirer-reports') || '[]');
-    } catch {
-      return [];
-    }
-  });
+  const [reports, setReports] = useState<SavedReport[]>([]);
 
   const load = async () => {
     try {
@@ -278,6 +254,10 @@ export default function FunctionalApp() {
 
   useEffect(() => {
     void load();
+    api.get('/api/reports/history').then(response => {
+      const rows = Array.isArray(response.data) ? response.data : [];
+      setReports(rows.map((row: any) => ({ id: row.id, at: row.generatedAt, summary: row.headline, filename: row.filename })));
+    }).catch(() => { setReports([]); setMessage('Report history could not be loaded. Please retry by reloading the page.'); });
   }, []);
 
   useEffect(() => {
@@ -330,28 +310,7 @@ export default function FunctionalApp() {
     if (project) setSelected(project);
   };
 
-  const refresh = async () => {
-    setRefreshing(true);
-    try {
-      await api.post('/api/sources/refresh', {});
-      await load();
-      setMessage('GREEN source refresh complete.');
-    } catch {
-      setMessage('Source refresh reported a failure. Review Source Admin for the affected collector.');
-    } finally {
-      setRefreshing(false);
-    }
-  };
 
-  const runBackfill = async () => {
-    try {
-      await api.post('/api/backfill/run', {});
-      await load();
-      setMessage('Historical evidence backfill batch complete.');
-    } catch {
-      setMessage('Backfill batch reported an error. Review Source Admin before retrying.');
-    }
-  };
 
   const submitOutcome = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -366,30 +325,35 @@ export default function FunctionalApp() {
     }
   };
 
-  const saveReportSnapshot = (filename?: string) => {
-    if (!dashboard) return;
+  const saveReportSnapshot = async (filename?: string) => {
+    if (!dashboard) return false;
     const summary = buildExecutiveReportSummary(dashboard);
-    const report: SavedReport = {
-      id: typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now()),
-      at: summary.generatedAt,
-      summary: summary.headline,
-      filename,
-    };
-    const next = [report, ...reports].slice(0, 20);
-    setReports(next);
-    localStorage.setItem('hirer-reports', JSON.stringify(next));
+    try {
+      const { data } = await api.post('/api/reports/history', {
+        generatedAt: summary.generatedAt, headline: summary.headline, filename,
+        projectCount: summary.projectCount, opportunityCount: summary.opportunityCount,
+      });
+      setReports(current => [{ id: data.id, at: data.generatedAt, summary: data.headline, filename: data.filename }, ...current].slice(0, 50));
+      return true;
+    } catch {
+      setMessage('Report snapshot could not be saved. Please try again.');
+      return false;
+    }
   };
 
-  const generateReport = () => {
-    saveReportSnapshot();
-    setMessage('Executive report preview generated from the current evidence set.');
+  const generateReport = async () => {
+    if (await saveReportSnapshot()) setMessage('Current report snapshot saved from the visible evidence set.');
   };
 
-  const downloadReport = () => {
+  const downloadReport = async () => {
     if (!dashboard) return;
-    const filename = downloadExecutivePdf(dashboard);
-    saveReportSnapshot(filename);
-    setMessage(`PDF report generated: ${filename}`);
+    try {
+      const filename = downloadExecutivePdf(dashboard);
+      if (await saveReportSnapshot(filename)) setMessage(`PDF report generated: ${filename}`);
+      else setMessage('PDF downloaded, but its report history could not be saved. Please try saving a report snapshot again.');
+    } catch {
+      setMessage('PDF report could not be generated. Please try again.');
+    }
   };
 
   if (loadError && !dashboard) {
@@ -447,10 +411,6 @@ export default function FunctionalApp() {
             placeholder='Search projects, locations, contractors, equipment…'
           />
         </div>
-        <button className='hi-refresh' type='button' onClick={() => void refresh()} disabled={refreshing}>
-          <RefreshCw size={15}/>
-          {refreshing ? 'Refreshing…' : 'Refresh GREEN feeds'}
-        </button>
       </header>
 
       <section className='hi-page-head'>
@@ -462,23 +422,24 @@ export default function FunctionalApp() {
       </section>
 
       {message && <div className='hi-message'>{message}</div>}
+      {dashboard.universe?.truncated && <div className='hi-message'>Data window disclosure: {dashboard.universe.loaded || 0} current records are loaded in this bounded view and additional stored records exist. Rankings and counts on this screen apply to the loaded window.</div>}
 
       <section className='hi-page-content' data-module={view}>
-        {view === 'Decision Desk' && <DecisionDesk dashboard={dashboard} projects={visibleProjects} events={filteredEvents} open={setSelected}/>} 
-        {view === 'Commercial Intelligence' && <CommercialIntelligence dashboard={dashboard} openProject={openProjectById}/>} 
-        {view === 'Opportunities' && <OpportunitiesPage events={filteredEvents} projects={projects} open={openProjectById}/>} 
-        {view === 'Projects' && <ProjectsPage projects={visibleProjects} open={setSelected}/>} 
-        {view === 'Map' && <GeoMap projects={visibleProjects} events={filteredEvents} openProject={openProjectById}/>} 
-        {view === 'Companies & Contacts' && <CompaniesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>} 
-        {view === 'Equipment Demand' && <EquipmentPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>} 
-        {view === 'Resources' && <ResourcesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>} 
-        {view === 'CRM' && <CRMPage dashboard={dashboard} projects={projects} submitOutcome={submitOutcome}/>} 
-        {view === 'Reports' && <ReportsPage dashboard={dashboard} reports={reports} generateReport={generateReport} downloadReport={downloadReport}/>} 
-        {view === 'Alerts' && <AlertsPage projects={visibleProjects} events={filteredEvents} open={setSelected} openProject={openProjectById}/>} 
-        {view === 'Source Admin' && <SourceAdminPage dashboard={dashboard} runBackfill={runBackfill}/>} 
+        {view === 'Decision Desk' && <DecisionDesk dashboard={dashboard} projects={visibleProjects} events={filteredEvents} open={setSelected}/>}
+        {view === 'Commercial Intelligence' && <CommercialIntelligence dashboard={dashboard} openProject={openProjectById}/>}
+        {view === 'Opportunities' && <OpportunitiesPage events={filteredEvents} projects={projects} open={openProjectById}/>}
+        {view === 'Projects' && <ProjectsPage projects={visibleProjects} open={setSelected}/>}
+        {view === 'Map' && <GeoMap projects={visibleProjects} events={filteredEvents} openProject={openProjectById}/>}
+        {view === 'Organisations & Delivery Teams' && <CompaniesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
+        {view === 'Equipment Demand' && <EquipmentPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
+        {view === 'Resources' && <ResourcesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
+        {view === 'CRM' && <CRMPage dashboard={dashboard} projects={projects} submitOutcome={submitOutcome}/>}
+        {view === 'Reports' && <ReportsPage dashboard={dashboard} reports={reports} generateReport={generateReport} downloadReport={downloadReport}/>}
+        {view === 'Alerts' && <AlertsPage projects={visibleProjects} events={filteredEvents} open={setSelected} openProject={openProjectById}/>}
+        {view === 'Source Admin' && <SourceAdminPage dashboard={dashboard}/>}
       </section>
 
-      {selected && <ProjectDrawer project={selected} close={() => setSelected(null)}/>} 
+      {selected && <ProjectDrawer project={selected} close={() => setSelected(null)}/>}
     </main>
   </div>;
 }
@@ -505,11 +466,11 @@ function DecisionDesk({ dashboard, projects, events, open }: { dashboard: Dashbo
       <section className='hi-card'>
         <CardHeader title='Recent Opportunity Signals' subtitle='Current evidence-derived commercial events.'/>
         <div className='hi-activity-list'>
-          {events.slice(0, 10).map((event, index) => <div key={`${event.projectId}-${event.type}-${index}`}>
+          {events.slice(0, 10).map((event, index) => <button type='button' key={`${event.projectId}-${event.type}-${index}`} onClick={() => { const project=projects.find(item=>item.id===event.projectId); if(project) open(project); }}>
             <Activity size={15}/>
             <span><b>{event.type}</b><small>{event.project} · {event.location}</small></span>
             <em>{event.confidence}%</em>
-          </div>)}
+          </button>)}
           {!events.length && <EmptyState>No opportunity events are currently available.</EmptyState>}
         </div>
       </section>
@@ -529,10 +490,10 @@ function CommercialIntelligence({ dashboard, openProject }: { dashboard: Dashboa
 
   return <div className='hi-stack'>
     <section className='hi-card'>
-      <CardHeader title='Scope 2150 Programme' subtitle='Operational status is explicit; data-gated and source-gated blocks are not presented as completed.'/>
+      <CardHeader title='Engine Capability Status' subtitle='Operational, data-limited and source-limited capabilities are shown explicitly.'/>
       <div className='hi-grid-cards'>
         {scopeProgram.map(block => <article key={`${block.from}-${block.to}`}>
-          <small>SCOPES {block.from}–{block.to}</small>
+          <small>{block.status}</small>
           <b>{block.name}</b>
           <span className={`hi-badge ${String(block.status).toLowerCase()}`}>{block.status}</span>
           <p>{block.note}</p>
@@ -564,7 +525,7 @@ function CommercialIntelligence({ dashboard, openProject }: { dashboard: Dashboa
         </div>
       </section>
       <section className='hi-card'>
-        <CardHeader title='Contractor Workload' subtitle='Evidence-linked workload, not invented contacts.'/>
+        <CardHeader title='Delivery Organisation Workload' subtitle='Evidence-backed delivery organisations only; owners and applicants are not treated as contractors.'/>
         <div className='hi-organisation-list'>
           {contractorWorkload.slice(0, 20).map(item => <div key={item.contractor}>
             <span className='hi-avatar'>{initials(String(item.contractor))}</span>
@@ -581,7 +542,7 @@ function CommercialIntelligence({ dashboard, openProject }: { dashboard: Dashboa
         <CardHeader title='PREDICTED Equipment-Demand Clusters' subtitle='Inference from observed work evidence; not observed hire requirements.'/>
         <div className='hi-grid-cards'>
           {equipmentClusters.slice(0, 20).map(item => <article key={`${item.location}-${item.equipmentClass}`}>
-            <small>PREDICTED · {item.confidence}% confidence</small><b>{item.equipmentClass}</b><p>{item.location} · {item.projectCount} projects · avg priority {item.averagePriority}</p>
+            <small>PREDICTED · {item.confidence}% heuristic confidence</small><b>{item.equipmentClass}</b><p>{item.location} · {item.projectCount} projects · avg priority {item.averagePriority}</p>
           </article>)}
           {!equipmentClusters.length && <EmptyState>No predicted equipment clusters are currently available.</EmptyState>}
         </div>
@@ -590,7 +551,7 @@ function CommercialIntelligence({ dashboard, openProject }: { dashboard: Dashboa
         <CardHeader title='PREDICTED Fleet Positioning' subtitle='Fleet watch only; actual hire requirements must be verified.'/>
         <div className='hi-grid-cards'>
           {fleetPositioning.slice(0, 15).map(item => <article key={`${item.location}-${item.equipmentClass}-fleet`}>
-            <small>DEMAND INDEX {item.demandIndex}</small><b>{item.equipmentClass} · {item.location}</b><p>{item.recommendation}</p>
+            <small>HEURISTIC DEMAND INDEX {item.demandIndex}</small><b>{item.equipmentClass} · {item.location}</b><p>{item.recommendation}</p>
           </article>)}
           {!fleetPositioning.length && <EmptyState>No fleet-positioning watch is currently triggered.</EmptyState>}
         </div>
@@ -689,14 +650,14 @@ function EquipmentPage({ dashboard, projects, open }: { dashboard: Dashboard; pr
       <section className='hi-card'>
         <CardHeader title='PREDICTED Equipment Clusters' subtitle='Aggregated from observed work evidence.'/>
         <div className='hi-grid-cards'>
-          {clusters.slice(0, 24).map(item => <article key={`${item.location}-${item.equipmentClass}`}><small>{item.confidence}% confidence</small><b>{item.equipmentClass}</b><p>{item.location} · {item.projectCount} projects · avg priority {item.averagePriority}</p></article>)}
+          {clusters.slice(0, 24).map(item => <article key={`${item.location}-${item.equipmentClass}`}><small>{item.confidence}% heuristic confidence</small><b>{item.equipmentClass}</b><p>{item.location} · {item.projectCount} projects · avg priority {item.averagePriority}</p></article>)}
           {!clusters.length && <EmptyState>No equipment clusters have been inferred yet.</EmptyState>}
         </div>
       </section>
       <section className='hi-card'>
         <CardHeader title='Fleet Watch' subtitle='PREDICTED positioning recommendations only.'/>
         <div className='hi-grid-cards'>
-          {fleet.map(item => <article key={`${item.location}-${item.equipmentClass}-watch`}><small>INDEX {item.demandIndex}</small><b>{item.equipmentClass} · {item.location}</b><p>{item.recommendation}</p></article>)}
+          {fleet.map(item => <article key={`${item.location}-${item.equipmentClass}-watch`}><small>HEURISTIC INDEX {item.demandIndex}</small><b>{item.equipmentClass} · {item.location}</b><p>{item.recommendation}</p></article>)}
           {!fleet.length && <EmptyState>No fleet-positioning recommendation is currently triggered.</EmptyState>}
         </div>
       </section>
@@ -772,8 +733,9 @@ function ReportsPage({ dashboard, reports, generateReport, downloadReport }: { d
   return <div className='hi-stack'>
     <section className='hi-card hi-report-hero'>
       <div><small>EXECUTIVE REPORTING</small><h2>Hire Intelligence Executive Report</h2><p>Current canonical projects, opportunity signals, contractor workload, PREDICTED demand, source health, backfill and calibration.</p></div>
-      <div><button type='button' onClick={generateReport}><FileText size={15}/>Generate preview</button><button type='button' className='primary' onClick={downloadReport}><Download size={15}/>Download PDF</button></div>
+      <div><button type='button' onClick={generateReport}><FileText size={15}/>Save report snapshot</button><button type='button' className='primary' onClick={downloadReport}><Download size={15}/>Download PDF</button></div>
     </section>
+    <section className='hi-card hi-report-preview'><CardHeader title='Current Report Preview' subtitle={summary.headline}/><div className='hi-governance-note'><FileText size={15}/><span><b>Decision view:</b> {summary.highPriorityCount} high-priority projects · {dashboard.metrics?.callNow || 0} CALL NOW · source health {summary.liveFeeds} · {dashboard.universe?.truncated ? 'bounded data window disclosed' : 'current bounded window complete'}.</span></div></section>
     <div className='hi-kpi-grid hi-kpi-grid-6'>
       <article><small>PROJECTS</small><strong>{summary.projectCount}</strong><span>Canonical</span></article>
       <article><small>OPPORTUNITIES</small><strong>{summary.opportunityCount}</strong><span>Current</span></article>
@@ -783,7 +745,7 @@ function ReportsPage({ dashboard, reports, generateReport, downloadReport }: { d
       <article><small>BACKFILL</small><strong>{summary.completedBackfill}</strong><span>Coverage</span></article>
     </div>
     <section className='hi-card'>
-      <CardHeader title='Generated Report History' subtitle='Local history of previews and downloaded reports.'/>
+      <CardHeader title='Generated Report History' subtitle='Saved report history for your signed-in account.'/>
       <div className='hi-activity-list'>
         {reports.map(report => <div key={report.id}><FileText size={15}/><span><b>Executive Intelligence Report</b><small>{report.summary}</small></span><em>{new Date(report.at).toLocaleString('en-AU')}{report.filename ? ` · ${report.filename}` : ''}</em></div>)}
         {!reports.length && <EmptyState>No report snapshots generated yet.</EmptyState>}
@@ -813,18 +775,17 @@ function AlertsPage({ projects, events, open, openProject }: { projects: Project
   </div>;
 }
 
-function SourceAdminPage({ dashboard, runBackfill }: { dashboard: Dashboard; runBackfill: () => void }) {
+function SourceAdminPage({ dashboard }: { dashboard: Dashboard }) {
   return <div className='hi-stack'>
     <div className='hi-kpi-grid hi-kpi-grid-4'>
-      <article><small>CONFIGURED</small><strong>{dashboard.sources.configured}</strong><span>GREEN runnable</span></article>
+      <article><small>CONFIGURED</small><strong>{dashboard.sources.configured}</strong><span>Runnable sources</span></article>
       <article><small>SUCCESSFUL</small><strong>{dashboard.sources.active}</strong><span>Latest status</span></article>
       <article><small>DEFERRED</small><strong>{dashboard.sources.deferred.length}</strong><span>Not running</span></article>
       <article><small>BACKFILL</small><strong>{dashboard.backfill.completedSources}/{dashboard.backfill.totalSources}</strong><span>{dashboard.backfill.processed.toLocaleString()} records</span></article>
     </div>
     <section className='hi-card'>
       <div className='hi-card-toolbar'>
-        <CardHeader title='GREEN / Runtime Sources' subtitle='Current live source health and normalized record counts.'/>
-        <button type='button' className='hi-action-button' onClick={() => void runBackfill()}>Run backfill batch</button>
+        <CardHeader title='Current Source Health' subtitle='Current live source health and normalized record counts.'/>
       </div>
       <div className='hi-source-list'>
         {dashboard.sources.states.map(source => <div key={source.sourceKey}><Database size={15}/><span><b>{source.name}</b><small>{source.recordsFetched} fetched · {source.opportunitiesPromoted || 0} normalized · {source.message || 'provenance retained'}</small></span><em className={`hi-badge ${source.status.toLowerCase()}`}>{source.status}</em></div>)}
@@ -840,7 +801,7 @@ function SourceAdminPage({ dashboard, runBackfill }: { dashboard: Dashboard; run
     </section>
     <section className='hi-card'>
       <CardHeader title='Coverage Candidates' subtitle='Not running until rights, access and technical review are complete.'/>
-      <div className='hi-grid-cards'>{CANDIDATES.map(candidate => <article key={candidate}><small>AMBER · NOT RUNNING</small><b>{candidate}</b><p>Rights, access and technical review required before production admission.</p></article>)}</div>
+      <div className='hi-grid-cards'>{CANDIDATES.map(candidate => <article key={candidate}><small>CANDIDATE · NOT RUNNING</small><b>{candidate}</b><p>Rights, access and technical review required before production admission.</p></article>)}</div>
     </section>
   </div>;
 }
@@ -874,7 +835,7 @@ function ProjectDrawer({ project, close }: { project: Project; close: () => void
       </div>
       <h3>Stage</h3><p>{project.stageLabel} · {project.stageConfidence}% confidence</p><p>{project.stageReason}</p>
       <h3>Companies / contractors</h3><p>{project.contractors.length ? project.contractors.join(' · ') : project.company || 'Contractor not evidenced'}</p>
-      <h3>Equipment demand</h3><p><b>PREDICTED:</b> {project.equipmentPrediction.classes.join(' · ') || 'No equipment class inferred'}</p><p>{project.equipmentPrediction.confidenceBand} confidence · {project.equipmentPrediction.confidence}% · {project.equipmentPrediction.reason}</p><small>Not an observed hire requirement.</small>
+      <h3>Equipment demand</h3><p><b>PREDICTED:</b> {project.equipmentPrediction.classes.join(' · ') || 'No equipment class inferred'}</p><p>{project.equipmentPrediction.confidenceBand} heuristic confidence · {project.equipmentPrediction.confidence}% · {project.equipmentPrediction.reason}</p><small>Not an observed hire requirement.</small>
       <h3>Evidence & provenance</h3>
       <div className='hi-evidence-list'>
         {project.records.map((record, index) => <article key={`${record.sourceKey}-${record.externalId}-${index}`}><b>{record.sourceKey}</b><p>{record.description || record.project}</p><small>{dateLabel(record.observedAt)} · {record.provenance}</small></article>)}

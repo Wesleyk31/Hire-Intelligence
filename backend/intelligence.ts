@@ -1,4 +1,6 @@
 import { db } from '@appdeploy/sdk';
+import { chooseCurrentStage, evidenceTimestamp, groupCanonicalEvidence } from './domain-hardening';
+import { listBounded } from './data-access';
 
 export type IntelligenceSource = {
   key: string;
@@ -17,6 +19,8 @@ export type IntelligenceEvidence = {
   description: string;
   value: string;
   observedAt: string;
+  sourceObservedAt?: string;
+  organisationRole?: 'DELIVERY_CONTRACTOR' | 'OWNER_PROPONENT' | 'APPLICANT_HOLDER' | 'SUPPLIER' | 'OPERATOR' | 'UNKNOWN';
   provenance: string;
 };
 
@@ -34,6 +38,7 @@ type StageSignal = {
 };
 
 type StageSnapshot = {
+  evidenceKeys?: string[];
   projectKey: string;
   stageLabel: StageLabel;
   stageConfidence: number;
@@ -43,6 +48,7 @@ type StageSnapshot = {
 };
 
 export type PilotCalibrationOutcome = {
+  projectId?: string;
   project: string;
   result: 'CONTACTED' | 'REQUIREMENT_CONFIRMED' | 'QUOTED' | 'WON' | 'LOST' | 'FALSE_POSITIVE';
   qa: boolean;
@@ -130,7 +136,7 @@ function sourceReliability(sourceKey: string, source?: IntelligenceSource) {
 }
 
 function freshness(record: IntelligenceEvidence) {
-  const timestamp = Date.parse(record.observedAt);
+  const timestamp = evidenceTimestamp(record);
   if (!timestamp) return 10;
   const ageDays = Math.max(0, (Date.now() - timestamp) / 86400000);
   if (ageDays <= 1) return 100;
@@ -144,7 +150,7 @@ function freshness(record: IntelligenceEvidence) {
 
 function classifyStage(record: IntelligenceEvidence, source?: IntelligenceSource): StageSignal {
   const haystack = [record.project, record.description, record.sourceKey, source?.sector || ''].join(' ').toLowerCase();
-  const base = { sourceKey: record.sourceKey, observedAt: record.observedAt, reliability: sourceReliability(record.sourceKey, source) };
+  const base = { sourceKey: record.sourceKey, observedAt: evidenceTimestamp(record) ? new Date(evidenceTimestamp(record)).toISOString() : '', reliability: sourceReliability(record.sourceKey, source) };
   if (includesAny(haystack, ['completed', 'completion', 'works complete', 'project complete'])) return { ...base, label: 'COMPLETE', confidence: 0.94, reason: 'Published evidence indicates the work is complete.' };
   if (includesAny(haystack, ['shutdown', 'turnaround', 'outage', 'plant stop', 'closure window'])) return { ...base, label: 'SHUTDOWN', confidence: 0.92, reason: 'Published evidence contains a shutdown, turnaround or outage signal.' };
   if (includesAny(haystack, ['maintenance', 'repair', 'rehabilitation', 'renewal', 'asset management'])) return { ...base, label: 'MAINTENANCE', confidence: 0.86, reason: 'Published evidence describes maintenance, repair or asset-renewal work.' };
@@ -193,7 +199,7 @@ function scoreSignalQuality(records: IntelligenceEvidence[], sources: Map<string
 }
 
 function scoreContractorConfidence(records: IntelligenceEvidence[], sources: Map<string, IntelligenceSource>) {
-  const named = records.filter(record => record.company.trim());
+  const named = records.filter(record => record.company.trim() && record.organisationRole === 'DELIVERY_CONTRACTOR');
   if (!named.length) return { score: 0, band: 'LOW' as ConfidenceBand };
   const uniqueCompanies = new Set(named.map(record => normaliseKey(record.company))).size;
   const reliability = named.reduce((sum, record) => sum + sourceReliability(record.sourceKey, sources.get(record.sourceKey)), 0) / named.length;
@@ -216,54 +222,65 @@ function scorePriority(records: IntelligenceEvidence[], stage: StageSignal, equi
 
 export async function buildProjectIntelligence(records: IntelligenceEvidence[], sourceList: IntelligenceSource[]): Promise<ProjectIntelligence[]> {
   const sourceMap = new Map(sourceList.map(source => [source.key, source]));
-  const groups = new Map<string, IntelligenceEvidence[]>();
-  for (const record of records) {
-    const key = normaliseKey(record.project || record.externalId);
-    if (!key) continue;
-    const group = groups.get(key) || [];
-    group.push(record);
-    groups.set(key, group);
-  }
-  const snapshotPage = await db.list<StageSnapshot>('project_stage_snapshots', { limit: 100 });
+  const groups = groupCanonicalEvidence(records);
+  const snapshotPage = await listBounded<StageSnapshot>('project_stage_snapshots', { pageSize: 500, maxItems: 2000 });
   const snapshotByKey = new Map(snapshotPage.items.map(item => [item.projectKey, item]));
+  const aliasOwners = new Map<string, number>();
+  for (const rows of groups.values()) {
+    for (const alias of new Set(rows.map(row => normaliseKey(row.project)))) aliasOwners.set(alias, (aliasOwners.get(alias) || 0) + 1);
+  }
+  const claimedSnapshots = new Set<string>();
+  const emittedProjectKeys = new Set<string>();
   const additions: StageSnapshot[] = [];
   const updates: Array<{ id: string; record: StageSnapshot }> = [];
   const projects: ProjectIntelligence[] = [];
   for (const [projectKey, projectRecords] of groups) {
     const stageSignals = projectRecords.map(record => classifyStage(record, sourceMap.get(record.sourceKey)));
-    stageSignals.sort((a, b) => stageRank[b.label] - stageRank[a.label] || b.confidence - a.confidence || b.observedAt.localeCompare(a.observedAt));
-    const currentStage = stageSignals[0];
-    const previous = snapshotByKey.get(projectKey);
+    const currentStage = chooseCurrentStage(stageSignals, stageRank, 45);
+    const aliases=[...new Set(projectRecords.map(record=>normaliseKey(record.project)).filter(Boolean))];
+    const evidenceKeys = projectRecords.map(row => `${row.sourceKey}:${row.externalId}`).sort();
+    const matched = snapshotPage.items.filter(snapshot => snapshot.evidenceKeys?.some(key => evidenceKeys.includes(key)));
+    const direct = snapshotByKey.get(projectKey);
+    const legacy = aliases.filter(alias => aliasOwners.get(alias) === 1).map(alias => snapshotByKey.get(alias)).filter(Boolean);
+    const candidate = direct || (matched.length === 1 ? matched[0] : undefined) || (legacy.length === 1 ? legacy[0] : undefined);
+    // Current canonical keys belong to their direct groups, even if a split group is visited first.
+    // Check keys as well as snapshot row IDs because old storage can contain duplicate keys.
+    const previous = candidate && !claimedSnapshots.has(candidate.id)
+      && !emittedProjectKeys.has(candidate.projectKey)
+      && (candidate.projectKey === projectKey || !groups.has(candidate.projectKey)) ? candidate : undefined;
+    if (previous) claimedSnapshots.add(previous.id);
+    const stableProjectKey = previous?.projectKey || projectKey;
+    emittedProjectKeys.add(stableProjectKey);
     const uniqueSources = new Set(projectRecords.map(record => record.sourceKey)).size;
     const transitionQualified = currentStage.confidence >= 0.78 && currentStage.reliability >= 0.82 && (uniqueSources >= 2 || currentStage.reliability >= 0.92);
     const advanced = Boolean(previous && transitionQualified && stageRank[currentStage.label] > stageRank[previous.stageLabel] && currentStage.observedAt >= previous.observedAt);
-    const nextSnapshot: StageSnapshot = { projectKey, stageLabel: currentStage.label, stageConfidence: currentStage.confidence, observedAt: currentStage.observedAt, sourceKey: currentStage.sourceKey, reason: currentStage.reason };
+    const nextSnapshot: StageSnapshot = { evidenceKeys, projectKey: stableProjectKey, stageLabel: currentStage.label, stageConfidence: currentStage.confidence, observedAt: currentStage.observedAt, sourceKey: currentStage.sourceKey, reason: currentStage.reason };
     if (!previous) additions.push(nextSnapshot);
-    else if (advanced) updates.push({ id: previous.id, record: nextSnapshot });
+    else if (advanced || JSON.stringify(previous.evidenceKeys) !== JSON.stringify(evidenceKeys)) updates.push({ id: previous.id, record: nextSnapshot });
     const equipmentPrediction = predictEquipment(projectRecords, sourceMap);
     const signalQuality = scoreSignalQuality(projectRecords, sourceMap);
     const priority = scorePriority(projectRecords, currentStage, equipmentPrediction, signalQuality);
     const contractorConfidence = scoreContractorConfidence(projectRecords, sourceMap);
-    const contractors = [...new Set(projectRecords.map(record => record.company.trim()).filter(Boolean))];
+    const contractors = [...new Set(projectRecords.filter(record => record.organisationRole === 'DELIVERY_CONTRACTOR').map(record => record.company.trim()).filter(Boolean))];
     const sources = [...new Set(projectRecords.map(record => record.sourceKey))];
-    const lead = [...projectRecords].sort((a, b) => b.observedAt.localeCompare(a.observedAt))[0];
-    projects.push({ id: projectKey, name: lead.project, location: lead.location, company: contractors[0] || '', contractors, contractorConfidence: contractorConfidence.score, contractorConfidenceBand: contractorConfidence.band, sources, records: projectRecords, evidenceCount: projectRecords.length, value: projectRecords.find(record => record.value && record.value !== 'Not stated')?.value || 'Not stated', stageLabel: currentStage.label, stageConfidence: Math.round(currentStage.confidence * 100), stageReason: currentStage.reason, stageChanged: advanced, previousStage: advanced && previous ? previous.stageLabel : '', stageEvidence: `${currentStage.sourceKey} · ${currentStage.observedAt}`, stageTransitionQualified: transitionQualified, equipmentPrediction, sourceReliability: signalQuality.reliabilityScore, freshnessScore: signalQuality.freshnessScore, corroborationScore: signalQuality.corroborationScore, contradictionPenalty: signalQuality.contradictionPenalty, signalQualityScore: signalQuality.score, signalQualityBand: signalQuality.band, bdmPriority: priority.priority, priorityBand: priority.priority >= 80 ? 'HIGH' : priority.priority >= 60 ? 'MEDIUM' : 'WATCH', priorityFactors: priority.factors });
+    const lead = [...projectRecords].sort((a, b) => evidenceTimestamp(b) - evidenceTimestamp(a))[0];
+    projects.push({ id: stableProjectKey, name: lead.project, location: lead.location, company: contractors[0] || '', contractors, contractorConfidence: contractorConfidence.score, contractorConfidenceBand: contractorConfidence.band, sources, records: projectRecords, evidenceCount: projectRecords.length, value: projectRecords.find(record => record.value && record.value !== 'Not stated')?.value || 'Not stated', stageLabel: currentStage.label, stageConfidence: Math.round(currentStage.confidence * 100), stageReason: currentStage.reason, stageChanged: advanced, previousStage: advanced && previous ? previous.stageLabel : '', stageEvidence: `${currentStage.sourceKey} · ${currentStage.observedAt}`, stageTransitionQualified: transitionQualified, equipmentPrediction, sourceReliability: signalQuality.reliabilityScore, freshnessScore: signalQuality.freshnessScore, corroborationScore: signalQuality.corroborationScore, contradictionPenalty: signalQuality.contradictionPenalty, signalQualityScore: signalQuality.score, signalQualityBand: signalQuality.band, bdmPriority: priority.priority, priorityBand: priority.priority >= 80 ? 'HIGH' : priority.priority >= 60 ? 'MEDIUM' : 'WATCH', priorityFactors: priority.factors });
   }
-  if (updates.length) await db.update('project_stage_snapshots', updates.slice(0, 100));
-  const availableSlots = Math.max(0, 100 - snapshotPage.items.length);
-  if (additions.length && availableSlots) await db.add('project_stage_snapshots', additions.slice(0, availableSlots));
-  return projects.sort((a, b) => b.bdmPriority - a.bdmPriority || b.signalQualityScore - a.signalQualityScore || b.evidenceCount - a.evidenceCount).slice(0, 50);
+  for (let i=0;i<updates.length;i+=500) await db.update('project_stage_snapshots', updates.slice(i,i+500));
+  for (let i=0;i<additions.length;i+=500) await db.add('project_stage_snapshots', additions.slice(i,i+500));
+  return projects.sort((a, b) => b.bdmPriority - a.bdmPriority || b.signalQualityScore - a.signalQualityScore || b.evidenceCount - a.evidenceCount).slice(0, 500);
 }
 
 export function buildCalibrationMetrics(projects: ProjectIntelligence[], outcomes: PilotCalibrationOutcome[]): CalibrationMetrics {
   const reviewedResults = new Set(['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON', 'LOST', 'FALSE_POSITIVE']);
+  const projectById = new Map(projects.map(project => [project.id, project]));
   const projectByKey = new Map(projects.map(project => [normaliseKey(project.name), project]));
   const bands: CalibrationBand[] = ['A', 'B', 'C', 'D'].map(value => ({ band: value as SignalQualityBand, reviewed: 0, confirmed: 0, quoted: 0, won: 0, falsePositive: 0 }));
   let matchedReviewed = 0;
   let unmatchedReviewed = 0;
   for (const outcome of outcomes) {
     if (outcome.qa || !reviewedResults.has(outcome.result)) continue;
-    const project = projectByKey.get(normaliseKey(outcome.project));
+    const project = (outcome.projectId ? projectById.get(outcome.projectId) : undefined) || projectByKey.get(normaliseKey(outcome.project));
     if (!project) { unmatchedReviewed += 1; continue; }
     matchedReviewed += 1;
     const bucket = bands.find(item => item.band === project.signalQualityBand)!;
