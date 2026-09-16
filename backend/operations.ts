@@ -1,3 +1,4 @@
+import { listBounded } from './data-access';
 import { db, type AuthUser } from '@appdeploy/sdk';
 import { validateDemoRequest } from './domain-hardening';
 
@@ -28,11 +29,22 @@ export async function saveDemoRequest(body: unknown) {
   return id ? { ok: true as const, id } : { ok: false as const, error: 'Request save failed.' };
 }
 
+export function validReportHistory(body: unknown) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return false;
+  const input = body as Record<string, unknown>;
+  const count = (value: unknown) => value === undefined || (typeof value === 'number' && Number.isSafeInteger(value) && value >= 0);
+  if (typeof input.headline !== 'string' || !input.headline.trim() || input.headline.length > 500) return false;
+  if (input.filename !== undefined && (typeof input.filename !== 'string' || input.filename.length > 300)) return false;
+  if (input.generatedAt !== undefined && (typeof input.generatedAt !== 'string' || !Number.isFinite(Date.parse(input.generatedAt)))) return false;
+  return count(input.projectCount) && count(input.opportunityCount);
+}
+
 export async function saveReportHistory(user: AuthUser, body: unknown) {
-  const input = (body || {}) as Record<string, unknown>;
+  if (!validReportHistory(body)) return null;
+  const input = body as Record<string, unknown>;
   const record: ReportHistoryRecord = {
     ownerUserId: user.userId,
-    generatedAt: String(input.generatedAt || new Date().toISOString()),
+    generatedAt: new Date().toISOString(),
     headline: String(input.headline || '').slice(0, 500),
     filename: String(input.filename || '').slice(0, 300) || undefined,
     projectCount: Number(input.projectCount || 0),
@@ -43,8 +55,10 @@ export async function saveReportHistory(user: AuthUser, body: unknown) {
 }
 
 export async function listReportHistory(user: AuthUser) {
-  const page = await db.list<ReportHistoryRecord>(`report_history:${user.userId}`, { limit: 100 });
-  return page.items
-    .sort((a, b) => b.generatedAt.localeCompare(a.generatedAt))
-    .slice(0, 50);
+  const page = await listBounded<ReportHistoryRecord>(`report_history:${user.userId}`, { pageSize: 250, maxItems: 1000 });
+  return {
+    reports: [...page.items].sort((a, b) => b.generatedAt.localeCompare(a.generatedAt)).slice(0, 50),
+    loaded: page.items.length,
+    truncated: page.truncated,
+  };
 }

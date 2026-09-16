@@ -1,0 +1,122 @@
+{
+  "results": [
+    {
+      "label": "mining-and-exploration:titles_title_granted",
+      "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_granted&outputFormat=application%2Fjson&count=5",
+      "at": "2026-09-16T01:22:00.689Z",
+      "status": 200,
+      "topLevelKeys": [
+        "type",
+        "features",
+        "totalFeatures",
+        "numberMatched",
+        "numberReturned",
+        "timeStamp",
+        "crs",
+        "bbox"
+      ],
+      "rows": 5,
+      "fields": [
+        "tas_id",
+        "title",
+        "holder",
+        "company",
+        "grant_date",
+        "expiry_date",
+        "last_renewed",
+        "groups",
+        "minerals",
+        "act_year",
+        "title_code",
+        "title_no",
+        "resource",
+        "title_area",
+        "operation",
+        "location_distance"
+      ],
+      "total": 2300
+    },
+    {
+      "label": "mining-and-exploration:titles_title_applications",
+      "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_applications&outputFormat=application%2Fjson&count=5",
+      "at": "2026-09-16T01:22:02.202Z",
+      "status": 200,
+      "topLevelKeys": [
+        "type",
+        "features",
+        "totalFeatures",
+        "numberMatched",
+        "numberReturned",
+        "timeStamp",
+        "crs",
+        "bbox"
+      ],
+      "rows": 5,
+      "fields": [
+        "tas_id",
+        "application",
+        "appl_code",
+        "appl_no",
+        "applicant",
+        "appl_date",
+        "groups",
+        "minerals",
+        "act_year",
+        "resource",
+        "title_area",
+        "operation",
+        "location_distance"
+      ],
+      "total": 113
+    },
+    {
+      "label": "mineral-occurrence:mineral_occurrence_operating_mines",
+      "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mineral-occurrence%3Amineral_occurrence_operating_mines&outputFormat=application%2Fjson&count=5",
+      "at": "2026-09-16T01:22:02.523Z",
+      "status": 200,
+      "topLevelKeys": [
+        "type",
+        "features",
+        "totalFeatures",
+        "numberMatched",
+        "numberReturned",
+        "timeStamp",
+        "crs",
+        "bbox"
+      ],
+      "rows": 5,
+      "fields": [
+        "occurrence_id",
+        "comm_type",
+        "operation",
+        "deposit_name",
+        "operation_state",
+        "number_of_mines",
+        "colour"
+      ],
+      "total": 52
+    },
+    {
+      "label": "AusTender pagination",
+      "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T00:00:00Z/2026-09-16T00:00:00Z",
+      "at": "2026-09-16T01:22:02.848Z",
+      "status": 200,
+      "topLevelKeys": [
+        "uri",
+        "publisher",
+        "publishedDate",
+        "license",
+        "version",
+        "releases",
+        "extensions",
+        "links"
+      ],
+      "rows": 100,
+      "fields": [],
+      "links": {
+        "self": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T00:00:00Z/2026-09-16T00:00:00Z",
+        "next": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T00:00:00Z/2026-09-16T00:00:00Z?cursor=VfxcRwAoQW9ONGx2ZkwwYUFES1VOT05ESTNOamt3TnlsRFRqUXlOelk1TURjPWQ&prevcursor=initial&lastcursor=initial"
+      }
+    }
+  ]
+}

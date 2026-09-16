@@ -104,7 +104,7 @@ export function groupCanonicalEvidence<T extends EvidenceLike>(records: T[]): Ma
 
 const parseTimestamp = (value?: string | number) => {
   let parsed = 0;
-  if (typeof value === 'number' && value >= 1e12) parsed = value;
+  if (typeof value === 'number' && Math.abs(value) >= 1e10) parsed = value;
   else if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}(?:T|$)/.test(value)) parsed = Date.parse(value);
   // Expiry dates, unknown serial formats and future dates cannot establish recency.
   return Number.isFinite(parsed) && parsed >= Date.UTC(1900, 0, 1) && parsed <= Date.now() ? parsed : 0;
@@ -138,14 +138,20 @@ function firstValue(raw: Record<string, unknown>, keys: string[]) {
   return '';
 }
 
-export function inferOrganisation(_sourceKey: string, raw: Record<string, unknown>) {
+export function inferOrganisation(sourceKey: string, raw: Record<string, unknown>) {
   const contractor = firstValue(raw, ['contractorname', 'contractor']);
   if (contractor) return { name: contractor, role: 'DELIVERY_CONTRACTOR' as OrganisationRole };
   const supplier = firstValue(raw, ['suppliername', 'supplier']);
   if (supplier) return { name: supplier, role: 'SUPPLIER' as OrganisationRole };
   const operator = firstValue(raw, ['operatorname', 'operator']);
   if (operator) return { name: operator, role: 'OPERATOR' as OrganisationRole };
-  const proponent = firstValue(raw, ['proponent', 'clientname', 'client', 'ownername', 'owner']);
+  const explicitHolder = firstValue(raw, ['permitholders', 'permitholder', 'authorisedholder', 'authorizedholder', 'holder1']);
+  if (explicitHolder) return { name: explicitHolder, role: 'APPLICANT_HOLDER' as OrganisationRole };
+  const titleRegister = /^qld-.*resource-authorities$|^wa-(?:mining-tenements|tenements-.*)$|^tas-.*(?:licences|leases|tenements)$/.test(sourceKey);
+  const titleHolder = titleRegister ? firstValue(raw, ['clientname', 'owner', 'holder', 'ownname']) : '';
+  if (titleHolder) return { name: titleHolder, role: 'APPLICANT_HOLDER' as OrganisationRole };
+  const aemoProponent = sourceKey.startsWith('aemo-') ? firstValue(raw, ['organisationname', 'organizationname']) : '';
+  const proponent = aemoProponent || firstValue(raw, ['proponent', 'siteowner', 'clientname', 'client', 'ownername', 'owner']);
   if (proponent) return { name: proponent, role: 'OWNER_PROPONENT' as OrganisationRole };
   const applicant = firstValue(raw, ['applicant', 'holder', 'ownname']);
   if (applicant) return { name: applicant, role: 'APPLICANT_HOLDER' as OrganisationRole };
@@ -156,7 +162,7 @@ export function inferOrganisation(_sourceKey: string, raw: Record<string, unknow
 
 export function extractSourceDate(raw: Record<string, unknown>, _collectionTime: string) {
   const entries = new Map(Object.entries(raw).map(([key, value]) => [key.toLowerCase().replace(/[^a-z0-9]/g, ''), value]));
-  for (const key of ['issuedate', 'awarddate', 'contractdate', 'publishedat', 'publicationdate', 'lastmodified', 'updatedat', 'created', 'date']) {
+  for (const key of ['surveylatestupdatedate', 'kcidatatnspvalidationdate', 'lastmodified', 'updatedat', 'completiondate', 'issuedate', 'effectivedate', 'granteddate', 'grantdate', 'awardcontractdate', 'awarddate', 'contractdate', 'publishedat', 'publicationdate', 'created', 'date']) {
     const value = entries.get(key);
     if (typeof value !== 'string' && typeof value !== 'number') continue;
     const timestamp = parseTimestamp(value);
@@ -241,6 +247,6 @@ export function validateDemoRequest(input: Record<string, unknown>) {
   if (honeypot) return { ok: false as const, error: 'Rejected' };
   if (name.length < 2 || company.length < 2) return { ok: false as const, error: 'Name and company are required.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false as const, error: 'A valid business email is required.' };
-  if (message.length > 2000 || phone.length > 80) return { ok: false as const, error: 'Input is too long.' };
+  if (name.length > 200 || company.length > 300 || email.length > 254 || message.length > 2000 || phone.length > 80) return { ok: false as const, error: 'Input is too long.' };
   return { ok: true as const, value: { name, company, email, phone, message } };
 }

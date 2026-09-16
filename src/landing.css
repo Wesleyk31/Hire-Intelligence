@@ -202,7 +202,7 @@
 .hi2-footer-links button { font-size: 8px; }
 .hi2-footer-links span { font-weight: 900; font-size: 13px; }
 .hi2-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 2000; display: grid; place-items: center; padding: 20px; }
-.hi2-modal { width: min(440px,94vw); background: #fff; border-radius: 8px; padding: 30px; position: relative; box-shadow: 0 24px 70px rgba(0,0,0,.28); }
+.hi2-modal { max-height: calc(100dvh - 40px); overflow-y: auto; box-sizing: border-box; width: min(440px,94vw); background: #fff; border-radius: 8px; padding: 30px; position: relative; box-shadow: 0 24px 70px rgba(0,0,0,.28); }
 .hi2-modal-close { position: absolute; right: 12px; top: 12px; border: 0; background: #f3f4f5; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; }
 .hi2-modal h2 { font-size: 28px; letter-spacing: -.04em; margin: 2px 0 10px; }
 .hi2-modal p { font-size: 12px; line-height: 1.5; color: #606872; margin: 0 0 18px; }

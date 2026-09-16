@@ -1,0 +1,280 @@
+{
+  "startedAt": "2026-09-16T01:30:33.078Z",
+  "finishedAt": "2026-09-16T01:30:38.586Z",
+  "methodology": {
+    "readOnly": true,
+    "auditClock": "2026-09-16T01:30:33.078Z",
+    "concurrency": 1,
+    "sampleLimit": 5,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "redirects": "follow",
+    "parser": "Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.",
+    "scope": "All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted."
+  },
+  "codeHashes": {
+    "index": "d32ddfd506d815ea9f3885697ea673bcde51e2608ead03f3441e7ccea87962cf",
+    "backfillFetch": "4e03836bb68f1d6950f47bacf0fd5dd1496c8beb407cd461daef428d0a99f079",
+    "domainHardening": "76e71b9bceab6169f5f8536a4cb2cf89d51577fd7df2243bccd11fb971250b5e",
+    "sourceHelpers": "55f284dc9fa04a0a449a85f68b93f8c87dab87933d473fd38631919634398bd2"
+  },
+  "counts": {
+    "configured": 66,
+    "active": 53,
+    "disabled": 13,
+    "historicalOnly": 4,
+    "probed": 2,
+    "liveRows": 2,
+    "liveErrors": 0,
+    "liveEmpty": 0,
+    "metadataOnly": 0
+  },
+  "results": [
+    {
+      "key": "austender-contract-notices",
+      "name": "AusTender Contract Notices",
+      "mode": "active",
+      "method": "OCDS",
+      "endpoint": "https://api.tenders.gov.au/ocds/findByDates/contractPublished",
+      "provenance": "https://data.gov.au/data/dataset/historical-australian-government-contract-data",
+      "startedAt": "2026-09-16T01:30:33.368Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "title",
+          "description",
+          "supplier",
+          "location",
+          "value",
+          "date"
+        ],
+        "roles": {
+          "SUPPLIER": 40
+        },
+        "datedRows": 40,
+        "oldestSourceDate": "2026-09-15T05:28:33.000Z",
+        "newestSourceDate": "2026-09-15T23:59:14.000Z",
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 40
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 100,
+        "next": 0,
+        "completed": false,
+        "hasNextPage": true,
+        "anchorAt": "2026-09-16T01:30:33.078Z",
+        "rawFieldNames": [
+          "title",
+          "description",
+          "supplier",
+          "location",
+          "value",
+          "date"
+        ],
+        "datedRows": 100,
+        "roles": [
+          "SUPPLIER"
+        ],
+        "nextPageProbe": {
+          "status": "ROWS",
+          "rows": 100,
+          "overlapIds": 0,
+          "hasNextPage": true,
+          "next": 0
+        }
+      },
+      "requests": [
+        {
+          "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:30:33Z/2026-09-16T01:30:33Z",
+          "startedAt": "2026-09-16T01:30:33.369Z",
+          "status": 200,
+          "finalUrl": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:30:33Z/2026-09-16T01:30:33Z",
+          "redirected": false,
+          "bytes": 184698,
+          "contentType": "application/json",
+          "topLevelKeys": [
+            "uri",
+            "publisher",
+            "publishedDate",
+            "license",
+            "version",
+            "releases",
+            "extensions",
+            "links"
+          ],
+          "responseRows": 100,
+          "sampleFieldNames": [
+            "ocid",
+            "id",
+            "date",
+            "initiationType",
+            "language",
+            "parties",
+            "awards",
+            "contracts",
+            "tag",
+            "tender"
+          ],
+          "durationMs": 1689
+        },
+        {
+          "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:30:33Z/2026-09-16T01:30:33Z?cursor=VfxcRwAoQW9ONGx2ZkwwYUFES1VOT05ESTNOamt3TnlsRFRqUXlOelk1TURjPWQ&lastcursor=initial&prevcursor=initial",
+          "startedAt": "2026-09-16T01:30:35.096Z",
+          "status": 200,
+          "finalUrl": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:30:33Z/2026-09-16T01:30:33Z?cursor=VfxcRwAoQW9ONGx2ZkwwYUFES1VOT05ESTNOamt3TnlsRFRqUXlOelk1TURjPWQ&lastcursor=initial&prevcursor=initial",
+          "redirected": false,
+          "bytes": 185454,
+          "contentType": "application/json",
+          "topLevelKeys": [
+            "uri",
+            "publisher",
+            "publishedDate",
+            "license",
+            "version",
+            "releases",
+            "extensions",
+            "links"
+          ],
+          "responseRows": 100,
+          "sampleFieldNames": [
+            "ocid",
+            "id",
+            "date",
+            "initiationType",
+            "language",
+            "parties",
+            "awards",
+            "contracts",
+            "tag",
+            "tender"
+          ],
+          "durationMs": 1609
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "melbourne-building-permits",
+      "name": "City of Melbourne Building Permits",
+      "mode": "active",
+      "method": "OPENDATASOFT",
+      "endpoint": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=40&order_by=issue_date%20desc",
+      "provenance": "https://data.melbourne.vic.gov.au/explore/dataset/building-permits/",
+      "startedAt": "2026-09-16T01:30:36.713Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "council_ref",
+          "permit_number",
+          "issue_date",
+          "address",
+          "desc_of_works",
+          "estimated_cost_of_works",
+          "rbs_number",
+          "commence_by_date",
+          "completed_by_date",
+          "permit_certificate_type"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2026-09-08T00:00:00.000Z",
+        "newestSourceDate": "2026-09-09T00:00:00.000Z",
+        "uniqueIds": 3,
+        "normalizedProjectIsExternalId": 5
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "council_ref",
+          "permit_number",
+          "issue_date",
+          "address",
+          "desc_of_works",
+          "estimated_cost_of_works",
+          "rbs_number",
+          "commence_by_date",
+          "completed_by_date",
+          "permit_certificate_type"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5&order_by=issue_date+desc&where=issue_date+%3C%3D+now%28%29",
+          "startedAt": "2026-09-16T01:30:36.713Z",
+          "status": 200,
+          "finalUrl": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5&order_by=issue_date+desc&where=issue_date+%3C%3D+now%28%29",
+          "redirected": false,
+          "bytes": 2089,
+          "contentType": "application/json; charset=utf-8",
+          "topLevelKeys": [
+            "total_count",
+            "results"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "council_ref",
+            "permit_number",
+            "issue_date",
+            "address",
+            "desc_of_works",
+            "estimated_cost_of_works",
+            "rbs_number",
+            "commence_by_date",
+            "completed_by_date",
+            "permit_certificate_type"
+          ],
+          "total": 184671,
+          "durationMs": 1476
+        },
+        {
+          "url": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+          "startedAt": "2026-09-16T01:30:38.194Z",
+          "status": 200,
+          "finalUrl": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+          "redirected": false,
+          "bytes": 2213,
+          "contentType": "application/json; charset=utf-8",
+          "topLevelKeys": [
+            "total_count",
+            "results"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "council_ref",
+            "permit_number",
+            "issue_date",
+            "address",
+            "desc_of_works",
+            "estimated_cost_of_works",
+            "rbs_number",
+            "commence_by_date",
+            "completed_by_date",
+            "permit_certificate_type"
+          ],
+          "total": 184740,
+          "durationMs": 390
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    }
+  ]
+}

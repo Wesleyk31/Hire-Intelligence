@@ -1,3 +1,5 @@
+import { evidenceTimestamp } from './domain-hardening';
+import { groupReviewedOutcomes } from './calibration';
 import type { ProjectIntelligence } from './intelligence';
 
 export type CommercialSource = { key: string; territory: string; sector: string };
@@ -21,10 +23,15 @@ function projectText(project: ProjectIntelligence) {
 
 function eventSignals(project: ProjectIntelligence) {
   const text = projectText(project);
-  const signals: Array<{ type: EventType; projectId: string; project: string; location: string; confidence: number; reason: string; provenance: string[] }> = [];
+  const recordText = (record: ProjectIntelligence['records'][number]) => `${record.project} ${record.description} ${record.sourceKey}`.toLowerCase();
+  const eventDate = (matches: (record: ProjectIntelligence['records'][number]) => boolean) => {
+    const latest = Math.max(0, ...project.records.filter(matches).map(evidenceTimestamp));
+    return latest ? new Date(latest).toISOString() : '';
+  };
+  const signals: Array<{ type: EventType; detectedAt: string; projectId: string; project: string; location: string; confidence: number; reason: string; provenance: string[] }> = [];
   const add = (type: EventType, terms: string[], reason: string, bonus = 0) => {
     if (!contains(text, terms)) return;
-    signals.push({ type, projectId: project.id, project: project.name, location: project.location, confidence: clamp(Math.round(project.signalQualityScore * 0.7 + project.stageConfidence * 0.2 + bonus), 0, 96), reason, provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
+    signals.push({ type, detectedAt: eventDate(record => contains(recordText(record), terms)), projectId: project.id, project: project.name, location: project.location, confidence: clamp(Math.round(project.signalQualityScore * 0.7 + project.stageConfidence * 0.2 + bonus), 0, 96), reason, provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
   };
   add('SHUTDOWN', ['shutdown', 'turnaround', 'plant stop', 'closure window'], 'Published evidence contains a shutdown or turnaround signal.', 8);
   add('OUTAGE', ['outage', 'planned outage', 'maintenance outage'], 'Published evidence contains an outage signal.', 7);
@@ -33,11 +40,10 @@ function eventSignals(project: ProjectIntelligence) {
   add('MOBILISATION', ['mobilisation', 'mobilization', 'site establishment', 'site setup', 'early works'], 'Published evidence indicates mobilisation, early works or site establishment.', 6);
   add('MAINTENANCE', ['maintenance', 'repair', 'rehabilitation', 'renewal', 'asset management'], 'Published evidence describes maintenance, repair or renewal work.', 4);
   if (project.stageLabel === 'PROCUREMENT') add('PROCUREMENT', ['tender', 'procurement', 'request for tender', 'expression of interest'], 'Project is in an evidence-derived procurement stage.', 5);
-  if (project.stageLabel === 'AWARDED') signals.push({ type: 'AWARD', projectId: project.id, project: project.name, location: project.location, confidence: clamp(project.stageConfidence, 0, 96), reason: 'Project has evidence supporting an awarded-contract stage.', provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
-  if (project.stageLabel === 'APPROVAL') signals.push({ type: 'APPROVAL', projectId: project.id, project: project.name, location: project.location, confidence: clamp(project.stageConfidence, 0, 96), reason: 'Project has approval/permit evidence.', provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
+  if (project.stageLabel === 'AWARDED') signals.push({ type: 'AWARD', detectedAt: eventDate(record => record.sourceKey.includes('contract') || contains(recordText(record), ['contract awarded', 'award date', 'awarded contract'])), projectId: project.id, project: project.name, location: project.location, confidence: clamp(project.stageConfidence, 0, 96), reason: 'Project has evidence supporting an awarded-contract stage.', provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
+  if (project.stageLabel === 'APPROVAL') signals.push({ type: 'APPROVAL', detectedAt: eventDate(record => /environmental|granted/.test(record.sourceKey) || contains(recordText(record), ['approval', 'approved', 'permit', 'authority granted'])), projectId: project.id, project: project.name, location: project.location, confidence: clamp(project.stageConfidence, 0, 96), reason: 'Project has approval/permit evidence.', provenance: [...new Set(project.records.map(record => record.provenance))].slice(0, 4) });
   add('NEGATIVE', ['cancelled', 'canceled', 'withdrawn', 'abandoned', 'deferred', 'postponed', 'on hold', 'suspended'], 'Published evidence contains a negative, deferred or cancellation signal.', 3);
-  const detectedAt = [...project.records].sort((a, b) => b.observedAt.localeCompare(a.observedAt))[0]?.observedAt || '';
-  return signals.map(signal => ({ ...signal, detectedAt, stage: project.stageLabel, bdmPriority: project.bdmPriority, priorityBand: project.priorityBand, action: actionFor(project) }));
+  return signals.map(signal => ({ ...signal, stage: project.stageLabel, bdmPriority: project.bdmPriority, priorityBand: project.priorityBand, action: actionFor(project) }));
 }
 
 function actionFor(project: ProjectIntelligence) {
@@ -61,10 +67,6 @@ function evidenceNeeded(project: ProjectIntelligence) {
 }
 
 export function buildCommercialIntelligence(projects: ProjectIntelligence[], outcomes: CommercialOutcome[], sources: CommercialSource[]) {
-  const realOutcomes = outcomes.filter(outcome => !outcome.qa);
-  const projectById = new Map(projects.map(project => [project.id, project]));
-  const projectByName = new Map(projects.map(project => [normalise(project.name), project]));
-  const resolveProject = (outcome: CommercialOutcome) => (outcome.projectId ? projectById.get(outcome.projectId) : undefined) || projectByName.get(normalise(outcome.project));
 
   const pilotQueue = projects.filter(project => project.stageLabel !== 'COMPLETE').slice(0, 50).map((project, index) => ({ rank: index + 1, projectId: project.id, project: project.name, location: project.location, stage: project.stageLabel, bdmPriority: project.bdmPriority, priorityBand: project.priorityBand, signalQuality: project.signalQualityScore, signalBand: project.signalQualityBand, contractors: project.contractors, equipment: project.equipmentPrediction.classes, equipmentLabel: 'PREDICTED' as const, action: actionFor(project), evidenceNeeded: evidenceNeeded(project) }));
 
@@ -90,24 +92,21 @@ export function buildCommercialIntelligence(projects: ProjectIntelligence[], out
   const fleetPositioning = equipmentClusters.filter(cluster => cluster.projectCount >= 2 || cluster.averagePriority >= 65).slice(0, 15).map(cluster => ({ ...cluster, recommendation: `PREDICTED watch: review ${cluster.equipmentClass} fleet availability for ${cluster.location}; verify actual hire requirements before moving assets.`, demandIndex: clamp(Math.round(cluster.averagePriority * 0.75 + Math.min(25, cluster.projectCount * 5)), 0, 100) }));
 
   const deciles = Array.from({ length: 10 }, (_, index) => ({ decile: index + 1, reviewed: 0, confirmed: 0, quoted: 0, won: 0, falsePositive: 0 }));
-  let linkedRealOutcomes = 0;
-  let unmatchedRealOutcomes = 0;
-  for (const outcome of realOutcomes) {
-    if (!['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON', 'LOST', 'FALSE_POSITIVE'].includes(outcome.result)) continue;
-    const project = resolveProject(outcome);
-    if (!project) { unmatchedRealOutcomes += 1; continue; }
-    linkedRealOutcomes += 1;
+  const { groups, unmatched } = groupReviewedOutcomes(projects, outcomes);
+  const linkedRealOutcomes = groups.length;
+  const unmatchedRealOutcomes = unmatched;
+  for (const { project, results } of groups) {
     const decile = clamp(Math.floor(project.bdmPriority / 10) + 1, 1, 10);
     const bucket = deciles[decile - 1]; bucket.reviewed += 1;
-    if (['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON'].includes(outcome.result)) bucket.confirmed += 1;
-    if (['QUOTED', 'WON'].includes(outcome.result)) bucket.quoted += 1;
-    if (outcome.result === 'WON') bucket.won += 1;
-    if (outcome.result === 'FALSE_POSITIVE') bucket.falsePositive += 1;
+    if (['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON'].some(result => results.has(result))) bucket.confirmed += 1;
+    if (results.has('QUOTED') || results.has('WON')) bucket.quoted += 1;
+    if (results.has('WON')) bucket.won += 1;
+    if (results.has('FALSE_POSITIVE')) bucket.falsePositive += 1;
   }
 
   const sourceCoverage = [...new Set(sources.map(source => source.territory))].sort().map(territory => ({ territory, feedCount: sources.filter(source => source.territory === territory).length, sectors: [...new Set(sources.filter(source => source.territory === territory).map(source => source.sector))].sort() }));
   const scopeProgram = [
-    { from: 2001, to: 2020, name: 'Commercial measurement & calibration', status: linkedRealOutcomes ? 'OPERATIONAL' : 'DATA_GATED', note: linkedRealOutcomes ? `${linkedRealOutcomes} genuine reviewed outcomes linked to projects.` : 'Framework operational; genuine linked BDM outcomes are required before conversion calibration can be meaningful.' },
+    { from: 2001, to: 2020, name: 'Commercial measurement & calibration', status: linkedRealOutcomes ? 'OPERATIONAL' : 'DATA_GATED', note: linkedRealOutcomes ? `${linkedRealOutcomes} distinct projects with genuine reviewed outcomes.` : 'Framework operational; genuine linked BDM outcomes are required before conversion calibration can be meaningful.' },
     { from: 2021, to: 2050, name: 'Event, transition, contractor & action intelligence', status: 'OPERATIONAL', note: 'Evidence-derived event detection, contractor workload, pilot queue and action guidance are active.' },
     { from: 2051, to: 2100, name: 'National coverage expansion', status: 'SOURCE_GATED', note: 'National ingestion framework is active; additional feeds are admitted only after licence, provenance and machine-readable access verification.' },
     { from: 2101, to: 2130, name: 'Proprietary outcome learning', status: linkedRealOutcomes >= 20 ? 'OPERATIONAL' : 'DATA_GATED', note: linkedRealOutcomes >= 20 ? 'Outcome calibration has enough linked observations to begin comparison.' : 'Requires a larger genuine outcome sample; no synthetic performance history is generated.' },

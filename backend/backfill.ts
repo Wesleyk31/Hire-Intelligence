@@ -1,7 +1,7 @@
 import { db } from '@appdeploy/sdk';
-import { collectBackfillPage, normalizeEvidence, type BackfillSource, type Evidence } from './backfill-fetch';
+import { collectBackfillPage, normalizeEvidence, type BackfillSource, type BackfillContext, type Evidence } from './backfill-fetch';
 
-type Cursor = { sourceKey: string; cursor: number; processed: number; completed: boolean; lastRun: string; lastError: string };
+type Cursor = { sourceKey: string; cursor: number; processed: number; completed: boolean; lastRun: string; lastError: string; nextUrl?: string; context?: BackfillContext };
 type Control = { nextIndex: number; runs: number; lastSource: string; lastRun: string };
 type EvidencePage = { sourceKey: string; cursorStart: number; cursorEnd: number; count: number; createdAt: string; events: Evidence[] };
 
@@ -39,7 +39,7 @@ export async function getBackfillStatus(sources: BackfillSource[]) {
     if (!cursor?.completed) { nextSource = source.key; break; }
   }
   const lastErrorCursor = [...cursors].filter(cursor => cursor.lastError).sort((a, b) => b.lastRun.localeCompare(a.lastRun))[0];
-  return { processed, completedSources, totalSources: sources.length, nextSource: nextSource || 'COMPLETE', lastSource: control?.lastSource || '', lastRun: control?.lastRun || '', lastError: lastErrorCursor ? lastErrorCursor.sourceKey + ': ' + lastErrorCursor.lastError : '', cursors: cursors.map(cursor => ({ sourceKey: cursor.sourceKey, cursor: cursor.cursor, processed: cursor.processed, completed: cursor.completed, lastRun: cursor.lastRun, lastError: cursor.lastError })) };
+  return { processed, completedSources, totalSources: sources.length, nextSource: nextSource || 'COMPLETE', lastSource: control?.lastSource || '', lastRun: control?.lastRun || '', lastError: lastErrorCursor ? lastErrorCursor.sourceKey + ': ' + lastErrorCursor.lastError : '', cursors: cursors.map(cursor => ({ sourceKey: cursor.sourceKey, cursor: cursor.cursor, processed: cursor.processed, completed: cursor.completed, lastRun: cursor.lastRun, lastError: cursor.lastError, hasNextPage: Boolean(cursor.nextUrl) })) };
 }
 
 export async function runBackfillBatch(sources: BackfillSource[]) {
@@ -59,10 +59,10 @@ export async function runBackfillBatch(sources: BackfillSource[]) {
   const current: Cursor = existing || { sourceKey: source.key, cursor: 0, processed: 0, completed: false, lastRun: '', lastError: '' };
   const now = new Date().toISOString();
   try {
-    const page = await collectBackfillPage(source, current.cursor);
+    const page = await collectBackfillPage(source, current.cursor, current.nextUrl, current.context);
     const events = page.rows.map(row => normalizeEvidence(source, row, now));
     await persistPage(source, current.cursor, page.next, events);
-    await saveCursor({ sourceKey: source.key, cursor: page.next, processed: current.processed + events.length, completed: page.completed, lastRun: now, lastError: '' });
+    await saveCursor({ sourceKey: source.key, cursor: page.next, processed: current.processed + events.length, completed: page.completed, nextUrl: page.nextUrl || '', context: page.context || current.context || {}, lastRun: now, lastError: '' });
   } catch (cause) {
     const message = cause instanceof Error ? cause.message : 'BACKFILL_FAILED';
     console.warn('HIRER_BACKFILL_FAILED', source.key, message);

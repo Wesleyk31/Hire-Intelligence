@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-09-16T01:18:18.7929102Z",
+  "authentication": "None, fresh anonymous requests",
+  "checks": [
+    {
+      "path": "/api/_healthcheck",
+      "status": 200,
+      "contentType": [
+        "application/json"
+      ],
+      "arrayRows": null,
+      "keys": [
+        "message",
+        "engine",
+        "sources",
+        "deferred"
+      ]
+    },
+    {
+      "path": "/api/public/summary",
+      "status": 404,
+      "contentType": [
+        "application/json"
+      ],
+      "arrayRows": null,
+      "keys": "error"
+    },
+    {
+      "path": "/api/reports/history",
+      "status": 404,
+      "contentType": [
+        "application/json"
+      ],
+      "arrayRows": null,
+      "keys": "error"
+    },
+    {
+      "path": "/api/pilot/outcomes",
+      "status": 200,
+      "contentType": [
+        "application/json"
+      ],
+      "arrayRows": null,
+      "keys": null
+    }
+  ],
+  "browserEvidence": ".local/live-audit/live-check.json",
+  "note": "Fresh Chrome context observed unauthenticated dashboard200 on public homepage. This is the older deployed baseline, not locally repaired code."
+}

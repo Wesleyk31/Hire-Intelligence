@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@appdeploy/client';
 import DemoRequestForm from './DemoRequestForm';
+import { useDialogFocus } from './useDialogFocus';
 import { PRIVACY_SECTIONS, TERMS_SECTIONS } from './legal-content';
 import { ArrowRight, BarChart3, BellRing, Building2, HardHat, LineChart, Radar, ShieldCheck, Target, Users, Wrench, X } from 'lucide-react';
 import './landing.css';
@@ -204,6 +205,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
   };
   const [dashboard, setDashboard] = useState<LandingDashboard | null>(null);
   const [demoOpen, setDemoOpen] = useState(false);
+  const demoRef = useDialogFocus(demoOpen, () => setDemoOpen(false));
   const [publicPage, setPublicPage] = useState<PublicPage>(() => publicPageFromHash());
 
   useEffect(() => {
@@ -221,6 +223,8 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
     window.addEventListener('hashchange', syncPage);
     return () => window.removeEventListener('hashchange', syncPage);
   }, []);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [publicPage]);
 
   const stats = useMemo(() => ({
     projects: dashboard?.metrics?.active || 0,
@@ -262,7 +266,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
     </header>
 
     {publicPage === 'home' ? <main>
-      <section className='hi2-hero' id='products'>
+      <section className='hi2-hero' id='home-products'>
         <div className='hi2-hero-copy'>
           <div className='hi2-eyebrow'>REAL SIGNALS. REAL OPPORTUNITY.</div>
           <h1>See what’s<br/>next in <span>construction.</span></h1>
@@ -313,7 +317,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
         </div>
       </section>
 
-      <section className='hi2-features' id='solutions'>
+      <section className='hi2-features' id='home-solutions'>
         {FEATURES.map(feature => <article className='hi2-feature' key={feature.key}>
           <div className={`hi2-sprite-photo hi2-photo-${feature.key}`} aria-hidden='true'/>
           <div className='hi2-feature-label'><FeatureIcon type={feature.icon}/><span>{feature.eyebrow}</span></div>
@@ -323,7 +327,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
         </article>)}
       </section>
 
-      <section className='hi2-proof' id='industries'>
+      <section className='hi2-proof' id='home-industries'>
         <div className='hi2-positioning'>
           <span>“</span>
           <p>Hire Intelligence gives rental teams a genuine head start: earlier visibility, clearer fleet planning and stronger focus on the opportunities that matter.</p>
@@ -338,19 +342,19 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
         </div>
       </section>
 
-      <section className='hi2-cta' id='insights'>
+      <section className='hi2-cta' id='home-insights'>
         <div><h2>See further. <span>Hire smarter.</span></h2><p>Turn market signals into real business advantage.</p></div>
         <button className='hi2-red-button hi2-large' onClick={() => setDemoOpen(true)}>Get a demo <ArrowRight size={16}/></button>
       </section>
     </main> : <PublicPageView page={publicPage} stats={stats} onExplore={onExplore} onDemo={() => setDemoOpen(true)}/>}
 
-    <footer className='hi2-footer' id='about'>
+    <footer className='hi2-footer' id='home-about'>
       <div className='hi2-footer-brand'><span className='hi2-slash'/><strong>Hire Intelligence</strong><small>A clearer tomorrow for the hire industry.</small></div>
       <div className='hi2-footer-links'><button onClick={() => openPublicPage('privacy')}>Privacy</button><button onClick={() => openPublicPage('terms')}>Terms</button><button onClick={() => openPublicPage('contact')}>Contact</button></div>
     </footer>
 
     {demoOpen && <div className='hi2-modal-backdrop' onClick={() => setDemoOpen(false)}>
-      <section className='hi2-modal' onClick={event => event.stopPropagation()} aria-modal='true' role='dialog' aria-label='Request a Hire Intelligence demo'>
+      <section ref={demoRef} tabIndex={-1} className='hi2-modal' onClick={event => event.stopPropagation()} aria-modal='true' role='dialog' aria-label='Request a Hire Intelligence demo'>
         <button className='hi2-modal-close' onClick={() => setDemoOpen(false)} aria-label='Close'><X size={18}/></button>
         <div className='hi2-eyebrow'>REQUEST A DEMO</div>
         <h2>See Hire Intelligence in action.</h2>

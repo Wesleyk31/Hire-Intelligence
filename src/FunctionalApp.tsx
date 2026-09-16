@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import GeoMap from './GeoMap';
+import { useDialogFocus } from './useDialogFocus';
 import { buildExecutiveReportSummary, downloadExecutivePdf } from './reporting';
 import './internal-functional.css';
 
@@ -34,6 +35,7 @@ type Evidence = {
   provenance: string;
   description: string;
   observedAt: string;
+  sourceObservedAt?: string;
   value: string;
 };
 
@@ -241,6 +243,7 @@ export default function FunctionalApp() {
   const [selected, setSelected] = useState<Project | null>(null);
   const [message, setMessage] = useState('');
   const [reports, setReports] = useState<SavedReport[]>([]);
+  const [reportWindow, setReportWindow] = useState({ loaded: 0, truncated: false });
 
   const load = async () => {
     try {
@@ -255,16 +258,20 @@ export default function FunctionalApp() {
   useEffect(() => {
     void load();
     api.get('/api/reports/history').then(response => {
-      const rows = Array.isArray(response.data) ? response.data : [];
+      const data = response.data;
+      const rows = Array.isArray(data) ? data : safeArray(data?.reports);
+      setReportWindow({ loaded: Number(data?.loaded) || rows.length, truncated: data?.truncated === true });
       setReports(rows.map((row: any) => ({ id: row.id, at: row.generatedAt, summary: row.headline, filename: row.filename })));
     }).catch(() => { setReports([]); setMessage('Report history could not be loaded. Please retry by reloading the page.'); });
   }, []);
 
   useEffect(() => {
-    const syncView = () => setView(viewFromHash());
+    const syncView = () => { setSelected(null); setMessage(''); setView(viewFromHash()); };
     window.addEventListener('hashchange', syncView);
     return () => window.removeEventListener('hashchange', syncView);
   }, []);
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [view]);
 
   const navigateView = (next: ViewName) => {
     setSelected(null);
@@ -304,6 +311,11 @@ export default function FunctionalApp() {
       event.stage || '',
     ].join(' ').toLowerCase().includes(needle));
   }, [events, query]);
+
+  const mapProjects = useMemo(() => {
+    const matchingIds = new Set([...visibleProjects.map(project => project.id), ...filteredEvents.map(event => event.projectId)]);
+    return projects.filter(project => matchingIds.has(project.id));
+  }, [projects, visibleProjects, filteredEvents]);
 
   const openProjectById = (projectId: string) => {
     const project = projects.find(item => item.id === projectId);
@@ -425,16 +437,16 @@ export default function FunctionalApp() {
       {dashboard.universe?.truncated && <div className='hi-message'>Data window disclosure: {dashboard.universe.loaded || 0} current records are loaded in this bounded view and additional stored records exist. Rankings and counts on this screen apply to the loaded window.</div>}
 
       <section className='hi-page-content' data-module={view}>
-        {view === 'Decision Desk' && <DecisionDesk dashboard={dashboard} projects={visibleProjects} events={filteredEvents} open={setSelected}/>}
+        {view === 'Decision Desk' && <DecisionDesk dashboard={dashboard} projects={visibleProjects} events={filteredEvents} open={setSelected} openProject={openProjectById}/>}
         {view === 'Commercial Intelligence' && <CommercialIntelligence dashboard={dashboard} openProject={openProjectById}/>}
         {view === 'Opportunities' && <OpportunitiesPage events={filteredEvents} projects={projects} open={openProjectById}/>}
         {view === 'Projects' && <ProjectsPage projects={visibleProjects} open={setSelected}/>}
-        {view === 'Map' && <GeoMap projects={visibleProjects} events={filteredEvents} openProject={openProjectById}/>}
+        {view === 'Map' && <GeoMap projects={mapProjects} events={filteredEvents} openProject={openProjectById}/>}
         {view === 'Organisations & Delivery Teams' && <CompaniesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
         {view === 'Equipment Demand' && <EquipmentPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
         {view === 'Resources' && <ResourcesPage dashboard={dashboard} projects={visibleProjects} open={setSelected}/>}
         {view === 'CRM' && <CRMPage dashboard={dashboard} projects={projects} submitOutcome={submitOutcome}/>}
-        {view === 'Reports' && <ReportsPage dashboard={dashboard} reports={reports} generateReport={generateReport} downloadReport={downloadReport}/>}
+        {view === 'Reports' && <ReportsPage dashboard={dashboard} reports={reports} reportWindow={reportWindow} generateReport={generateReport} downloadReport={downloadReport}/>}
         {view === 'Alerts' && <AlertsPage projects={visibleProjects} events={filteredEvents} open={setSelected} openProject={openProjectById}/>}
         {view === 'Source Admin' && <SourceAdminPage dashboard={dashboard}/>}
       </section>
@@ -444,7 +456,7 @@ export default function FunctionalApp() {
   </div>;
 }
 
-function DecisionDesk({ dashboard, projects, events, open }: { dashboard: Dashboard; projects: Project[]; events: OpportunityEvent[]; open: (project: Project) => void }) {
+function DecisionDesk({ dashboard, projects, events, open, openProject }: { dashboard: Dashboard; projects: Project[]; events: OpportunityEvent[]; open: (project: Project) => void; openProject: (projectId: string) => void }) {
   const priority = [...projects].sort((a, b) => b.bdmPriority - a.bdmPriority).slice(0, 12);
   const kpis = [
     ['CALL NOW', dashboard.metrics.callNow || 0, 'Evidence-gated'],
@@ -466,7 +478,7 @@ function DecisionDesk({ dashboard, projects, events, open }: { dashboard: Dashbo
       <section className='hi-card'>
         <CardHeader title='Recent Opportunity Signals' subtitle='Current evidence-derived commercial events.'/>
         <div className='hi-activity-list'>
-          {events.slice(0, 10).map((event, index) => <button type='button' key={`${event.projectId}-${event.type}-${index}`} onClick={() => { const project=projects.find(item=>item.id===event.projectId); if(project) open(project); }}>
+          {events.slice(0, 10).map((event, index) => <button type='button' key={`${event.projectId}-${event.type}-${index}`} onClick={() => openProject(event.projectId)}>
             <Activity size={15}/>
             <span><b>{event.type}</b><small>{event.project} · {event.location}</small></span>
             <em>{event.confidence}%</em>
@@ -728,7 +740,7 @@ function CRMPage({ dashboard, projects, submitOutcome }: { dashboard: Dashboard;
   </div>;
 }
 
-function ReportsPage({ dashboard, reports, generateReport, downloadReport }: { dashboard: Dashboard; reports: SavedReport[]; generateReport: () => void; downloadReport: () => void }) {
+function ReportsPage({ dashboard, reports, reportWindow, generateReport, downloadReport }: { dashboard: Dashboard; reports: SavedReport[]; reportWindow: { loaded: number; truncated: boolean }; generateReport: () => void; downloadReport: () => void }) {
   const summary = buildExecutiveReportSummary(dashboard);
   return <div className='hi-stack'>
     <section className='hi-card hi-report-hero'>
@@ -746,6 +758,7 @@ function ReportsPage({ dashboard, reports, generateReport, downloadReport }: { d
     </div>
     <section className='hi-card'>
       <CardHeader title='Generated Report History' subtitle='Saved report history for your signed-in account.'/>
+      {reportWindow.truncated && <div className='hi-governance-note'>Report history is limited to the newest snapshots within {reportWindow.loaded} stored records. Additional stored records exist outside this loaded window.</div>}
       <div className='hi-activity-list'>
         {reports.map(report => <div key={report.id}><FileText size={15}/><span><b>Executive Intelligence Report</b><small>{report.summary}</small></span><em>{new Date(report.at).toLocaleString('en-AU')}{report.filename ? ` · ${report.filename}` : ''}</em></div>)}
         {!reports.length && <EmptyState>No report snapshots generated yet.</EmptyState>}
@@ -822,8 +835,9 @@ function ProjectTable({ projects, open }: { projects: Project[]; open: (project:
 }
 
 function ProjectDrawer({ project, close }: { project: Project; close: () => void }) {
+  const drawerRef = useDialogFocus(true, close);
   return <div className='hi-overlay' onClick={close}>
-    <section className='hi-drawer' onClick={event => event.stopPropagation()}>
+    <section ref={drawerRef} tabIndex={-1} role='dialog' aria-modal='true' aria-label='Project intelligence' className='hi-drawer' onClick={event => event.stopPropagation()}>
       <button type='button' className='hi-drawer-close' onClick={close} aria-label='Close project intelligence'><X size={18}/></button>
       <small className='hi-drawer-kicker'>CANONICAL PROJECT INTELLIGENCE</small>
       <h2>{project.name}</h2>

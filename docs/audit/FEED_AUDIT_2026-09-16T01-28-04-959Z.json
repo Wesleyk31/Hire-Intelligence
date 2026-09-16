@@ -1,0 +1,161 @@
+{
+  "startedAt": "2026-09-16T01:28:04.959Z",
+  "finishedAt": "2026-09-16T01:28:10.034Z",
+  "methodology": {
+    "readOnly": true,
+    "auditClock": "2026-09-16T01:28:04.959Z",
+    "concurrency": 1,
+    "sampleLimit": 5,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "redirects": "follow",
+    "parser": "Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.",
+    "scope": "All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted."
+  },
+  "codeHashes": {
+    "index": "f9fcae361f531660568b072ee55151be953934325f55b1e5c15bca3df388ba4e",
+    "backfillFetch": "4ba5bca920e94499f2cba7f3472aafdeb980e9045330c47e879b78a8b2d85fec",
+    "domainHardening": "76e71b9bceab6169f5f8536a4cb2cf89d51577fd7df2243bccd11fb971250b5e",
+    "sourceHelpers": "e549657c7c99ae01c7d036cd91ec4a068ad6c015f241dc50c73eb37a6b646d64"
+  },
+  "counts": {
+    "configured": 66,
+    "active": 53,
+    "disabled": 13,
+    "historicalOnly": 4,
+    "probed": 1,
+    "liveRows": 1,
+    "liveErrors": 0,
+    "liveEmpty": 0,
+    "metadataOnly": 0
+  },
+  "results": [
+    {
+      "key": "austender-contract-notices",
+      "name": "AusTender Contract Notices",
+      "mode": "active",
+      "method": "OCDS",
+      "endpoint": "https://api.tenders.gov.au/ocds/findByDates/contractPublished",
+      "provenance": "https://data.gov.au/data/dataset/historical-australian-government-contract-data",
+      "startedAt": "2026-09-16T01:28:06.299Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "title",
+          "description",
+          "supplier",
+          "location",
+          "value",
+          "date"
+        ],
+        "roles": {
+          "SUPPLIER": 40
+        },
+        "datedRows": 40,
+        "oldestSourceDate": "2026-09-15T05:28:33.000Z",
+        "newestSourceDate": "2026-09-15T23:59:14.000Z",
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 40
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 100,
+        "next": 0,
+        "completed": false,
+        "hasNextPage": true,
+        "rawFieldNames": [
+          "title",
+          "description",
+          "supplier",
+          "location",
+          "value",
+          "date"
+        ],
+        "datedRows": 100,
+        "roles": [
+          "SUPPLIER"
+        ],
+        "nextPageProbe": {
+          "status": "ROWS",
+          "rows": 100,
+          "overlapIds": 0,
+          "hasNextPage": true,
+          "next": 0
+        }
+      },
+      "requests": [
+        {
+          "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:28:04Z/2026-09-16T01:28:04Z",
+          "startedAt": "2026-09-16T01:28:06.303Z",
+          "status": 200,
+          "finalUrl": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:28:04Z/2026-09-16T01:28:04Z",
+          "redirected": false,
+          "bytes": 184698,
+          "contentType": "application/json",
+          "topLevelKeys": [
+            "uri",
+            "publisher",
+            "publishedDate",
+            "license",
+            "version",
+            "releases",
+            "extensions",
+            "links"
+          ],
+          "responseRows": 100,
+          "sampleFieldNames": [
+            "ocid",
+            "id",
+            "date",
+            "initiationType",
+            "language",
+            "parties",
+            "awards",
+            "contracts",
+            "tag",
+            "tender"
+          ],
+          "durationMs": 1605
+        },
+        {
+          "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:28:04Z/2026-09-16T01:28:04Z?cursor=VfxcRwAoQW9ONGx2ZkwwYUFES1VOT05ESTNOamt3TnlsRFRqUXlOelk1TURjPWQ&lastcursor=initial&prevcursor=initial",
+          "startedAt": "2026-09-16T01:28:08.069Z",
+          "status": 200,
+          "finalUrl": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:28:04Z/2026-09-16T01:28:04Z?cursor=VfxcRwAoQW9ONGx2ZkwwYUFES1VOT05ESTNOamt3TnlsRFRqUXlOelk1TURjPWQ&lastcursor=initial&prevcursor=initial",
+          "redirected": false,
+          "bytes": 185454,
+          "contentType": "application/json",
+          "topLevelKeys": [
+            "uri",
+            "publisher",
+            "publishedDate",
+            "license",
+            "version",
+            "releases",
+            "extensions",
+            "links"
+          ],
+          "responseRows": 100,
+          "sampleFieldNames": [
+            "ocid",
+            "id",
+            "date",
+            "initiationType",
+            "language",
+            "parties",
+            "awards",
+            "contracts",
+            "tag",
+            "tender"
+          ],
+          "durationMs": 1959
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    }
+  ]
+}

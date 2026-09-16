@@ -1,3 +1,4 @@
+import { groupReviewedOutcomes } from './calibration';
 import { db } from '@appdeploy/sdk';
 import { chooseCurrentStage, evidenceTimestamp, groupCanonicalEvidence } from './domain-hardening';
 import { listBounded } from './data-access';
@@ -268,27 +269,19 @@ export async function buildProjectIntelligence(records: IntelligenceEvidence[], 
   }
   for (let i=0;i<updates.length;i+=500) await db.update('project_stage_snapshots', updates.slice(i,i+500));
   for (let i=0;i<additions.length;i+=500) await db.add('project_stage_snapshots', additions.slice(i,i+500));
-  return projects.sort((a, b) => b.bdmPriority - a.bdmPriority || b.signalQualityScore - a.signalQualityScore || b.evidenceCount - a.evidenceCount).slice(0, 500);
+  return projects.sort((a, b) => b.bdmPriority - a.bdmPriority || b.signalQualityScore - a.signalQualityScore || b.evidenceCount - a.evidenceCount);
 }
 
 export function buildCalibrationMetrics(projects: ProjectIntelligence[], outcomes: PilotCalibrationOutcome[]): CalibrationMetrics {
-  const reviewedResults = new Set(['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON', 'LOST', 'FALSE_POSITIVE']);
-  const projectById = new Map(projects.map(project => [project.id, project]));
-  const projectByKey = new Map(projects.map(project => [normaliseKey(project.name), project]));
+  const { groups, unmatched } = groupReviewedOutcomes(projects, outcomes);
   const bands: CalibrationBand[] = ['A', 'B', 'C', 'D'].map(value => ({ band: value as SignalQualityBand, reviewed: 0, confirmed: 0, quoted: 0, won: 0, falsePositive: 0 }));
-  let matchedReviewed = 0;
-  let unmatchedReviewed = 0;
-  for (const outcome of outcomes) {
-    if (outcome.qa || !reviewedResults.has(outcome.result)) continue;
-    const project = (outcome.projectId ? projectById.get(outcome.projectId) : undefined) || projectByKey.get(normaliseKey(outcome.project));
-    if (!project) { unmatchedReviewed += 1; continue; }
-    matchedReviewed += 1;
+  for (const { project, results } of groups) {
     const bucket = bands.find(item => item.band === project.signalQualityBand)!;
     bucket.reviewed += 1;
-    if (outcome.result === 'REQUIREMENT_CONFIRMED' || outcome.result === 'QUOTED' || outcome.result === 'WON') bucket.confirmed += 1;
-    if (outcome.result === 'QUOTED' || outcome.result === 'WON') bucket.quoted += 1;
-    if (outcome.result === 'WON') bucket.won += 1;
-    if (outcome.result === 'FALSE_POSITIVE') bucket.falsePositive += 1;
+    if (['REQUIREMENT_CONFIRMED', 'QUOTED', 'WON'].some(result => results.has(result))) bucket.confirmed += 1;
+    if (results.has('QUOTED') || results.has('WON')) bucket.quoted += 1;
+    if (results.has('WON')) bucket.won += 1;
+    if (results.has('FALSE_POSITIVE')) bucket.falsePositive += 1;
   }
-  return { matchedReviewed, unmatchedReviewed, bands };
+  return { matchedReviewed: groups.length, unmatchedReviewed: unmatched, bands };
 }

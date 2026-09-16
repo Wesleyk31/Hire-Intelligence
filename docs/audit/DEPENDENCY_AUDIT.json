@@ -1,0 +1,218 @@
+{
+  "checkedAt": "2026-09-16T01:27:15.3749912Z",
+  "before": {
+    "info": 0,
+    "low": 3,
+    "moderate": 15,
+    "high": 10,
+    "critical": 2
+  },
+  "after": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0
+  },
+  "updates": [
+    {
+      "from": "2.5.2",
+      "package": "jspdf",
+      "to": "4.2.1"
+    },
+    {
+      "from": "3.8.4",
+      "package": "jspdf-autotable",
+      "to": "5.0.8"
+    },
+    {
+      "from": "0.18.5",
+      "package": "xlsx",
+      "source": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+      "to": "0.20.3"
+    }
+  ],
+  "advisories": [
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF Bypass Regular Expression Denial of Service (ReDoS)",
+      "url": "https://github.com/advisories/GHSA-w532-jxjh-hjhj"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify allows Cross-site Scripting (XSS)",
+      "url": "https://github.com/advisories/GHSA-vhxf-7vqr-mrjg"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF Denial of Service (DoS)",
+      "url": "https://github.com/advisories/GHSA-8mvj-3j78-4qmw"
+    },
+    {
+      "module_name": "xlsx",
+      "severity": "high",
+      "title": "Prototype Pollution in sheetJS",
+      "url": "https://github.com/advisories/GHSA-4r6h-8v6p-xvw6"
+    },
+    {
+      "module_name": "xlsx",
+      "severity": "high",
+      "title": "SheetJS Regular Expression Denial of Service (ReDoS)",
+      "url": "https://github.com/advisories/GHSA-5pgg-2g8v-p4x9"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "critical",
+      "title": "jsPDF has Local File Inclusion/Path Traversal vulnerability",
+      "url": "https://github.com/advisories/GHSA-f8cm-6447-x5h2"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF has PDF Injection in AcroFormChoiceField that allows Arbitrary JavaScript Execution",
+      "url": "https://github.com/advisories/GHSA-pqxr-3g65-p328"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF Vulnerable to Denial of Service (DoS) via Unvalidated BMP Dimensions in BMPDecoder",
+      "url": "https://github.com/advisories/GHSA-95fx-jjr5-f39c"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "moderate",
+      "title": "jsPDF Vulnerable to Stored XMP Metadata Injection (Spoofing & Integrity Violation)",
+      "url": "https://github.com/advisories/GHSA-vm32-vv63-w422"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "moderate",
+      "title": "jsPDF has Shared State Race Condition in addJS Plugin",
+      "url": "https://github.com/advisories/GHSA-cjw8-79x6-5cj4"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF has a PDF Object Injection via Unsanitized Input in addJS Method",
+      "url": "https://github.com/advisories/GHSA-9vjf-qc39-jprp"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF Affected by Client-Side/Server-Side Denial of Service via Malicious GIF Dimensions",
+      "url": "https://github.com/advisories/GHSA-67pg-wm7f-q7fj"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF has a PDF Injection in AcroForm module allows Arbitrary JavaScript Execution (RadioButton.createOption and \"AS\" property)",
+      "url": "https://github.com/advisories/GHSA-p5xg-68wr-hm3m"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "high",
+      "title": "jsPDF has a PDF Object Injection via FreeText color",
+      "url": "https://github.com/advisories/GHSA-7x6v-j9x4-qf24"
+    },
+    {
+      "module_name": "jspdf",
+      "severity": "critical",
+      "title": "jsPDF has HTML Injection in New Window paths",
+      "url": "https://github.com/advisories/GHSA-wfv2-pwc8-crg5"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: FORBID_TAGS bypassed by function-based ADD_TAGS predicate (asymmetry with FORBID_ATTR fix)",
+      "url": "https://github.com/advisories/GHSA-h7mw-gpvr-xq4m"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify has a SAFE_FOR_TEMPLATES bypass in RETURN_DOM mode",
+      "url": "https://github.com/advisories/GHSA-crv5-9vww-q3g8"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: Cross-realm IN_PLACE sanitization leaves executable markup intact via realm-bound `instanceof` checks",
+      "url": "https://github.com/advisories/GHSA-hpcv-96wg-7vj8"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: IN_PLACE mode preserves attributes of a clobbered root element, allowing XSS via attacker-controlled root DOM",
+      "url": "https://github.com/advisories/GHSA-r47g-fvhr-h676"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify IN_PLACE Sanitization Bypass via Attached Shadow Root Inside <template>.content",
+      "url": "https://github.com/advisories/GHSA-rp9w-3fw7-7cwq"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "low",
+      "title": "DOMPurify: `CUSTOM_ELEMENT_HANDLING` bypasses `afterSanitizeElements` for allowed custom elements.",
+      "url": "https://github.com/advisories/GHSA-c2j3-45gr-mqc4"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: Permanent `ALLOWED_ATTR` pollution via `setConfig()` bypassing the hook clone-guard (incomplete fix of the 3.4.7 hook-pollution patch)",
+      "url": "https://github.com/advisories/GHSA-cmwh-pvxp-8882"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "low",
+      "title": "DOMPurify: Trusted Types policy survives `clearConfig()` and can poison later `RETURN_TRUSTED_TYPE` output",
+      "url": "https://github.com/advisories/GHSA-vxr8-fq34-vvx9"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "low",
+      "title": "DOMPurify: `IN_PLACE` mode trusts attacker-controlled `nodeName` on live non-form nodes, allowing script retention and XSS via attacker-supplied DOM objects",
+      "url": "https://github.com/advisories/GHSA-x4vx-rjvf-j5p4"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: Hook mutation of `data.allowedTags` / `data.allowedAttributes` permanently pollutes `DEFAULT_ALLOWED_TAGS` / `DEFAULT_ALLOWED_ATTR`",
+      "url": "https://github.com/advisories/GHSA-76mc-f452-cxcm"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify's ADD_TAGS function form bypasses FORBID_TAGS due to short-circuit evaluation",
+      "url": "https://github.com/advisories/GHSA-39q2-94rc-95cp"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify ADD_ATTR predicate skips URI validation",
+      "url": "https://github.com/advisories/GHSA-cjmm-f4jc-qw8r"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify USE_PROFILES prototype pollution allows event handlers",
+      "url": "https://github.com/advisories/GHSA-cj63-jhhr-wcxv"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify is vulnerable to mutation-XSS via Re-Contextualization ",
+      "url": "https://github.com/advisories/GHSA-h8r8-wccr-v5f2"
+    },
+    {
+      "module_name": "dompurify",
+      "severity": "moderate",
+      "title": "DOMPurify: IN_PLACE hook removal leaves a detached subtree executable, causing XSS",
+      "url": "https://github.com/advisories/GHSA-55q2-fjhq-7xh7"
+    }
+  ],
+  "scope": "Known registry advisories plus official patched SheetJS tarball; not proof of absence of all security defects."
+}

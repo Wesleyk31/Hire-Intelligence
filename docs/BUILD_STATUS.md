@@ -1,4 +1,8 @@
-# Local build status — 16 September 2026
+# Local build status â€” 16 September 2026
+
+## Full-site audit supersedes the initial counts below
+
+The subsequent 16 September audit ran all 21 pages: 52 unit/API tests pass; 88 of 89 browser tests pass, with the corrupt approved homepage image still failing. Frontend/backend type checks, 24 static checks, 21 original checksums and the verification build pass. The dependency scan reports zero known advisories. The live site remains on the older unprotected version. See [the full audit](audit/2026-09-16-SITE_AUDIT.md) for final evidence, feed results and release blockers. The following original integration results are retained as history.
 
 ## Integrated changes
 

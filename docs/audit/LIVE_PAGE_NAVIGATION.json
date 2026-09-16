@@ -1,0 +1,196 @@
+{
+  "checkedAt": "2026-09-16T01:24:33.155Z",
+  "mode": "Read-only anonymous navigation on deployed baseline",
+  "pages": [
+    {
+      "route": "home",
+      "urlHash": "",
+      "headings": [
+        "See what’snext in construction."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 2374
+    },
+    {
+      "route": "products",
+      "urlHash": "#products",
+      "headings": [
+        "One operating system for rental intelligence."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1831
+    },
+    {
+      "route": "solutions",
+      "urlHash": "#solutions",
+      "headings": [
+        "Built around the decisions rental teams actually make."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1085
+    },
+    {
+      "route": "industries",
+      "urlHash": "#industries",
+      "headings": [
+        "Australian project intelligence across hire-intensive sectors."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1034
+    },
+    {
+      "route": "insights",
+      "urlHash": "#insights",
+      "headings": [
+        "A current view of the opportunity universe."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1426
+    },
+    {
+      "route": "about",
+      "urlHash": "#about",
+      "headings": [
+        "Earlier visibility, governed evidence, better rental decisions."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1155
+    },
+    {
+      "route": "contact",
+      "urlHash": "#contact",
+      "headings": [
+        "See Hire Intelligence in action."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 898
+    },
+    {
+      "route": "privacy",
+      "urlHash": "#privacy",
+      "headings": [
+        "Privacy and data handling."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 898
+    },
+    {
+      "route": "terms",
+      "urlHash": "#terms",
+      "headings": [
+        "Platform use and intelligence limitations."
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 936
+    },
+    {
+      "route": "platform/decision-desk",
+      "urlHash": "#platform/decision-desk",
+      "headings": [
+        "Decision Desk"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 2254
+    },
+    {
+      "route": "platform/commercial-intelligence",
+      "urlHash": "#platform/commercial-intelligence",
+      "headings": [
+        "Commercial Intelligence"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 13728
+    },
+    {
+      "route": "platform/opportunities",
+      "urlHash": "#platform/opportunities",
+      "headings": [
+        "Opportunities"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 5319
+    },
+    {
+      "route": "platform/projects",
+      "urlHash": "#platform/projects",
+      "headings": [
+        "Projects"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 4651
+    },
+    {
+      "route": "platform/map",
+      "urlHash": "#platform/map",
+      "headings": [
+        "Map"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 2279
+    },
+    {
+      "route": "platform/companies-contacts",
+      "urlHash": "#platform/companies-contacts",
+      "headings": [
+        "Companies & Contacts"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 3629
+    },
+    {
+      "route": "platform/equipment-demand",
+      "urlHash": "#platform/equipment-demand",
+      "headings": [
+        "Equipment Demand"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 9482
+    },
+    {
+      "route": "platform/crm",
+      "urlHash": "#platform/crm",
+      "headings": [
+        "CRM"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 2465
+    },
+    {
+      "route": "platform/reports",
+      "urlHash": "#platform/reports",
+      "headings": [
+        "Reports"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 773
+    },
+    {
+      "route": "platform/alerts",
+      "urlHash": "#platform/alerts",
+      "headings": [
+        "Alerts"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 1678
+    },
+    {
+      "route": "platform/resources",
+      "urlHash": "#platform/resources",
+      "headings": [
+        "Resources"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 2194
+    },
+    {
+      "route": "platform/source-admin",
+      "urlHash": "#platform/source-admin",
+      "headings": [
+        "Source Admin"
+      ],
+      "mainVisible": true,
+      "bodyTextLength": 10658
+    }
+  ],
+  "errors": []
+}

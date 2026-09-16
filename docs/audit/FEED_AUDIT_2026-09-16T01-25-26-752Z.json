@@ -1,0 +1,1983 @@
+{
+  "startedAt": "2026-09-16T01:25:26.752Z",
+  "finishedAt": "2026-09-16T01:26:08.756Z",
+  "methodology": {
+    "readOnly": true,
+    "concurrency": 1,
+    "sampleLimit": 5,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "redirects": "follow",
+    "parser": "Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.",
+    "scope": "All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted."
+  },
+  "codeHashes": {
+    "index": "f9fcae361f531660568b072ee55151be953934325f55b1e5c15bca3df388ba4e",
+    "backfillFetch": "4ba5bca920e94499f2cba7f3472aafdeb980e9045330c47e879b78a8b2d85fec",
+    "domainHardening": "76e71b9bceab6169f5f8536a4cb2cf89d51577fd7df2243bccd11fb971250b5e",
+    "sourceHelpers": "e1ff5c59a51e5cdc38a9f9234d60faf7f0f4a228292864346b94bab225bc3c5b"
+  },
+  "counts": {
+    "configured": 66,
+    "active": 53,
+    "disabled": 13,
+    "historicalOnly": 4,
+    "probed": 14,
+    "liveRows": 10,
+    "liveErrors": 3,
+    "liveEmpty": 1,
+    "metadataOnly": 0
+  },
+  "results": [
+    {
+      "key": "wa-mining-tenements",
+      "name": "WA Mining Tenements (DMIRS-003)",
+      "mode": "active",
+      "method": "ARCGIS",
+      "endpoint": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=40&f=json",
+      "provenance": "https://catalogue.data.wa.gov.au/en/dataset/mining-tenements-dmirs-003",
+      "startedAt": "2026-09-16T01:25:27.386Z",
+      "live": {
+        "status": "ERROR",
+        "error": "AUDIT_TIMEOUT_18000MS"
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "oid",
+          "gid",
+          "tenid",
+          "type",
+          "survstatus",
+          "tenstatus",
+          "holdercnt",
+          "holder1",
+          "addr1",
+          "holder2",
+          "addr2",
+          "holder3",
+          "addr3",
+          "holder4",
+          "addr4",
+          "holder5",
+          "addr5",
+          "holder6",
+          "addr6",
+          "holder7",
+          "addr7",
+          "holder8",
+          "addr8",
+          "holder9",
+          "addr9",
+          "fmt_tenid",
+          "legal_area",
+          "unit_of_me",
+          "special_in",
+          "extract_da",
+          "grantdate",
+          "granttime",
+          "startdate",
+          "starttime",
+          "enddate",
+          "endtime",
+          "st_area(the_geom)",
+          "st_perimeter(the_geom)"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "startedAt": "2026-09-16T01:25:27.389Z",
+          "error": "AUDIT_TIMEOUT_18000MS",
+          "durationMs": 18019
+        },
+        {
+          "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "startedAt": "2026-09-16T01:25:45.410Z",
+          "status": 200,
+          "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "redirected": false,
+          "bytes": 8096,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "displayFieldName",
+            "fieldAliases",
+            "fields",
+            "features",
+            "exceededTransferLimit"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "oid",
+            "gid",
+            "tenid",
+            "type",
+            "survstatus",
+            "tenstatus",
+            "holdercnt",
+            "holder1",
+            "addr1",
+            "holder2",
+            "addr2",
+            "holder3",
+            "addr3",
+            "holder4",
+            "addr4",
+            "holder5",
+            "addr5",
+            "holder6",
+            "addr6",
+            "holder7",
+            "addr7",
+            "holder8",
+            "addr8",
+            "holder9",
+            "addr9",
+            "fmt_tenid",
+            "legal_area",
+            "unit_of_me",
+            "special_in",
+            "extract_da",
+            "grantdate",
+            "granttime",
+            "startdate",
+            "starttime",
+            "enddate",
+            "endtime",
+            "st_area(the_geom)",
+            "st_perimeter(the_geom)"
+          ],
+          "durationMs": 803
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-environmental-authorities",
+      "name": "Queensland Environmental Authorities",
+      "mode": "active",
+      "method": "CKAN_DATASTORE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=a9658145-87bd-4258-a689-5aec29d49792&limit=40",
+      "provenance": "https://www.data.qld.gov.au/dataset/environmental-authorities",
+      "startedAt": "2026-09-16T01:25:46.238Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Permit Reference",
+          "Permit Type",
+          "Permit Holder(s)",
+          "Effective Date",
+          "Status",
+          "Condition Type",
+          "Industry",
+          "Activities",
+          "Locations"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2010-11-17T00:00:00.000Z",
+        "newestSourceDate": "2015-09-14T00:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "_id",
+          "Permit Reference",
+          "Permit Type",
+          "Permit Holder(s)",
+          "Effective Date",
+          "Status",
+          "Condition Type",
+          "Industry",
+          "Activities",
+          "Locations"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+          "startedAt": "2026-09-16T01:25:46.238Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+          "redirected": false,
+          "bytes": 2639,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Permit Reference",
+            "Permit Type",
+            "Permit Holder(s)",
+            "Effective Date",
+            "Status",
+            "Condition Type",
+            "Industry",
+            "Activities",
+            "Locations"
+          ],
+          "total": 15174,
+          "durationMs": 322
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-granted-resource-authorities",
+      "name": "Queensland Recently Granted Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+      "provenance": "https://www.data.qld.gov.au/dataset/recently-granted-resource-authorities",
+      "startedAt": "2026-09-16T01:25:46.569Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "startedAt": "2026-09-16T01:25:46.570Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "redirected": false,
+          "bytes": 35839,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "46414b29-d9ca-4395-985b-690b5d9bd97b",
+              "name": "Permit granted in August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-09-15T23:28:03.143663",
+              "lastModified": "2026-09-15T23:28:46.606149"
+            },
+            {
+              "id": "a022159d-4be7-474f-ab42-6fdb7a2104f6",
+              "name": "Permit granted in July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a022159d-4be7-474f-ab42-6fdb7a2104f6/download/granted-permits-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T04:05:14.880672",
+              "lastModified": "2026-09-15T23:28:46.609922"
+            },
+            {
+              "id": "6a8b54e1-03bc-4955-96b5-847368253477",
+              "name": "Permit granted in June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/6a8b54e1-03bc-4955-96b5-847368253477/download/granted-permits-june-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-07-13T03:34:56.151905",
+              "lastModified": "2026-09-15T23:28:46.613648"
+            },
+            {
+              "id": "1e971178-58be-4415-ae40-8f0cfab476d9",
+              "name": "Permits granted in May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/1e971178-58be-4415-ae40-8f0cfab476d9/download/granted-permits-may-2026-.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:43:10.352639",
+              "lastModified": "2026-09-15T23:28:46.617419"
+            },
+            {
+              "id": "943d74ef-0003-4df9-9529-ebb09f8f58aa",
+              "name": "Permits granted in April 2026 ",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/943d74ef-0003-4df9-9529-ebb09f8f58aa/download/granted-permits-april-2026-.xlsx",
+              "datastoreActive": false,
+              "created": "2026-05-28T22:48:57.013449",
+              "lastModified": "2026-09-15T23:28:46.621767"
+            },
+            {
+              "id": "36cb6f97-7a6c-42af-bb49-cd09bae8645c",
+              "name": "Permits granted in March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/36cb6f97-7a6c-42af-bb49-cd09bae8645c/download/granted-permits-march-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-04-14T01:30:35.738328",
+              "lastModified": "2026-09-15T23:28:46.625637"
+            },
+            {
+              "id": "a4499aa1-3a01-4873-b753-8f1689057218",
+              "name": "Permits granted in February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a4499aa1-3a01-4873-b753-8f1689057218/download/granted-permits-february-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-03-23T22:31:07.094278",
+              "lastModified": "2026-09-15T23:28:46.629484"
+            },
+            {
+              "id": "20e66adf-8e73-4dc4-bb19-fc1cb49ef364",
+              "name": "Permits granted in January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/20e66adf-8e73-4dc4-bb19-fc1cb49ef364/download/granted-permits-january-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-19T01:53:14.380273",
+              "lastModified": "2026-09-15T23:28:46.633370"
+            },
+            {
+              "id": "b250ed4d-8b19-4bfc-9099-e26eca15040f",
+              "name": "Permits granted in 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/b250ed4d-8b19-4bfc-9099-e26eca15040f/download/granted-permits-2025.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-10T23:14:38.081070",
+              "lastModified": "2026-09-15T23:28:46.637238"
+            },
+            {
+              "id": "f7cf24bb-2ce4-40f9-b38f-1c0e3122b902",
+              "name": "Permits granted in 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/f7cf24bb-2ce4-40f9-b38f-1c0e3122b902/download/granted-permits-2024.xlsx",
+              "datastoreActive": false,
+              "created": "2025-01-22T03:44:23.980119",
+              "lastModified": "2026-09-15T23:28:46.641085"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:29:57.632644",
+          "durationMs": 84
+        },
+        {
+          "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "startedAt": "2026-09-16T01:25:46.655Z",
+          "status": 202,
+          "finalUrl": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "redirected": false,
+          "bytes": 0,
+          "contentType": "text/html; charset=UTF-8",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 48
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-renewed-resource-authorities",
+      "name": "Queensland Renewed Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+      "provenance": "https://www.data.qld.gov.au/dataset/renewed-resource-authority-reports",
+      "startedAt": "2026-09-16T01:25:46.709Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Authorised Holder",
+          "Completion Date",
+          "Granted Date",
+          "Permit Start Date",
+          "Permit End Date",
+          "Area Sub Blocks",
+          "Area",
+          "LGA",
+          "LGA Type"
+        ],
+        "roles": {
+          "APPLICANT_HOLDER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2026-08-11T16:00:00.000Z",
+        "newestSourceDate": "2026-08-11T16:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "_id",
+          "Permit Number",
+          "Authorised Holder",
+          "Completion Date",
+          "Granted Date",
+          "Permit Start Date",
+          "Permit End Date",
+          "Area Sub Blocks",
+          "Area",
+          "LGA",
+          "LGA Type"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "APPLICANT_HOLDER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+          "startedAt": "2026-09-16T01:25:46.709Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=renewed-resource-authority-reports",
+          "redirected": false,
+          "bytes": 40137,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "3ad9281c-c442-4817-8392-61ec6eda55a4",
+              "name": "Renewals  Report - August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/3ad9281c-c442-4817-8392-61ec6eda55a4/download/renewals-report-august-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-09-15T23:42:30.379466",
+              "lastModified": "2026-09-15T23:45:33.712311"
+            },
+            {
+              "id": "19877139-bd34-4b5b-bd24-c45e90a7506f",
+              "name": "Permits renewed in July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/19877139-bd34-4b5b-bd24-c45e90a7506f/download/renewals-monthly-report-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T03:49:57.868446",
+              "lastModified": "2026-09-15T23:45:33.717527"
+            },
+            {
+              "id": "4912c788-2b9c-4749-8b08-06482149acc7",
+              "name": "Permits renewed in June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/4912c788-2b9c-4749-8b08-06482149acc7/download/renewals-report-june-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-13T05:36:22.190041",
+              "lastModified": "2026-09-15T23:45:33.722545"
+            },
+            {
+              "id": "e4d42748-dc20-4e4f-9b36-768729242c01",
+              "name": "Permits renewed in May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/e4d42748-dc20-4e4f-9b36-768729242c01/download/renewals-report-may-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:40:49.174638",
+              "lastModified": "2026-09-15T23:45:33.727900"
+            },
+            {
+              "id": "e79f7faf-79d3-42db-ad56-33ce08ec0024",
+              "name": "Permits renewed in April 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/e79f7faf-79d3-42db-ad56-33ce08ec0024/download/renewals-monthly-report-april-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-05-29T06:51:11.213887",
+              "lastModified": "2026-09-15T23:45:33.732983"
+            },
+            {
+              "id": "7ff4ae8f-3921-46b3-b6a4-9511dda549c9",
+              "name": "Permits renewed in March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/7ff4ae8f-3921-46b3-b6a4-9511dda549c9/download/renewals-monthly-report-march-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-13T22:43:53.323925",
+              "lastModified": "2026-09-15T23:45:33.738151"
+            },
+            {
+              "id": "f708b14f-4dc8-47ae-960e-d7cba568f432",
+              "name": "Permits renewed in February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/f708b14f-4dc8-47ae-960e-d7cba568f432/download/renewals-report-february-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-23T22:35:53.977621",
+              "lastModified": "2026-09-15T23:45:33.743322"
+            },
+            {
+              "id": "ca7b0181-21ff-491c-9d69-cfad2b0d7b40",
+              "name": "Permits renewed in January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/ca7b0181-21ff-491c-9d69-cfad2b0d7b40/download/renewals-report-january-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-19T01:50:49.186721",
+              "lastModified": "2026-09-15T23:45:33.748495"
+            },
+            {
+              "id": "7be8d738-b563-434c-a4cb-8107b62dd173",
+              "name": "Permits renewed in 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/7be8d738-b563-434c-a4cb-8107b62dd173/download/renewals-report-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-02-10T21:57:49.916959",
+              "lastModified": "2026-09-15T23:45:33.753477"
+            },
+            {
+              "id": "fdd94b3d-15b8-4d63-905c-e51977bd44c1",
+              "name": "Permits renewed in 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/4b57b250-ac21-4fa1-95c4-19143bb44190/resource/fdd94b3d-15b8-4d63-905c-e51977bd44c1/download/renewed-permits-report-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2025-01-22T04:44:31.245769",
+              "lastModified": "2026-09-15T23:45:33.758438"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:46:39.891847",
+          "durationMs": 142
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=3ad9281c-c442-4817-8392-61ec6eda55a4",
+          "startedAt": "2026-09-16T01:25:46.852Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=3ad9281c-c442-4817-8392-61ec6eda55a4",
+          "redirected": false,
+          "bytes": 2877,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Permit Number",
+            "Authorised Holder",
+            "Completion Date",
+            "Granted Date",
+            "Permit Start Date",
+            "Permit End Date",
+            "Area Sub Blocks",
+            "Area",
+            "LGA",
+            "LGA Type"
+          ],
+          "total": 64,
+          "durationMs": 120
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "austender-contract-notices",
+      "name": "AusTender Contract Notices",
+      "mode": "active",
+      "method": "OCDS",
+      "endpoint": "https://api.tenders.gov.au/ocds/findByDates/contractPublished",
+      "provenance": "https://data.gov.au/data/dataset/historical-australian-government-contract-data",
+      "startedAt": "2026-09-16T01:25:46.985Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "title",
+          "description",
+          "supplier",
+          "location",
+          "value",
+          "date"
+        ],
+        "roles": {
+          "SUPPLIER": 40
+        },
+        "datedRows": 40,
+        "oldestSourceDate": "2026-09-15T05:28:33.000Z",
+        "newestSourceDate": "2026-09-15T23:59:14.000Z",
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 40
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "OCDS_PAGINATION_URL_INVALID"
+      },
+      "requests": [
+        {
+          "url": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:25:26Z/2026-09-16T01:25:26Z",
+          "startedAt": "2026-09-16T01:25:46.986Z",
+          "status": 200,
+          "finalUrl": "https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T01:25:26Z/2026-09-16T01:25:26Z",
+          "redirected": false,
+          "bytes": 184698,
+          "contentType": "application/json",
+          "topLevelKeys": [
+            "uri",
+            "publisher",
+            "publishedDate",
+            "license",
+            "version",
+            "releases",
+            "extensions",
+            "links"
+          ],
+          "responseRows": 100,
+          "sampleFieldNames": [
+            "ocid",
+            "id",
+            "date",
+            "initiationType",
+            "language",
+            "parties",
+            "awards",
+            "contracts",
+            "tag",
+            "tender"
+          ],
+          "durationMs": 1643
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "melbourne-building-permits",
+      "name": "City of Melbourne Building Permits",
+      "mode": "active",
+      "method": "OPENDATASOFT",
+      "endpoint": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=40&order_by=issue_date%20desc",
+      "provenance": "https://data.melbourne.vic.gov.au/explore/dataset/building-permits/",
+      "startedAt": "2026-09-16T01:25:48.758Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "council_ref",
+          "permit_number",
+          "issue_date",
+          "address",
+          "desc_of_works",
+          "estimated_cost_of_works",
+          "rbs_number",
+          "commence_by_date",
+          "completed_by_date",
+          "permit_certificate_type"
+        ],
+        "roles": {
+          "UNKNOWN": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 4,
+        "normalizedProjectIsExternalId": 5
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "council_ref",
+          "permit_number",
+          "issue_date",
+          "address",
+          "desc_of_works",
+          "estimated_cost_of_works",
+          "rbs_number",
+          "commence_by_date",
+          "completed_by_date",
+          "permit_certificate_type"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "UNKNOWN"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5&order_by=issue_date+desc",
+          "startedAt": "2026-09-16T01:25:48.758Z",
+          "status": 200,
+          "finalUrl": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5&order_by=issue_date+desc",
+          "redirected": false,
+          "bytes": 2173,
+          "contentType": "application/json; charset=utf-8",
+          "topLevelKeys": [
+            "total_count",
+            "results"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "council_ref",
+            "permit_number",
+            "issue_date",
+            "address",
+            "desc_of_works",
+            "estimated_cost_of_works",
+            "rbs_number",
+            "commence_by_date",
+            "completed_by_date",
+            "permit_certificate_type"
+          ],
+          "total": 184740,
+          "durationMs": 1994
+        },
+        {
+          "url": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+          "startedAt": "2026-09-16T01:25:50.760Z",
+          "status": 200,
+          "finalUrl": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+          "redirected": false,
+          "bytes": 2213,
+          "contentType": "application/json; charset=utf-8",
+          "topLevelKeys": [
+            "total_count",
+            "results"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "council_ref",
+            "permit_number",
+            "issue_date",
+            "address",
+            "desc_of_works",
+            "estimated_cost_of_works",
+            "rbs_number",
+            "commence_by_date",
+            "completed_by_date",
+            "permit_certificate_type"
+          ],
+          "total": 184740,
+          "durationMs": 394
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "aemo-generation-information",
+      "name": "AEMO NEM Generation Information - July 2026",
+      "mode": "active",
+      "method": "XLSX_PROJECT",
+      "endpoint": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/nem-generation-information-july-2026.xlsx?rev=3455851f2bc945b7ab61c5ceed272992&sc_lang=en",
+      "provenance": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information",
+      "startedAt": "2026-09-16T01:25:51.163Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "Survey ID",
+          "Site Name",
+          "KCI Id",
+          "Site Owner",
+          "Custodian",
+          "Region",
+          "Max Site Capacity (AC)",
+          "Gen Info Unit ID",
+          "Unit Name",
+          "Technology Type",
+          "Technology Detail",
+          "Dispatch Type",
+          "Unit Count",
+          "Unit Capacity (MW DC)",
+          "Unit Capacity (MW AC)",
+          "Aggregated Nameplate Capacity (MW DC)",
+          "Aggregated Nameplate Capacity (MW AC)",
+          "Agg Nameplate Storage Capacity (MWh)",
+          "Commitment Status",
+          "Full Commercial Use Date",
+          "Expected Closure Year",
+          "Survey Last Requested Date",
+          "Survey Latest Update Date"
+        ],
+        "roles": {
+          "OWNER_PROPONENT": 40
+        },
+        "datedRows": 40,
+        "oldestSourceDate": "2018-05-26T16:37:48.000Z",
+        "newestSourceDate": "2026-06-17T15:42:19.999Z",
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 100,
+        "next": 100,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "Survey ID",
+          "Site Name",
+          "KCI Id",
+          "Site Owner",
+          "Custodian",
+          "Region",
+          "Max Site Capacity (AC)",
+          "Gen Info Unit ID",
+          "Unit Name",
+          "Technology Type",
+          "Technology Detail",
+          "Dispatch Type",
+          "Unit Count",
+          "Unit Capacity (MW DC)",
+          "Unit Capacity (MW AC)",
+          "Aggregated Nameplate Capacity (MW DC)",
+          "Aggregated Nameplate Capacity (MW AC)",
+          "Agg Nameplate Storage Capacity (MWh)",
+          "Commitment Status",
+          "Full Commercial Use Date",
+          "Expected Closure Year",
+          "Survey Last Requested Date",
+          "Survey Latest Update Date"
+        ],
+        "datedRows": 100,
+        "roles": [
+          "OWNER_PROPONENT"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/nem-generation-information-july-2026.xlsx?rev=3455851f2bc945b7ab61c5ceed272992&sc_lang=en",
+          "startedAt": "2026-09-16T01:25:51.163Z",
+          "status": 200,
+          "finalUrl": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/nem-generation-information-july-2026.xlsx?rev=3455851f2bc945b7ab61c5ceed272992&sc_lang=en",
+          "redirected": false,
+          "bytes": 910557,
+          "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 232
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "aemo-key-connection-information",
+      "name": "AEMO Key Connection Information - July 2026",
+      "mode": "active",
+      "method": "XLSX_PROJECT",
+      "endpoint": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+      "provenance": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information",
+      "startedAt": "2026-09-16T01:25:58.662Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 40,
+        "usableRows": 40,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "TNSP Name",
+          "KCI datafile compilation date time stamp",
+          "TNSP Connection Enquiry / Application ID",
+          "KCI received in / under NER",
+          "KCI data – Connection Applicant Notification Date",
+          "KCI data – TNSP Validation Date",
+          "Corresponding Connection Enquiry / Application Activity Status",
+          "Organisation Name",
+          "ABN",
+          "ACN",
+          "Site Name",
+          "Site Location Description",
+          "Region to be supplied",
+          "Maximum power generation (Upper estimate)",
+          "Latest expected forecast completion Date",
+          "Energy Conversion Technology Type",
+          "Energy Conversion Technology Sub Type (if known)",
+          "Number of individual Generating Units [3] (Upper estimate)",
+          "Electricity Generation Technology Type",
+          "Maximum power generation (Upper estimate)3",
+          "AEMO KCI ID"
+        ],
+        "roles": {
+          "OWNER_PROPONENT": 40
+        },
+        "datedRows": 30,
+        "oldestSourceDate": "2019-12-02T00:00:00.000Z",
+        "newestSourceDate": "2025-11-07T00:00:00.000Z",
+        "uniqueIds": 40,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 100,
+        "next": 100,
+        "completed": false,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "TNSP Name",
+          "KCI datafile compilation date time stamp",
+          "TNSP Connection Enquiry / Application ID",
+          "KCI received in / under NER",
+          "KCI data – Connection Applicant Notification Date",
+          "KCI data – TNSP Validation Date",
+          "Corresponding Connection Enquiry / Application Activity Status",
+          "Organisation Name",
+          "ABN",
+          "ACN",
+          "Site Name",
+          "Site Location Description",
+          "Region to be supplied",
+          "Maximum power generation (Upper estimate)",
+          "Latest expected forecast completion Date",
+          "Energy Conversion Technology Type",
+          "Energy Conversion Technology Sub Type (if known)",
+          "Number of individual Generating Units [3] (Upper estimate)",
+          "Electricity Generation Technology Type",
+          "Maximum power generation (Upper estimate)3",
+          "AEMO KCI ID"
+        ],
+        "datedRows": 83,
+        "roles": [
+          "OWNER_PROPONENT"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+          "startedAt": "2026-09-16T01:25:58.662Z",
+          "status": 200,
+          "finalUrl": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+          "redirected": false,
+          "bytes": 417569,
+          "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 244
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-state-development-contracts",
+      "name": "Queensland State Development Contract Disclosures",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=dsdilgp-dsdi-contract-disclosure-reports",
+      "provenance": "https://www.data.qld.gov.au/dataset/dsdilgp-dsdi-contract-disclosure-reports",
+      "startedAt": "2026-09-16T01:26:04.803Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "_id",
+          "Description",
+          "Agency (Dept or Stat Body)",
+          "Agency address",
+          "Contract description/name",
+          "Award contract date",
+          "Contract value",
+          "Supplier name",
+          "Supplier address",
+          "Variation to contract (Yes/No)",
+          "Specific confidentiality provision used",
+          "Procurement method",
+          "Reason for use of limited tendering",
+          "Form of contract",
+          "Number of offers sought",
+          "Evaluation criteria and weightings",
+          "Deliverables",
+          "Contract milestones",
+          "Contract performance management",
+          "Contract reference number",
+          "Contract category group",
+          "Parent contract number/SOA",
+          "Variation comments",
+          "Commence date",
+          "Supplier ABN",
+          "Finish date"
+        ],
+        "roles": {
+          "SUPPLIER": 5
+        },
+        "datedRows": 5,
+        "oldestSourceDate": "2022-05-10T16:00:00.000Z",
+        "newestSourceDate": "2026-06-21T16:00:00.000Z",
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "_id",
+          "Description",
+          "Agency (Dept or Stat Body)",
+          "Agency address",
+          "Contract description/name",
+          "Award contract date",
+          "Contract value",
+          "Supplier name",
+          "Supplier address",
+          "Variation to contract (Yes/No)",
+          "Specific confidentiality provision used",
+          "Procurement method",
+          "Reason for use of limited tendering",
+          "Form of contract",
+          "Number of offers sought",
+          "Evaluation criteria and weightings",
+          "Deliverables",
+          "Contract milestones",
+          "Contract performance management",
+          "Contract reference number",
+          "Contract category group",
+          "Parent contract number/SOA",
+          "Variation comments",
+          "Commence date",
+          "Supplier ABN",
+          "Finish date"
+        ],
+        "datedRows": 5,
+        "roles": [
+          "SUPPLIER"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=dsdilgp-dsdi-contract-disclosure-reports",
+          "startedAt": "2026-09-16T01:26:04.803Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=dsdilgp-dsdi-contract-disclosure-reports",
+          "redirected": false,
+          "bytes": 128274,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "0c5b601c-c8bf-45ba-95fe-a314a2985c53",
+              "name": "DSDIP contract disclosure report June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/0c5b601c-c8bf-45ba-95fe-a314a2985c53/download/dsdip-contract-disclosure-report-june-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-31T01:04:12.643654",
+              "lastModified": "2026-08-31T01:04:57.329254"
+            },
+            {
+              "id": "7493444b-a758-438c-8bc4-5a9f1446594e",
+              "name": "DSDIP contract disclosure report May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/7493444b-a758-438c-8bc4-5a9f1446594e/download/dsdip-contract-disclosure-report-may-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-04T03:41:42.085126",
+              "lastModified": "2026-08-31T01:04:57.335109"
+            },
+            {
+              "id": "1f635e72-8b44-48d5-966a-1eacf2681782",
+              "name": "DSDIP contract disclosure report April 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/1f635e72-8b44-48d5-966a-1eacf2681782/download/dsdip-contract-disclosure-report-april-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-07T22:38:39.290992",
+              "lastModified": "2026-08-31T01:04:57.340646"
+            },
+            {
+              "id": "c283bbb6-d494-418c-a6d0-a5bdfc8f6247",
+              "name": "DSDIP contract disclosure report March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/c283bbb6-d494-418c-a6d0-a5bdfc8f6247/download/dsdip-contract-disclosure-report-march-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-05-10T22:45:27.542196",
+              "lastModified": "2026-08-31T01:04:57.346254"
+            },
+            {
+              "id": "fca68563-9605-4f82-9d41-396f2cadbe2f",
+              "name": "DSDIP contract disclosure report February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/fca68563-9605-4f82-9d41-396f2cadbe2f/download/dsdip-contract-disclosure-report-rebruary-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-27T05:49:47.766325",
+              "lastModified": "2026-08-31T01:04:57.352174"
+            },
+            {
+              "id": "9779aa11-a19a-4510-884e-1e77ce4b7578",
+              "name": "DSDIP contract disclosure report January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/9779aa11-a19a-4510-884e-1e77ce4b7578/download/dsdip-contract-disclosure-report-january-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-25T05:25:38.798745",
+              "lastModified": "2026-08-31T01:04:57.357959"
+            },
+            {
+              "id": "b21da807-7c2a-4059-baa9-2b07e83182db",
+              "name": "DSDIP contract disclosure report December 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/b21da807-7c2a-4059-baa9-2b07e83182db/download/dsdip-contract-disclosure-report-december-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-03-10T23:02:57.905241",
+              "lastModified": "2026-08-31T01:04:57.363732"
+            },
+            {
+              "id": "ce73e37c-6319-49cd-88fd-acc5f668fa05",
+              "name": "DSDIP contract disclosure report November 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/ce73e37c-6319-49cd-88fd-acc5f668fa05/download/dsdip-contract-disclosure-report-november-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-01-11T23:27:01.600228",
+              "lastModified": "2026-08-31T01:04:57.369825"
+            },
+            {
+              "id": "b1f83910-3e77-46ee-8395-c7fd885ada7f",
+              "name": "DSDIP contract disclosure report October 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/b1f83910-3e77-46ee-8395-c7fd885ada7f/download/dsdip-contract-disclosure-report-october-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2025-12-08T03:39:34.227516",
+              "lastModified": "2026-08-31T01:04:57.376038"
+            },
+            {
+              "id": "44e8e222-c570-48bb-8dde-d53236c5695a",
+              "name": "DSDIP contract disclosure report September 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/44e8e222-c570-48bb-8dde-d53236c5695a/download/dsdip-contract-disclosure-report-september-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2025-11-18T04:22:14.358547",
+              "lastModified": "2026-08-31T01:04:57.381697"
+            },
+            {
+              "id": "0444ef66-68f0-40d7-9692-c1947405298a",
+              "name": "DSDIP contract disclosure report July 2025 to August 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/0444ef66-68f0-40d7-9692-c1947405298a/download/dsdip-contract-disclosure-report-july-august-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2025-10-21T06:04:13.568646",
+              "lastModified": "2026-08-31T01:04:57.387221"
+            },
+            {
+              "id": "eaff8469-7c84-4929-9168-e7a781039d23",
+              "name": "DSDIP contract disclosure report May 2025 to July 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/eaff8469-7c84-4929-9168-e7a781039d23/download/dsdip-contract-disclosure-report-may-july-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2025-09-04T23:33:00.772199",
+              "lastModified": "2026-08-31T01:04:57.392803"
+            },
+            {
+              "id": "2d4ca26a-4aee-44c5-9a0d-b3426f6ec4ae",
+              "name": "DSDIP contract disclosure report  January 2025 to April 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/2d4ca26a-4aee-44c5-9a0d-b3426f6ec4ae/download/dsdip-contract-disclosure-report-january-april-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2025-07-09T23:25:45.516505",
+              "lastModified": "2026-08-31T01:04:57.398409"
+            },
+            {
+              "id": "e8017945-f764-4f7b-b749-78ee1333ee9d",
+              "name": "DSDIP contract disclosure report Oct 2024 to Dec 2024",
+              "format": "XLS",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/e8017945-f764-4f7b-b749-78ee1333ee9d/download/dsdip-contract-disclosure-report-oct-to-dec-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2025-05-29T05:23:20.977156",
+              "lastModified": "2026-08-31T01:04:57.403833"
+            },
+            {
+              "id": "74e3af26-554b-42a9-9eee-b5497ca5a438",
+              "name": "DSDI contract disclosure report May 2024 to Sep 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/74e3af26-554b-42a9-9eee-b5497ca5a438/download/dsdi-contract-disclosure-report-may-to-sep-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2024-10-25T02:53:41.296523",
+              "lastModified": "2026-08-31T01:04:57.409343"
+            },
+            {
+              "id": "6c4abed6-c78b-441a-b384-3939d70b285e",
+              "name": "EDQ contract disclosure report May 2024 to June 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/6c4abed6-c78b-441a-b384-3939d70b285e/download/edq-contract-disclosure-report-may-june-2024.xlsx",
+              "datastoreActive": true,
+              "created": "2025-05-22T23:03:41.609731",
+              "lastModified": "2026-08-31T01:04:57.415007"
+            },
+            {
+              "id": "308d879a-1f8f-46e4-a49b-e291d45bad5e",
+              "name": "DSDI contract disclosure report Jan to Apr 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/308d879a-1f8f-46e4-a49b-e291d45bad5e/download/dsdi-contract-disclosure-report-jan-apr-24.xlsx",
+              "datastoreActive": true,
+              "created": "2024-07-19T01:53:53.717522",
+              "lastModified": "2026-08-31T01:04:57.420086"
+            },
+            {
+              "id": "19343bd6-e22c-428e-aee8-f0607fe93ffc",
+              "name": "EDQ contract disclosure report Sep 2023 to Apr 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/19343bd6-e22c-428e-aee8-f0607fe93ffc/download/edq-contract-disclosure-report-sep-23-apr-24.xlsx",
+              "datastoreActive": true,
+              "created": "2024-07-19T01:40:45.948660",
+              "lastModified": "2026-08-31T01:04:57.425244"
+            },
+            {
+              "id": "64b95acd-d932-478e-8252-4e3e8e69a902",
+              "name": "DSDILGP contract disclosure report Sep to Dec 2023",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/64b95acd-d932-478e-8252-4e3e8e69a902/download/dsdilgp-contract-disclosure-report-sept-dec-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T01:04:34.581708",
+              "lastModified": "2026-08-31T01:04:57.430558"
+            },
+            {
+              "id": "78b19ae9-d9a8-4054-9ee0-0a8b1b4e8fab",
+              "name": "EDQ-contract-disclosure-report-Jul-Aug-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/78b19ae9-d9a8-4054-9ee0-0a8b1b4e8fab/download/edq-contract-disclosure-report-jul-aug-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T01:10:40.980198",
+              "lastModified": "2026-08-31T01:04:57.436282"
+            },
+            {
+              "id": "5432a4d7-c7c4-4373-b0ad-ce8a5425a540",
+              "name": "DSDILGP contract disclosure report Jul-Aug-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/5432a4d7-c7c4-4373-b0ad-ce8a5425a540/download/dsdilgp-contract-disclosure-report-jul-aug-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T00:54:38.155124",
+              "lastModified": "2026-08-31T01:04:57.441668"
+            },
+            {
+              "id": "927e8e0e-9a45-4c6c-967a-df04036bf0e9",
+              "name": "EDQ-contract-disclosure-report-May-Jun-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/927e8e0e-9a45-4c6c-967a-df04036bf0e9/download/edq-contract-disclosure-report-may-jun-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T01:15:16.990328",
+              "lastModified": "2026-08-31T01:04:57.446834"
+            },
+            {
+              "id": "1e9c8238-1fa1-4300-b7af-e53f0b3bf451",
+              "name": "DSDILGP-contract-disclosure-report-May-Jun-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/1e9c8238-1fa1-4300-b7af-e53f0b3bf451/download/dsdilgp-contract-disclosure-report-may-jun-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T01:03:03.531492",
+              "lastModified": "2026-08-31T01:04:57.451861"
+            },
+            {
+              "id": "2cbbc17a-ceb2-4dbc-85f3-f0f2a304e9f6",
+              "name": "EDQ-contract-disclosure-report-Mar-Apr-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/2cbbc17a-ceb2-4dbc-85f3-f0f2a304e9f6/download/edq-contract-disclosure-report-mar-apr-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T01:14:11.168663",
+              "lastModified": "2026-08-31T01:04:57.457507"
+            },
+            {
+              "id": "b9568868-ef20-4445-9c23-f0048d2bc224",
+              "name": "DSDILGP contract disclosure report Mar-Apr-23.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/b9568868-ef20-4445-9c23-f0048d2bc224/download/dsdilgp-contract-disclosure-report-mar-apr-23.xlsx",
+              "datastoreActive": true,
+              "created": "2024-02-15T00:56:43.592844",
+              "lastModified": "2026-08-31T01:04:57.463319"
+            },
+            {
+              "id": "4f9fd4e0-d652-4ac3-aa1f-97b683f6c94b",
+              "name": "EDQ contract disclosure report January - February 2023",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/4f9fd4e0-d652-4ac3-aa1f-97b683f6c94b/download/edq-contract-disclosure-report-jan-feb-23.xlsx",
+              "datastoreActive": true,
+              "created": "2023-10-09T05:28:00.930654",
+              "lastModified": "2026-08-31T01:04:57.468607"
+            },
+            {
+              "id": "b8878226-40ec-4c1a-a945-0c91e03cc6ba",
+              "name": "DSDILGP Contract disclosure January - February 2023",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/b8878226-40ec-4c1a-a945-0c91e03cc6ba/download/dsdilgp-contract-disclosure-jan-feb-2023.xlsx",
+              "datastoreActive": true,
+              "created": "2023-10-09T05:18:26.557578",
+              "lastModified": "2026-08-31T01:04:57.473704"
+            },
+            {
+              "id": "fdeb525a-c5e6-46ba-b770-4f2f17f4dd98",
+              "name": "DSDILGP Contract Disclosure October-December 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/fdeb525a-c5e6-46ba-b770-4f2f17f4dd98/download/dsdilgp-contract-disclosure-october-december-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-03-02T01:23:02.171634",
+              "lastModified": "2026-08-31T01:04:57.478884"
+            },
+            {
+              "id": "5693acb7-277e-47e6-8608-547a67bd1c81",
+              "name": "DSDILGP Contract Disclosure July-September 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/5693acb7-277e-47e6-8608-547a67bd1c81/download/dsdilgp-contract-disclosure-july-september-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-03-02T01:10:42.556976",
+              "lastModified": "2026-08-31T01:04:57.483656"
+            },
+            {
+              "id": "caf0c6f2-d5ad-4675-8956-93e6531c8e99",
+              "name": "DSDILGP Contract Disclosure April-June 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/caf0c6f2-d5ad-4675-8956-93e6531c8e99/download/dsdilgp-contract-disclosure-april-june-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-03-02T01:08:19.448160",
+              "lastModified": "2026-08-31T01:04:57.488503"
+            },
+            {
+              "id": "2c986b3d-b1a5-42fd-8459-2216b21223a3",
+              "name": "DSDILGP Contract Disclosure January-March 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/2c986b3d-b1a5-42fd-8459-2216b21223a3/download/dsdilgp-contract-disclosure-january-march-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-03-02T00:55:24.498667",
+              "lastModified": "2026-08-31T01:04:57.493336"
+            },
+            {
+              "id": "2c63ca6e-95a1-4bb1-a0f9-ea50dc08e123",
+              "name": "EDQ contract disclosure - October-December 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/2c63ca6e-95a1-4bb1-a0f9-ea50dc08e123/download/edq-contract-disclosure-report-oct-dec-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-26T23:57:12.963750",
+              "lastModified": "2026-08-31T01:04:57.498032"
+            },
+            {
+              "id": "dddc5a82-c4c4-4768-be1a-233ca4046d93",
+              "name": "EDQ contract disclosure - July  2022 to September 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/dddc5a82-c4c4-4768-be1a-233ca4046d93/download/edq-contract-disclosure-report-july-sept-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-26T23:52:50.745773",
+              "lastModified": "2026-08-31T01:04:57.502852"
+            },
+            {
+              "id": "d62c153e-641a-4790-bcb8-c3ab9927f53b",
+              "name": "EDQ contract disclosure - June 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/d62c153e-641a-4790-bcb8-c3ab9927f53b/download/edq-contract-disclosure-june-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:47:02.661197",
+              "lastModified": "2026-08-31T01:04:57.507924"
+            },
+            {
+              "id": "8ea5ecc3-6d79-4708-8944-9ac7c94941ca",
+              "name": "EDQ contract disclosure - May 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/8ea5ecc3-6d79-4708-8944-9ac7c94941ca/download/edq-contract-disclosure-may-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:46:07.794190",
+              "lastModified": "2026-08-31T01:04:57.512589"
+            },
+            {
+              "id": "c26707d2-b0c0-4f89-a8d8-29501737a83a",
+              "name": "EDQ contract disclosure - March-April 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/c26707d2-b0c0-4f89-a8d8-29501737a83a/download/edq-contract-disclosure-march-april-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:44:56.392132",
+              "lastModified": "2026-08-31T01:04:57.517317"
+            },
+            {
+              "id": "796aa05e-d319-4e34-8564-a9345384643b",
+              "name": "EDQ contract disclosure - January-February 2022",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/796aa05e-d319-4e34-8564-a9345384643b/download/edq-contract-disclosure-january-february-2022.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:43:12.683556",
+              "lastModified": "2026-08-31T01:04:57.521872"
+            },
+            {
+              "id": "7c83495e-b49a-4222-9398-20ca46098b55",
+              "name": "EDQ contract disclosure - July-December 2021",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/7c83495e-b49a-4222-9398-20ca46098b55/download/edq-contract-disclosure-july-december-2021.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:28:55.755054",
+              "lastModified": "2026-08-31T01:04:57.526568"
+            },
+            {
+              "id": "9fe4d1db-f1b8-4f21-915f-ca9e970f09a6",
+              "name": "EDQ contract disclosure - April-June 2021",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/9fe4d1db-f1b8-4f21-915f-ca9e970f09a6/download/edq-contract-disclosure-april-june-2021.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:26:52.168840",
+              "lastModified": "2026-08-31T01:04:57.531767"
+            },
+            {
+              "id": "8c0fa147-d138-46d1-9ab4-da90946af650",
+              "name": "EDQ contract disclosure - January-March 2021",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/8c0fa147-d138-46d1-9ab4-da90946af650/download/edq-contract-disclosure-january-march-2021.csv",
+              "datastoreActive": true,
+              "created": "2023-02-23T07:23:53.989988",
+              "lastModified": "2026-08-31T01:04:57.536459"
+            },
+            {
+              "id": "c5c4d37e-4370-436c-83f6-a29895544b1e",
+              "name": "DSDILGP Contract Disclosure July-December 2021",
+              "format": "CSV",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/c5c4d37e-4370-436c-83f6-a29895544b1e/download/dsdilgp-contract-disclosure-july-dec-2021.csv",
+              "datastoreActive": true,
+              "created": "2022-05-05T01:32:43.430698",
+              "lastModified": "2026-08-31T01:04:57.541513"
+            },
+            {
+              "id": "01aad309-0337-4666-bcb4-2112d937bf53",
+              "name": "DSDILGP Contract Disclosure January-March 2021",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/01aad309-0337-4666-bcb4-2112d937bf53/download/dsdilgp-contract-disclosure-january-march2021.xlsx",
+              "datastoreActive": true,
+              "created": "2022-05-05T01:29:36.982992",
+              "lastModified": "2026-08-31T01:04:57.545993"
+            },
+            {
+              "id": "e8cf67e9-1ae1-4a24-a465-3efd8452b84f",
+              "name": "DSDILGP Contract Disclosure April-June 2021",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/07931cd5-46f9-4210-b290-3ef3233e246d/resource/e8cf67e9-1ae1-4a24-a465-3efd8452b84f/download/dsdilgp-contract-disclosure-april-june-2021.xlsx",
+              "datastoreActive": true,
+              "created": "2022-05-05T01:28:53.290821",
+              "lastModified": "2026-08-31T01:04:57.550433"
+            }
+          ],
+          "metadataModified": "2026-08-31T01:04:41.876040",
+          "durationMs": 223
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=0c5b601c-c8bf-45ba-95fe-a314a2985c53",
+          "startedAt": "2026-09-16T01:26:05.028Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=0c5b601c-c8bf-45ba-95fe-a314a2985c53",
+          "redirected": false,
+          "bytes": 7102,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "_id",
+            "Description",
+            "Agency (Dept or Stat Body)",
+            "Agency address",
+            "Contract description/name",
+            "Award contract date",
+            "Contract value",
+            "Supplier name",
+            "Supplier address",
+            "Variation to contract (Yes/No)",
+            "Specific confidentiality provision used",
+            "Procurement method",
+            "Reason for use of limited tendering",
+            "Form of contract",
+            "Number of offers sought",
+            "Evaluation criteria and weightings",
+            "Deliverables",
+            "Contract milestones",
+            "Contract performance management",
+            "Contract reference number",
+            "Contract category group",
+            "Parent contract number/SOA",
+            "Variation comments",
+            "Commence date",
+            "Supplier ABN",
+            "Finish date"
+          ],
+          "total": 37,
+          "durationMs": 179
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "wa-mineral-exploration-reports",
+      "name": "WA Mineral Exploration Reports (WAMEX)",
+      "mode": "active",
+      "method": "ARCGIS",
+      "endpoint": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/22/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=40&f=json",
+      "provenance": "https://catalogue.data.wa.gov.au/dataset/mineral-exploration-reports-wamex",
+      "startedAt": "2026-09-16T01:26:05.225Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "objectid",
+          "anumber",
+          "title",
+          "report_year",
+          "author_name",
+          "author_company",
+          "report_type",
+          "date_from",
+          "date_to",
+          "project",
+          "operator",
+          "abstract",
+          "keywords",
+          "target_commodity",
+          "date_released",
+          "item_no",
+          "dpxe_abs",
+          "dpxe_rep",
+          "extract_date",
+          "digital_file",
+          "is_shaped",
+          "st_area(shape)",
+          "st_perimeter(shape)"
+        ],
+        "roles": {
+          "OPERATOR": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "objectid",
+          "anumber",
+          "title",
+          "report_year",
+          "author_name",
+          "author_company",
+          "report_type",
+          "date_from",
+          "date_to",
+          "project",
+          "operator",
+          "abstract",
+          "keywords",
+          "target_commodity",
+          "date_released",
+          "item_no",
+          "dpxe_abs",
+          "dpxe_rep",
+          "extract_date",
+          "digital_file",
+          "is_shaped",
+          "st_area(shape)",
+          "st_perimeter(shape)"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "OPERATOR"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/22/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "startedAt": "2026-09-16T01:26:05.225Z",
+          "status": 200,
+          "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/22/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "redirected": false,
+          "bytes": 7775,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "displayFieldName",
+            "fieldAliases",
+            "fields",
+            "features",
+            "exceededTransferLimit"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "objectid",
+            "anumber",
+            "title",
+            "report_year",
+            "author_name",
+            "author_company",
+            "report_type",
+            "date_from",
+            "date_to",
+            "project",
+            "operator",
+            "abstract",
+            "keywords",
+            "target_commodity",
+            "date_released",
+            "item_no",
+            "dpxe_abs",
+            "dpxe_rep",
+            "extract_date",
+            "digital_file",
+            "is_shaped",
+            "st_area(shape)",
+            "st_perimeter(shape)"
+          ],
+          "durationMs": 733
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "wa-mineral-exploration-drillholes",
+      "name": "WA Mineral Exploration Drillholes (Open File)",
+      "mode": "active",
+      "method": "ARCGIS",
+      "endpoint": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/28/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=40&f=json",
+      "provenance": "https://catalogue.data.wa.gov.au/dataset/mineral-exploration-drillholes-open-file",
+      "startedAt": "2026-09-16T01:26:05.977Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "objectid",
+          "holeid",
+          "latitude",
+          "longitude",
+          "target_commodity",
+          "maxdepth",
+          "extract_date",
+          "operator",
+          "collarid",
+          "holetype",
+          "project",
+          "anumber",
+          "period_from",
+          "period_to"
+        ],
+        "roles": {
+          "OPERATOR": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "objectid",
+          "holeid",
+          "latitude",
+          "longitude",
+          "target_commodity",
+          "maxdepth",
+          "extract_date",
+          "operator",
+          "collarid",
+          "holetype",
+          "project",
+          "anumber",
+          "period_from",
+          "period_to"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "OPERATOR"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/28/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "startedAt": "2026-09-16T01:26:05.977Z",
+          "status": 200,
+          "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/28/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "redirected": false,
+          "bytes": 3186,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "displayFieldName",
+            "fieldAliases",
+            "fields",
+            "features",
+            "exceededTransferLimit"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "objectid",
+            "holeid",
+            "latitude",
+            "longitude",
+            "target_commodity",
+            "maxdepth",
+            "extract_date",
+            "operator",
+            "collarid",
+            "holetype",
+            "project",
+            "anumber",
+            "period_from",
+            "period_to"
+          ],
+          "durationMs": 668
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "wa-petroleum-wells",
+      "name": "WA Petroleum Wells",
+      "mode": "active",
+      "method": "ARCGIS",
+      "endpoint": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/13/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=40&f=json",
+      "provenance": "https://catalogue.data.wa.gov.au/dataset/wa-onshore-petroleum-wells-dmirs-025",
+      "startedAt": "2026-09-16T01:26:06.659Z",
+      "live": {
+        "status": "ROWS",
+        "recordsFetched": 5,
+        "usableRows": 5,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [
+          "objectid",
+          "well_name",
+          "uwi",
+          "basin",
+          "lease_no",
+          "long",
+          "lat",
+          "operator",
+          "class",
+          "status",
+          "field",
+          "spud_date",
+          "rig_release_date",
+          "extract_date"
+        ],
+        "roles": {
+          "OPERATOR": 5
+        },
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 5,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "ROWS",
+        "rows": 5,
+        "next": 5,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [
+          "objectid",
+          "well_name",
+          "uwi",
+          "basin",
+          "lease_no",
+          "long",
+          "lat",
+          "operator",
+          "class",
+          "status",
+          "field",
+          "spud_date",
+          "rig_release_date",
+          "extract_date"
+        ],
+        "datedRows": 0,
+        "roles": [
+          "OPERATOR"
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/13/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "startedAt": "2026-09-16T01:26:06.659Z",
+          "status": 200,
+          "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/13/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+          "redirected": false,
+          "bytes": 3157,
+          "contentType": "application/json;charset=UTF-8",
+          "topLevelKeys": [
+            "displayFieldName",
+            "fieldAliases",
+            "fields",
+            "features",
+            "exceededTransferLimit"
+          ],
+          "responseRows": 5,
+          "sampleFieldNames": [
+            "objectid",
+            "well_name",
+            "uwi",
+            "basin",
+            "lease_no",
+            "long",
+            "lat",
+            "operator",
+            "class",
+            "status",
+            "field",
+            "spud_date",
+            "rig_release_date",
+            "extract_date"
+          ],
+          "durationMs": 265
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nsw-major-operating-mines",
+      "name": "NSW Major Operating Mines",
+      "mode": "disabled",
+      "method": "WFS_MATCH",
+      "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows",
+      "provenance": "https://www.data.nsw.gov.au/data/dataset/nsw-major-operating-mines",
+      "disableReason": "Official WFS capabilities are published but the current production matcher did not identify a reliable feature type; deferred rather than guessing a layer name",
+      "startedAt": "2026-09-16T01:26:06.937Z",
+      "live": {
+        "status": "ERROR",
+        "error": "WFS_MATCH_NOT_FOUND"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "BACKFILL_METHOD_UNSUPPORTED:WFS_MATCH"
+      },
+      "requests": [
+        {
+          "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?acceptversions=2.0.0&request=GetCapabilities&service=WFS",
+          "startedAt": "2026-09-16T01:26:06.938Z",
+          "status": 200,
+          "finalUrl": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?acceptversions=2.0.0&request=GetCapabilities&service=WFS",
+          "redirected": false,
+          "bytes": 121822,
+          "contentType": "application/xml",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 1586
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-stadiums-contracts-jul-dec-2025",
+      "name": "Stadiums Queensland Contract Disclosure July to December 2025",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+      "provenance": "https://www.data.qld.gov.au/dataset/stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+      "startedAt": "2026-09-16T01:26:08.531Z",
+      "live": {
+        "status": "EMPTY",
+        "recordsFetched": 0,
+        "usableRows": 0,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [],
+        "roles": {},
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 0,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "EMPTY",
+        "rows": 0,
+        "next": 0,
+        "completed": true,
+        "hasNextPage": false,
+        "rawFieldNames": [],
+        "datedRows": 0,
+        "roles": []
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "startedAt": "2026-09-16T01:26:08.531Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "redirected": false,
+          "bytes": 5117,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "045ac29a-ae16-4e08-82c8-3618500ec5bf",
+              "name": "Stadiums Queensland Contract Disclosure July to December 2025.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-21T23:41:08.243651",
+              "lastModified": "2026-04-21T23:41:08.215839"
+            }
+          ],
+          "metadataModified": "2026-04-21T23:41:09.279412",
+          "durationMs": 76
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=045ac29a-ae16-4e08-82c8-3618500ec5bf",
+          "startedAt": "2026-09-16T01:26:08.607Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=045ac29a-ae16-4e08-82c8-3618500ec5bf",
+          "redirected": false,
+          "bytes": 993,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 0,
+          "sampleFieldNames": [],
+          "total": 0,
+          "durationMs": 148
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    }
+  ]
+}

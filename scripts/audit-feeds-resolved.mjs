@@ -1,0 +1,6 @@
+import fs from 'node:fs';
+const results=[];
+const base='https://public-gs.geoscience.nsw.gov.au/geoserver/ows';
+const jobs=[...['mining-and-exploration:titles_title_granted','mining-and-exploration:titles_title_applications','mineral-occurrence:mineral_occurrence_operating_mines'].map(name=>({label:name,url:base+'?service=WFS&version=2.0.0&request=GetFeature&typeNames='+encodeURIComponent(name)+'&outputFormat=application%2Fjson&count=5'})),{label:'AusTender pagination',url:'https://api.tenders.gov.au/ocds/findByDates/contractPublished/2026-09-09T00:00:00Z/2026-09-16T00:00:00Z'}];
+for(const job of jobs){const record={...job,at:new Date().toISOString()};try{const r=await fetch(job.url,{signal:AbortSignal.timeout(18000),headers:{accept:'application/json','user-agent':'HirerIntelligence/1.0 public-open-data-client'}});record.status=r.status;const b=await r.json();record.topLevelKeys=Object.keys(b);record.rows=(b.features||b.releases||[]).length;record.fields=Object.keys(b.features?.[0]?.properties||{});record.links=b.links;record.total=b.numberMatched??b.totalFeatures;}catch(e){record.error=e.message;}results.push(record);console.log(JSON.stringify(record));}
+fs.writeFileSync('docs/audit/FEED_AUDIT_RESOLVED_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json',JSON.stringify({results},null,2)+'\n');

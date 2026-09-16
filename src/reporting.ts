@@ -48,6 +48,29 @@ function section(doc: jsPDF, title: string, subtitle?: string) {
   if (subtitle) { doc.setFontSize(8); doc.text(doc.splitTextToSize(subtitle, 180), 14, 24); }
 }
 
+function writePaginatedNotes(doc: jsPDF, title: string, text: string, startY: number) {
+  const margin = 14;
+  const bottom = doc.internal.pageSize.getHeight() - margin;
+  const width = doc.internal.pageSize.getWidth() - margin * 2;
+  doc.setFontSize(7.5);
+  const lines = doc.splitTextToSize(text, width) as string[];
+  const lineHeight = Math.max(3.5, doc.getLineHeight() / doc.internal.scaleFactor);
+  let y = startY;
+  const heading = (continued: boolean) => {
+    doc.setFontSize(9);
+    doc.text(continued ? title + ' (continued)' : title, margin, y);
+    y += 6;
+    doc.setFontSize(7.5);
+  };
+  if (y + 6 + lineHeight > bottom) { doc.addPage(); y = 18; }
+  heading(false);
+  for (const line of lines) {
+    if (y + lineHeight > bottom) { doc.addPage(); y = 18; heading(true); }
+    doc.text(line, margin, y);
+    y += lineHeight;
+  }
+}
+
 function regionalRows(projects: any[]) {
   const regions = new Map<string, { projects: number; high: number; equipment: Set<string> }>();
   for (const project of projects) {
@@ -119,8 +142,7 @@ export function downloadExecutivePdf(dashboard: DashboardLike) {
   section(doc, 'PREDICTED Equipment Demand and Fleet Positioning', 'Heuristic confidence is not a statistically calibrated probability and must not be read as a confirmed requirement.');
   autoTable(doc, { startY: 30, head: [['Location', 'Equipment class', 'Projects', 'Avg priority', 'Heuristic confidence']], body: clusters.slice(0, 50).map((item: any) => [item.location, item.equipmentClass, String(item.projectCount), String(item.averagePriority), `${item.confidence}%`]), styles: { fontSize: 6.5 } });
   const clusterY = (doc as any).lastAutoTable?.finalY || 120;
-  doc.setFontSize(9); doc.text('Fleet positioning watches', 14, Math.min(clusterY + 9, 275));
-  doc.setFontSize(7.5); doc.text(doc.splitTextToSize(fleet.slice(0, 15).map((item: any) => `• ${item.equipmentClass} / ${item.location}: ${item.recommendation}`).join('\n') || 'No fleet-positioning watches meet the current evidence threshold.', 180), 14, Math.min(clusterY + 15, 280));
+  writePaginatedNotes(doc, 'Fleet positioning watches', fleet.slice(0, 15).map((item: any) => `- ${item.equipmentClass} / ${item.location}: ${item.recommendation}`).join('\n') || 'No fleet-positioning watches meet the current evidence threshold.', clusterY + 9);
 
   section(doc, 'Source Health and Provenance');
   autoTable(doc, { startY: 25, head: [['Source', 'Status', 'Fetched', 'Last run', 'Provenance']], body: sourceStates.slice(0, 80).map((source: any) => [source.name || source.sourceKey, source.status, String(source.recordsFetched || 0), source.lastRun || '-', source.provenance || '-']), styles: { fontSize: 5.8 } });
@@ -128,8 +150,7 @@ export function downloadExecutivePdf(dashboard: DashboardLike) {
   section(doc, 'Deferred Sources and Calibration');
   autoTable(doc, { startY: 25, head: [['Deferred source', 'Reason']], body: deferred.slice(0, 40).map((item: any) => [item.name || item.sourceKey, item.reason || 'Deferred pending revalidation']), styles: { fontSize: 6.4 } });
   const dataY = (doc as any).lastAutoTable?.finalY || 120;
-  doc.setFontSize(9); doc.text('Commercial calibration', 14, Math.min(dataY + 9, 275));
-  doc.setFontSize(7.5); doc.text(doc.splitTextToSize(`Linked genuine reviewed outcomes: ${calibration.linkedRealOutcomes || 0}. Unmatched legacy outcomes: ${calibration.unmatchedRealOutcomes || 0}. Sample sufficient: ${calibration.sufficientSample ? 'yes' : 'no'}. Funnel metrics are unique-project based, not raw event-row counts.`, 180), 14, Math.min(dataY + 15, 280));
+  writePaginatedNotes(doc, 'Commercial calibration', `Linked genuine reviewed outcomes: ${calibration.linkedRealOutcomes || 0}. Unmatched legacy outcomes: ${calibration.unmatchedRealOutcomes || 0}. Sample sufficient: ${calibration.sufficientSample ? 'yes' : 'no'}. Funnel metrics are unique-project based, not raw event-row counts.`, dataY + 9);
 
   section(doc, 'Governance');
   doc.setFontSize(9);

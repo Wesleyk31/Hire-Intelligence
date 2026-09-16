@@ -1,0 +1,529 @@
+{
+  "finishedAt": "2026-09-16T01:16:17.814Z",
+  "results": [
+    {
+      "label": "SA mining capabilities",
+      "url": "https://services.sarig.sa.gov.au/vector/south_australia_mining_projects/wfs?service=WFS&version=1.1.0&request=GetCapabilities",
+      "at": "2026-09-16T01:15:25.858Z",
+      "error": "fetch failed"
+    },
+    {
+      "label": "NSW capabilities",
+      "url": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetCapabilities",
+      "at": "2026-09-16T01:15:25.931Z",
+      "error": "fetch failed"
+    },
+    {
+      "label": "aemo-generation-information",
+      "url": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/nem-generation-information-july-2026.xlsx?rev=3455851f2bc945b7ab61c5ceed272992&sc_lang=en",
+      "at": "2026-09-16T01:15:36.464Z",
+      "error": "fetch failed"
+    },
+    {
+      "label": "aemo-key-connection-information",
+      "url": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+      "at": "2026-09-16T01:15:47.019Z",
+      "error": "fetch failed"
+    },
+    {
+      "label": "QLD granted newest August XLSX",
+      "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+      "at": "2026-09-16T01:15:57.595Z",
+      "error": "fetch failed"
+    },
+    {
+      "label": "QLD granted July datastore",
+      "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=a022159d-4be7-474f-ab42-6fdb7a2104f6&limit=5",
+      "at": "2026-09-16T01:16:08.148Z",
+      "status": 200,
+      "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=a022159d-4be7-474f-ab42-6fdb7a2104f6&limit=5",
+      "bytes": 990,
+      "contentType": "application/json;charset=utf-8",
+      "total": 0,
+      "fields": [],
+      "dates": []
+    },
+    {
+      "label": "QLD Stadiums workbook",
+      "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+      "at": "2026-09-16T01:16:09.290Z",
+      "status": 202,
+      "finalUrl": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+      "bytes": 0,
+      "contentType": "text/html; charset=UTF-8",
+      "first500": ""
+    },
+    {
+      "label": "date fields wa-mining-tenements",
+      "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "at": "2026-09-16T01:16:09.386Z",
+      "status": 200,
+      "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/3/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "bytes": 8096,
+      "contentType": "application/json;charset=UTF-8",
+      "fields": [
+        "oid",
+        "gid",
+        "tenid",
+        "type",
+        "survstatus",
+        "tenstatus",
+        "holdercnt",
+        "holder1",
+        "addr1",
+        "holder2",
+        "addr2",
+        "holder3",
+        "addr3",
+        "holder4",
+        "addr4",
+        "holder5",
+        "addr5",
+        "holder6",
+        "addr6",
+        "holder7",
+        "addr7",
+        "holder8",
+        "addr8",
+        "holder9",
+        "addr9",
+        "fmt_tenid",
+        "legal_area",
+        "unit_of_me",
+        "special_in",
+        "extract_da",
+        "grantdate",
+        "granttime",
+        "startdate",
+        "starttime",
+        "enddate",
+        "endtime",
+        "st_area(the_geom)",
+        "st_perimeter(the_geom)"
+      ],
+      "dates": [
+        {
+          "enddate": 1940544000000
+        },
+        {
+          "enddate": 1940544000000
+        },
+        {
+          "enddate": 1940544000000
+        },
+        {
+          "enddate": 1940544000000
+        },
+        {
+          "enddate": 1940544000000
+        }
+      ]
+    },
+    {
+      "label": "date fields qld-environmental-authorities",
+      "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+      "at": "2026-09-16T01:16:10.184Z",
+      "status": 200,
+      "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=a9658145-87bd-4258-a689-5aec29d49792",
+      "bytes": 2639,
+      "contentType": "application/json;charset=utf-8",
+      "total": 15174,
+      "fields": [
+        "_id",
+        "Permit Reference",
+        "Permit Type",
+        "Permit Holder(s)",
+        "Effective Date",
+        "Status",
+        "Condition Type",
+        "Industry",
+        "Activities",
+        "Locations"
+      ],
+      "dates": [
+        {
+          "Effective Date": "2014-07-28"
+        },
+        {
+          "Effective Date": "2010-11-17"
+        },
+        {
+          "Effective Date": "2012-10-05"
+        },
+        {
+          "Effective Date": "2015-09-14"
+        },
+        {
+          "Effective Date": "2012-06-18"
+        }
+      ]
+    },
+    {
+      "label": "date fields qld-renewed-resource-authorities",
+      "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=fdd94b3d-15b8-4d63-905c-e51977bd44c1",
+      "at": "2026-09-16T01:16:10.964Z",
+      "status": 200,
+      "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=fdd94b3d-15b8-4d63-905c-e51977bd44c1",
+      "bytes": 2739,
+      "contentType": "application/json;charset=utf-8",
+      "total": 891,
+      "fields": [
+        "_id",
+        "Permit_Number",
+        "Permit Type",
+        "Authorised_Holder",
+        "Completion_Date",
+        "Granted_Date",
+        "Permit_Start_Date",
+        "Permit_End_Date",
+        "Area_Sub_Blocks",
+        "Area",
+        "LGA",
+        "LGA_Type"
+      ],
+      "dates": [
+        {
+          "Completion_Date": "2024-07-15T00:00:00",
+          "Granted_Date": "2012-12-19T00:00:00",
+          "Permit_Start_Date": "2013-01-01T00:00:00",
+          "Permit_End_Date": "2024-12-31T00:00:00"
+        },
+        {
+          "Completion_Date": "2024-07-15T00:00:00",
+          "Granted_Date": "2012-12-19T00:00:00",
+          "Permit_Start_Date": "2013-01-01T00:00:00",
+          "Permit_End_Date": "2024-12-31T00:00:00"
+        },
+        {
+          "Completion_Date": "2024-09-23T00:00:00",
+          "Granted_Date": "1994-08-25T00:00:00",
+          "Permit_Start_Date": "1994-09-01T00:00:00",
+          "Permit_End_Date": "2028-08-31T00:00:00"
+        },
+        {
+          "Completion_Date": "2024-09-23T00:00:00",
+          "Granted_Date": "1994-08-25T00:00:00",
+          "Permit_Start_Date": "1994-09-01T00:00:00",
+          "Permit_End_Date": "2028-08-31T00:00:00"
+        },
+        {
+          "Completion_Date": "2024-09-23T00:00:00",
+          "Granted_Date": "1994-08-25T00:00:00",
+          "Permit_Start_Date": "1994-09-01T00:00:00",
+          "Permit_End_Date": "2028-08-31T00:00:00"
+        }
+      ]
+    },
+    {
+      "label": "date fields qld-state-development-contracts",
+      "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=e8cf67e9-1ae1-4a24-a465-3efd8452b84f",
+      "at": "2026-09-16T01:16:11.614Z",
+      "status": 200,
+      "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=e8cf67e9-1ae1-4a24-a465-3efd8452b84f",
+      "bytes": 6032,
+      "contentType": "application/json;charset=utf-8",
+      "total": 46,
+      "fields": [
+        "_id",
+        "Agency",
+        "Agency address",
+        "Contract description/name",
+        "Award contract date",
+        "Contract value",
+        "Supplier name",
+        "Supplier address",
+        "Variation to contract (Yes/No)",
+        "Specific confidentiality provision used",
+        "Procurement method",
+        "Form of contract",
+        "Number of offers sought",
+        "Evaluation criteria and weightings",
+        "Deliverables",
+        "Contract milestones",
+        "Contract performance management",
+        "Contract reference number",
+        "Contract category group",
+        "Parent contract number/SOA",
+        "Commence date",
+        "Supplier ABN",
+        "Finish date"
+      ],
+      "dates": [
+        {
+          "Award contract date": "2021-04-23T00:00:00"
+        },
+        {
+          "Award contract date": "2021-05-07T00:00:00"
+        },
+        {
+          "Award contract date": "2021-05-03T00:00:00"
+        },
+        {
+          "Award contract date": "2021-06-21T00:00:00"
+        },
+        {
+          "Award contract date": "2021-06-16T00:00:00"
+        }
+      ]
+    },
+    {
+      "label": "date fields vic-current-mining-licences",
+      "url": "https://opendata.maps.vic.gov.au/geoserver/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&typeNames=open-data-platform%3Amin&version=2.0.0",
+      "at": "2026-09-16T01:16:12.299Z",
+      "status": 200,
+      "finalUrl": "https://opendata.maps.vic.gov.au/geoserver/wfs?count=5&outputFormat=application%2Fjson&request=GetFeature&service=WFS&typeNames=open-data-platform%3Amin&version=2.0.0",
+      "bytes": 9962,
+      "contentType": "application/json;charset=UTF-8",
+      "total": 117,
+      "fields": [
+        "tag",
+        "tno",
+        "ingres",
+        "cover",
+        "type",
+        "tno_old",
+        "typedescm",
+        "typedesc",
+        "act",
+        "actdesc",
+        "no",
+        "renew",
+        "renew_app",
+        "own_name",
+        "own_addr1",
+        "own_addr2",
+        "own_town",
+        "own_post",
+        "own_phone",
+        "own_fax",
+        "apprec_dt",
+        "apprec_dti",
+        "grant1_dt",
+        "grant1_dti",
+        "grantl_dt",
+        "grantl_dti",
+        "expl_dt",
+        "expl_dti",
+        "acw_dt",
+        "acw_dti",
+        "bond",
+        "cov_tot",
+        "area_curr",
+        "area_orig",
+        "status",
+        "statussdsc",
+        "statusldsc",
+        "statusadsc",
+        "site_name",
+        "insp",
+        "lga_desc",
+        "lvs_reg",
+        "lvs_name",
+        "lvs_phone",
+        "lvs_email",
+        "map",
+        "lstat_desc",
+        "min_desc",
+        "corre_name",
+        "corre_addr",
+        "cso_name",
+        "cso_phone",
+        "cso_email",
+        "dbsource",
+        "areasqm",
+        "hectares"
+      ],
+      "dates": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "label": "date fields tas-current-mining-leases",
+      "url": "https://data.stategrowth.tas.gov.au/ags/rest/services/MRT/TenementsWFS/MapServer/44/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "at": "2026-09-16T01:16:14.390Z",
+      "status": 200,
+      "finalUrl": "https://data.stategrowth.tas.gov.au/ags/rest/services/MRT/TenementsWFS/MapServer/44/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "bytes": 3127,
+      "contentType": "application/json; charset=UTF-8",
+      "fields": [
+        "ID",
+        "NAME",
+        "DETAILS",
+        "TENEMENTTYPE",
+        "COMMODITY",
+        "OWNER",
+        "STATUS",
+        "APPLICATIONDATE",
+        "GRANTDATE",
+        "EXPIREDATE",
+        "FILEID",
+        "LEASE_AREA"
+      ],
+      "dates": [
+        {
+          "APPLICATIONDATE": 959954400000,
+          "GRANTDATE": 1004450400000,
+          "EXPIREDATE": 1820066400000
+        },
+        {
+          "APPLICATIONDATE": 960904800000,
+          "GRANTDATE": 983455200000,
+          "EXPIREDATE": 1512050400000
+        },
+        {
+          "APPLICATIONDATE": 964447200000,
+          "GRANTDATE": 976456800000,
+          "EXPIREDATE": 1716040800000
+        },
+        {
+          "GRANTDATE": 370706400000,
+          "EXPIREDATE": 1691935200000
+        },
+        {
+          "EXPIREDATE": 1819720800000
+        }
+      ]
+    },
+    {
+      "label": "date fields melbourne-building-permits",
+      "url": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+      "at": "2026-09-16T01:16:15.127Z",
+      "status": 200,
+      "finalUrl": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=5",
+      "bytes": 2213,
+      "contentType": "application/json; charset=utf-8",
+      "total": 184740,
+      "fields": [
+        "council_ref",
+        "permit_number",
+        "issue_date",
+        "address",
+        "desc_of_works",
+        "estimated_cost_of_works",
+        "rbs_number",
+        "commence_by_date",
+        "completed_by_date",
+        "permit_certificate_type"
+      ],
+      "dates": [
+        {
+          "issue_date": "2026-09-07",
+          "commence_by_date": "2027-09-07",
+          "completed_by_date": "2028-09-07"
+        },
+        {
+          "issue_date": "2026-05-15",
+          "commence_by_date": "2027-05-15",
+          "completed_by_date": "2029-05-15"
+        },
+        {
+          "issue_date": "2026-05-14",
+          "commence_by_date": "2027-04-08",
+          "completed_by_date": "2028-04-08"
+        },
+        {
+          "issue_date": "2026-05-14",
+          "commence_by_date": "2027-05-14",
+          "completed_by_date": "2029-05-14"
+        },
+        {
+          "issue_date": "2026-05-11",
+          "commence_by_date": "2027-05-11",
+          "completed_by_date": "2029-05-11"
+        }
+      ]
+    },
+    {
+      "label": "date fields wa-2d-seismic-surveys",
+      "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/23/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "at": "2026-09-16T01:16:16.720Z",
+      "status": 200,
+      "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/23/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "bytes": 2893,
+      "contentType": "application/json;charset=UTF-8",
+      "fields": [
+        "objectid",
+        "first_cdp",
+        "first_shotpoint",
+        "last_cdp",
+        "last_shotpoint",
+        "acquisition_id",
+        "line_name",
+        "survey_name",
+        "survey_id",
+        "line_length",
+        "shot_interval",
+        "extract_date"
+      ],
+      "dates": [
+        {
+          "extract_date": 1789430400000
+        },
+        {
+          "extract_date": 1789430400000
+        },
+        {
+          "extract_date": 1789430400000
+        },
+        {
+          "extract_date": 1789430400000
+        },
+        {
+          "extract_date": 1789430400000
+        }
+      ]
+    },
+    {
+      "label": "date fields wa-3d-seismic-surveys",
+      "url": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/24/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "at": "2026-09-16T01:16:17.513Z",
+      "status": 200,
+      "finalUrl": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Industry_and_Mining/MapServer/24/query?f=json&outFields=*&resultRecordCount=5&returnGeometry=false&where=1%3D1",
+      "bytes": 2487,
+      "contentType": "application/json;charset=UTF-8",
+      "fields": [
+        "objectid",
+        "survey_id",
+        "acquisition_id",
+        "survey_name",
+        "start_date",
+        "end_date",
+        "contractor",
+        "terrain",
+        "line_prefix",
+        "extract_date"
+      ],
+      "dates": [
+        {
+          "start_date": 890956800000,
+          "end_date": 891820800000,
+          "extract_date": 1789430400000
+        },
+        {
+          "start_date": 757728000000,
+          "end_date": 761702400000,
+          "extract_date": 1789430400000
+        },
+        {
+          "start_date": 474681600000,
+          "end_date": 476755200000,
+          "extract_date": 1789430400000
+        },
+        {
+          "start_date": 590630400000,
+          "end_date": 592790400000,
+          "extract_date": 1789430400000
+        },
+        {
+          "start_date": 591667200000,
+          "end_date": 595987200000,
+          "extract_date": 1789430400000
+        }
+      ]
+    }
+  ]
+}
