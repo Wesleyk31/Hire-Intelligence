@@ -6,7 +6,7 @@ The supplied archive was a hardening overlay, not a standalone application. All 
 
 ## Current state
 
-The full-site audit now covers all 21 pages, 52 passing unit/API tests and 89 browser tests: **88 pass and one fails for the corrupt approved homepage JPEG**. TypeScript, 24 static checks and the verification build pass. Live authentication and data coverage remain release blockers. Read the [full audit](docs/audit/2026-09-16-SITE_AUDIT.md) and [next scope](docs/audit/NEXT_SCOPE.md).
+The historical-evidence continuation connects archived records to the dashboard and CRM, adds checked archive checkpoints and byte limits, and discloses coverage bounds. Verification: **70 unit/API tests pass; 92 of 93 browser tests pass**. The remaining browser failure is the corrupt approved homepage JPEG. TypeScript, 24 static checks, 21 handoff hashes and the verification build pass. Read the [continuation results](docs/audit/HISTORICAL_EVIDENCE_PROGRESS.md), [full-site audit](docs/audit/2026-09-16-SITE_AUDIT.md) and [next scope](docs/audit/NEXT_SCOPE.md).
 
 The 28-item hardening overlay is integrated into the application. Additional tested repairs address project identity collisions, source-date and contractor-role accuracy, ingestion during dashboard reads, report history isolation, failed report saves, session recovery and mobile sign-in layout. See [build status](docs/BUILD_STATUS.md) for verification evidence and remaining work.
 

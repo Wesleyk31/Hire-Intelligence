@@ -5,7 +5,7 @@ for (const size of [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobi
   for (const [slug, title] of pages) test(size.name + ' public page ' + slug + ': content, demo and secure entry', async ({ page }) => {
     const state = await setupAudit(page); await page.setViewportSize(size);
     await page.goto(slug === 'home' ? '/' : '/#' + slug);
-    await expect(page.locator('main h1')).toContainText(slug === 'home' ? 'See whatâ€™s' : title);
+    await expect(page.locator('main h1')).toContainText(slug === 'home' ? 'See what’s' : title);
     await checkViewport(page);
     if (['home', 'products', 'contact'].includes(slug)) await page.screenshot({ path: test.info().outputPath(size.name + '-' + slug + '.png'), fullPage: true });
     await expect(page.getByText(project.name, { exact: true })).toHaveCount(0);
@@ -15,7 +15,7 @@ for (const size of [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobi
     await page.locator('main').getByRole('button', { name: 'Explore the platform', exact: false }).first().click();
     await expect(page.getByRole('heading', { name: 'Secure workspace' })).toBeVisible();
     await page.getByRole('button', { name: 'Return to public site' }).click();
-    await expect(page.locator('main h1')).toContainText('See whatâ€™s');
+    await expect(page.locator('main h1')).toContainText('See what’s');
     expect(state.errors).toEqual([]); expect(state.consoleErrors).toEqual([]); expect(state.failedRequests).toEqual([]);
   });
   for (const [slug, name] of modules) test(size.name + ' module ' + slug + ': direct link, reload and navigation', async ({ page }) => {
@@ -57,7 +57,7 @@ test('public menu, footer and browser history reach their named pages', async ({
     await expect(page.locator('main')).toHaveAttribute('data-public-page', name.toLowerCase());
   }
   await page.getByRole('button', {name: 'Hire Intelligence home'}).click();
-  await expect(page.locator('main h1')).toContainText('See whatâ€™s');
+  await expect(page.locator('main h1')).toContainText('See what’s');
   await page.getByRole('button', {name: 'Log in', exact: true}).click();
   await expect(page.getByRole('heading', {name: 'Secure workspace'})).toBeVisible();
   expect(state.errors).toEqual([]);
@@ -74,7 +74,7 @@ test('all five home feature links lead to protected workspace', async ({ page })
 
 test('project search, stage filter and clearing search recover the full list', async ({ page }) => {
   await setupAudit(page); await enter(page, 'projects');
-  const search = page.getByPlaceholder('Search projects, locations, contractors, equipmentâ€¦');
+  const search = page.getByPlaceholder('Search projects, locations, contractors, equipment…');
   await expect(page.locator('button.hi-table-row')).toHaveCount(3);
   await page.locator('.hi-card-toolbar select').selectOption('CONSTRUCTION');
   await expect(page.locator('button.hi-table-row')).toHaveCount(1);
@@ -113,10 +113,10 @@ test('every project entry point opens retained evidence', async ({ page }) => {
 
 test('map filters, region jumps, selection and full project pathway', async ({ page }) => {
   const state = await setupAudit(page); await enter(page, 'map');
-  await expect(page.locator('.map-legend')).toContainText('2 projects Â· 2 signals Â· 1 unmapped Â· 1 high');
+  await expect(page.locator('.map-legend')).toContainText('2 projects · 2 signals · 1 unmapped · 1 high');
   const filters = page.locator('.map-filters select');
-  await filters.nth(0).selectOption('PROJECTS'); await expect(page.locator('.map-legend')).toContainText('2 projects Â· 0 signals');
-  await filters.nth(1).selectOption('HIGH'); await expect(page.locator('.map-legend')).toContainText('1 projects Â· 0 signals');
+  await filters.nth(0).selectOption('PROJECTS'); await expect(page.locator('.map-legend')).toContainText('2 projects · 0 signals');
+  await filters.nth(1).selectOption('HIGH'); await expect(page.locator('.map-legend')).toContainText('1 projects · 0 signals');
   await filters.nth(1).selectOption('WATCH'); await expect(page.locator('.visible-list')).toContainText('No intelligence matches');
   await filters.nth(1).selectOption('ALL'); await filters.nth(2).selectOption('CONSTRUCTION'); await filters.nth(3).selectOption('Excavators');
   await page.locator('.visible-list button').first().click(); await expect(page.locator('.map-selection')).toContainText('APPROXIMATE');
@@ -124,7 +124,7 @@ test('map filters, region jumps, selection and full project pathway', async ({ p
   await page.getByRole('button', {name: 'Close project intelligence'}).click();
   await page.getByRole('button', {name: 'Australia', exact: true}).click();
   await filters.nth(2).selectOption('ALL'); await filters.nth(3).selectOption('ALL'); await filters.nth(0).selectOption('BOTH');
-  await expect(page.locator('.map-legend')).toContainText('2 projects Â· 2 signals');
+  await expect(page.locator('.map-legend')).toContainText('2 projects · 2 signals');
   expect(state.errors).toEqual([]); expect(state.consoleErrors).toEqual([]); expect(state.failedRequests).toEqual([]);
 });
 
@@ -182,6 +182,6 @@ test('PDF download reports history failure truthfully', async ({ page }) => {
 });
 
 test('unrecognized public and operational routes recover to usable home views', async ({ page }) => {
-  await setupAudit(page); await page.goto('/#not-a-page'); await expect(page.locator('main h1')).toContainText('See whatâ€™s');
+  await setupAudit(page); await page.goto('/#not-a-page'); await expect(page.locator('main h1')).toContainText('See what’s');
   await enter(page, 'not-a-module'); await expect(page.locator('.hi-page-head h1')).toHaveText('Decision Desk');
 });

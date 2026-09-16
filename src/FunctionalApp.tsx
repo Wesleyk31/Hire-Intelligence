@@ -130,7 +130,10 @@ type Dashboard = {
     lastError: string;
   };
   coverage: string;
-  universe?: { loaded?: number; truncated?: boolean; pagesRead?: number; outcomesLoaded?: number; outcomesTruncated?: boolean };
+  universe?: { loaded?: number; truncated?: boolean; pagesRead?: number; outcomesLoaded?: number; outcomesTruncated?: boolean;
+    liveLoaded?: number; archiveRecordsLoaded?: number; archiveUnique?: number; duplicateRecords?: number;
+    archivePagesRead?: number; archiveTruncated?: boolean; invalidArchiveRecords?: number; invalidArchivePages?: number;
+  };
 };
 
 type SavedReport = {
@@ -434,7 +437,7 @@ export default function FunctionalApp() {
       </section>
 
       {message && <div className='hi-message'>{message}</div>}
-      {dashboard.universe?.truncated && <div className='hi-message'>Data window disclosure: {dashboard.universe.loaded || 0} current records are loaded in this bounded view and additional stored records exist. Rankings and counts on this screen apply to the loaded window.</div>}
+      {dashboard.universe?.truncated && <div className='hi-message'>Data window disclosure: {dashboard.universe.loaded || 0} unique evidence records are loaded in this bounded view and additional stored records exist. Rankings and counts on this screen apply to the loaded window.</div>}
 
       <section className='hi-page-content' data-module={view}>
         {view === 'Decision Desk' && <DecisionDesk dashboard={dashboard} projects={visibleProjects} events={filteredEvents} open={setSelected} openProject={openProjectById}/>}
@@ -747,7 +750,7 @@ function ReportsPage({ dashboard, reports, reportWindow, generateReport, downloa
       <div><small>EXECUTIVE REPORTING</small><h2>Hire Intelligence Executive Report</h2><p>Current canonical projects, opportunity signals, contractor workload, PREDICTED demand, source health, backfill and calibration.</p></div>
       <div><button type='button' onClick={generateReport}><FileText size={15}/>Save report snapshot</button><button type='button' className='primary' onClick={downloadReport}><Download size={15}/>Download PDF</button></div>
     </section>
-    <section className='hi-card hi-report-preview'><CardHeader title='Current Report Preview' subtitle={summary.headline}/><div className='hi-governance-note'><FileText size={15}/><span><b>Decision view:</b> {summary.highPriorityCount} high-priority projects · {dashboard.metrics?.callNow || 0} CALL NOW · source health {summary.liveFeeds} · {dashboard.universe?.truncated ? 'bounded data window disclosed' : 'current bounded window complete'}.</span></div></section>
+    <section className='hi-card hi-report-preview'><CardHeader title='Current Report Preview' subtitle={summary.headline}/><div className='hi-governance-note'><FileText size={15}/><span><b>Decision view:</b> {summary.highPriorityCount} high-priority projects · {dashboard.metrics?.callNow || 0} CALL NOW · source health {summary.liveFeeds} · {dashboard.universe?.truncated ? 'bounded data window disclosed' : 'current bounded window complete'}.</span></div><p className='hi-report-window'>{summary.dataWindow}</p></section>
     <div className='hi-kpi-grid hi-kpi-grid-6'>
       <article><small>PROJECTS</small><strong>{summary.projectCount}</strong><span>Canonical</span></article>
       <article><small>OPPORTUNITIES</small><strong>{summary.opportunityCount}</strong><span>Current</span></article>
@@ -789,7 +792,20 @@ function AlertsPage({ projects, events, open, openProject }: { projects: Project
 }
 
 function SourceAdminPage({ dashboard }: { dashboard: Dashboard }) {
+  const coverage = dashboard.universe;
   return <div className='hi-stack'>
+    {coverage?.archiveRecordsLoaded !== undefined && <section className='hi-card' aria-label='Evidence coverage'>
+      <CardHeader title='Evidence coverage' subtitle='Current and archived inputs used by the loaded project view.'/>
+      <dl className='hi-coverage-grid'>
+        <div><dt>Unique evidence loaded</dt><dd>{coverage.loaded || 0}</dd></div>
+        <div><dt>Current rows read</dt><dd>{coverage.liveLoaded || 0}</dd></div>
+        <div><dt>Archived rows read</dt><dd>{coverage.archiveRecordsLoaded || 0}</dd></div>
+        <div><dt>Duplicate rows suppressed</dt><dd>{coverage.duplicateRecords || 0}</dd></div>
+      </dl>
+      <p className='hi-report-window'>{coverage.archiveUnique || 0} retained records come from the archive. Original source dates are preserved; collection time does not establish current activity.</p>
+      {coverage.archiveTruncated && <p className='hi-report-window'>Archive window limited: additional archived records exist. Rankings and counts apply to the loaded evidence only.</p>}
+      {Boolean(coverage.invalidArchiveRecords || coverage.invalidArchivePages) && <p className='hi-report-window' role='status'>{coverage.invalidArchiveRecords || 0} archived row{coverage.invalidArchiveRecords === 1 ? '' : 's'} and {coverage.invalidArchivePages || 0} archive page{coverage.invalidArchivePages === 1 ? '' : 's'} need review and were excluded from this view. Stored originals are retained.</p>}
+    </section>}
     <div className='hi-kpi-grid hi-kpi-grid-4'>
       <article><small>CONFIGURED</small><strong>{dashboard.sources.configured}</strong><span>Runnable sources</span></article>
       <article><small>SUCCESSFUL</small><strong>{dashboard.sources.active}</strong><span>Latest status</span></article>

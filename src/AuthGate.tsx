@@ -44,7 +44,7 @@ export default function AuthGate({ children, onExit }: { children: ReactNode; on
   </div>;
 
   return <div className='authenticated-shell'>
-    <div className='auth-userbar'><span>{user.name || user.email || 'Signed in'}</span><button onClick={() => void signOut()}>Sign out</button></div>
+    <div className='auth-userbar'><span>{user.name || user.email || 'Signed in'}</span><button className='public-site-button' onClick={onExit}>Public site</button><button onClick={() => void signOut()}>Sign out</button></div>
     {error && <div className='auth-error' role='alert'>{error}</div>}
     {children}
   </div>;

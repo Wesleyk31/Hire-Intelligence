@@ -1,4 +1,4 @@
-# Next scope â€” production release and trustworthy data
+# Next scope — production release and trustworthy data
 
 ## 1. Close release blockers
 
@@ -13,13 +13,15 @@
 
 ## 2. Connect historical evidence and repair stored data
 
-- Materialise historical evidence_pages into the normalised opportunity/project index.
-- Add idempotent writes, durable checkpoints, retry/replay reconciliation and coverage counts.
+**First local increment delivered:** a shared bounded current/archive view now powers dashboard and CRM; checked checkpoints, pinned provider context, UTF-8 page limits and coverage disclosures are tested. [Results and limits](HISTORICAL_EVIDENCE_PROGRESS.md).
+
+- Build an indexed/paginated historical evidence store for complete coverage beyond the current read window.
+- Reconcile physical duplicate pages and interrupted batches; add a single-writer guarantee or transactional checkpoint storage. Visible deduplication is implemented, but exactly-once physical storage is not.
 - Prepare a dry-run inventory of malformed AEMO rows, duplicate/position IDs and stale dates before quarantine/re-ingestion.
 - Cover historical CKAN publications and explicitly selected WFS layers.
 - Replace bounded dashboard/report windows with indexed queries or pagination, keeping bounds visible until then.
 
-**Acceptance:** counts reconcile source â†’ archive â†’ evidence â†’ projects; retries do not duplicate/omit rows; historical evidence appears with correct provenance and dates.
+**Acceptance:** counts reconcile source → archive → evidence → projects; retries do not duplicate/omit rows; historical evidence appears with correct provenance and dates.
 
 ## 3. Recover existing feeds, then pilot new ones
 
@@ -38,4 +40,4 @@
 - Expand device/browser/accessibility checks and real-volume report review.
 - Finalise business Privacy/Terms and retention/access policy before customer onboarding.
 
-**Recommended order:** release blockers â†’ historical/data repair â†’ existing-feed recovery â†’ two small source pilots. The live deployment remains older than the audited branch until a separate authorised release.
+**Recommended order:** release blockers → historical/data repair → existing-feed recovery → two small source pilots. The live deployment remains older than the audited branch until a separate authorised release.

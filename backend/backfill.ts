@@ -1,28 +1,25 @@
+import { persistArchiveBatch, isDatabaseQuotaError } from './archive-storage';
 import { db } from '@appdeploy/sdk';
-import { collectBackfillPage, normalizeEvidence, type BackfillSource, type BackfillContext, type Evidence } from './backfill-fetch';
+import { collectBackfillPage, prepareBackfillContext, normalizeEvidence, type BackfillSource, type BackfillContext, type Evidence } from './backfill-fetch';
 
 type Cursor = { sourceKey: string; cursor: number; processed: number; completed: boolean; lastRun: string; lastError: string; nextUrl?: string; context?: BackfillContext };
 type Control = { nextIndex: number; runs: number; lastSource: string; lastRun: string };
-type EvidencePage = { sourceKey: string; cursorStart: number; cursorEnd: number; count: number; createdAt: string; events: Evidence[] };
 
 async function saveCursor(cursor: Cursor) {
   const page = await db.list<Cursor>('backfill_cursors', { limit: 100 });
   const current = page.items.find(item => item.sourceKey === cursor.sourceKey);
-  if (current) await db.update('backfill_cursors', [{ id: current.id, record: { ...cursor } }]);
-  else await db.add('backfill_cursors', [{ ...cursor }]);
+  const [saved] = current
+    ? await db.update('backfill_cursors', [{ id: current.id, record: { ...cursor } }])
+    : await db.add('backfill_cursors', [{ ...cursor }]);
+  if (!saved) throw new Error('BACKFILL_CURSOR_SAVE_FAILED');
 }
 
 async function saveControl(control: Control) {
   const page = await db.list<Control>('backfill_control', { limit: 1 });
-  if (page.items.length) await db.update('backfill_control', [{ id: page.items[0].id, record: { ...control } }]);
-  else await db.add('backfill_control', [{ ...control }]);
-}
-
-async function persistPage(source: BackfillSource, start: number, end: number, events: Evidence[]) {
-  if (!events.length) return;
-  const record: EvidencePage = { sourceKey: source.key, cursorStart: start, cursorEnd: end, count: events.length, createdAt: new Date().toISOString(), events };
-  const [id] = await db.add('evidence_pages', [{ ...record }]);
-  if (!id) throw new Error('EVIDENCE_PAGE_SAVE_FAILED');
+  const [saved] = page.items.length
+    ? await db.update('backfill_control', [{ id: page.items[0].id, record: { ...control } }])
+    : await db.add('backfill_control', [{ ...control }]);
+  if (!saved) throw new Error('BACKFILL_CONTROL_SAVE_FAILED');
 }
 
 export async function getBackfillStatus(sources: BackfillSource[]) {
@@ -56,14 +53,18 @@ export async function runBackfillBatch(sources: BackfillSource[]) {
   if (selectedIndex < 0) return getBackfillStatus(sources);
   const source = sources[selectedIndex];
   const existing = cursors.find(item => item.sourceKey === source.key);
-  const current: Cursor = existing || { sourceKey: source.key, cursor: 0, processed: 0, completed: false, lastRun: '', lastError: '' };
+  let current: Cursor = existing || { sourceKey: source.key, cursor: 0, processed: 0, completed: false, lastRun: '', lastError: '' };
   const now = new Date().toISOString();
   try {
+    current = { ...current, context: await prepareBackfillContext(source, current.cursor, current.nextUrl, current.context) };
+    // Reserve the provider resource/window before content is fetched or archived.
+    await saveCursor({ ...current, lastRun: now });
     const page = await collectBackfillPage(source, current.cursor, current.nextUrl, current.context);
     const events = page.rows.map(row => normalizeEvidence(source, row, now));
-    await persistPage(source, current.cursor, page.next, events);
+    await persistArchiveBatch(source.key, current.cursor, page.next, events, { nextUrl: current.nextUrl, context: current.context });
     await saveCursor({ sourceKey: source.key, cursor: page.next, processed: current.processed + events.length, completed: page.completed, nextUrl: page.nextUrl || '', context: page.context || current.context || {}, lastRun: now, lastError: '' });
   } catch (cause) {
+    if (isDatabaseQuotaError(cause)) throw cause;
     const message = cause instanceof Error ? cause.message : 'BACKFILL_FAILED';
     console.warn('HIRER_BACKFILL_FAILED', source.key, message);
     await saveCursor({ ...current, lastRun: now, lastError: message });

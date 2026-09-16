@@ -1,4 +1,4 @@
-import { findField, recordIdentity, sourceJson, sourceText, sourceWorkbook, projectWorkbookRows, ckanResourceRows, type CkanResource } from './source-helpers';
+import { findField, recordIdentity, sourceJson, sourceText, sourceWorkbook, projectWorkbookRows, ckanResourceRows, selectCkanResource, type CkanResource } from './source-helpers';
 import { read, utils } from 'xlsx';
 import { extractSourceDate, inferOrganisation } from './domain-hardening';
 
@@ -32,6 +32,20 @@ function validateOcdsPageUrl(candidate: string, endpoint: string, expectedPath?:
   if (url.origin !== base.origin || url.username || url.password || !url.pathname.startsWith(base.pathname + '/') || !/^\/\d{4}-\d{2}-\d{2}T[\d:]+Z\/\d{4}-\d{2}-\d{2}T[\d:]+Z$/.test(suffix) || expectedPath && url.pathname !== expectedPath) throw new Error('OCDS_PAGINATION_URL_INVALID');
   return url.toString();
 }
+export async function prepareBackfillContext(source: BackfillSource, cursor: number, nextUrl?: string, context?: BackfillContext): Promise<BackfillContext> {
+  if (source.method === 'CKAN_PACKAGE' && !context?.ckanResource) {
+    const resource = await selectCkanResource(source.endpoint);
+    if (!resource) throw new Error('CKAN_RESOURCE_MISSING');
+    return { ...context, ckanResource: resource };
+  }
+  if (source.method === 'OCDS' && !context?.anchorAt) {
+    const end = nextUrl ? new URL(validateOcdsPageUrl(nextUrl, source.endpoint)).pathname.split('/').at(-1) : undefined;
+    const anchorAt = end ? new Date(Date.parse(end) + cursor * 86400000).toISOString() : new Date().toISOString();
+    return { ...context, anchorAt };
+  }
+  return context || {};
+}
+
 async function ocds(source: BackfillSource, cursor: number, savedNextUrl?: string, context?: BackfillContext): Promise<Page> {
   const savedEnd = savedNextUrl ? new URL(validateOcdsPageUrl(savedNextUrl, source.endpoint)).pathname.split('/').at(-1) : undefined;
   const anchorAt = context?.anchorAt || (savedEnd ? new Date(Date.parse(savedEnd) + cursor * 86400000).toISOString() : new Date().toISOString());

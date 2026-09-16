@@ -37,7 +37,9 @@ export function buildExecutiveReportSummary(dashboard: DashboardLike): ReportSum
     evidenceProcessed: dashboard.backfill?.processed || 0,
     completedBackfill: `${dashboard.backfill?.completedSources || 0}/${dashboard.backfill?.totalSources || 0}`,
     predictedDemandClusters: dashboard.commercial?.equipmentClusters?.length || 0,
-    dataWindow: universe.truncated ? `${universe.loaded || projects.length} records loaded from bounded current window; additional stored records exist` : `${universe.loaded || projects.length} current records loaded`,
+    dataWindow: universe.archiveRecordsLoaded !== undefined
+      ? `${universe.loaded ?? 0} unique evidence records from current and archived sources; ${universe.liveLoaded ?? 0} current rows and ${universe.archiveRecordsLoaded ?? 0} archived rows read.${universe.truncated ? ' Bounded view: additional stored records exist.' : ''}${universe.invalidArchiveRecords || universe.invalidArchivePages ? ' Some archive rows or pages need review and are excluded.' : ''}`
+      : universe.truncated ? `${universe.loaded ?? projects.length} records loaded from bounded current window; additional stored records exist` : `${universe.loaded ?? projects.length} current records loaded`,
   };
 }
 

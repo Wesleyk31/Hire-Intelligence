@@ -28,7 +28,6 @@ export default function App() {
 
   if (screen === 'platform') {
     return <div className='platform-root'>
-      <button className='public-site-button' onClick={openHome}>Public site</button>
       <AuthGate onExit={openHome}><FunctionalApp/></AuthGate>
     </div>;
   }

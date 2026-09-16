@@ -1,5 +1,7 @@
-# Hire Intelligence â€” full-site audit
-## 16 September 2026 Â· Australia/Perth
+# Hire Intelligence — full-site audit
+## 16 September 2026 · Australia/Perth
+
+**Later continuation:** [Historical evidence integration and current verification](HISTORICAL_EVIDENCE_PROGRESS.md) now records 70 passing unit tests and 92/93 passing browser tests. The original audit evidence below is retained.
 
 **Audit complete; release readiness is not complete.** Every current page was run, faults were reproduced and repaired locally, all registered feeds were probed, and seven incremental source families were researched. The live deployment still runs the older version. No deployment, GitHub push, live data mutation or external form/message submission was performed.
 
@@ -19,7 +21,7 @@
 | Verification build | Pass; main JS 909.56 kB (284.01 kB gzip), with size warning |
 | Production build/auth/storage | Requires actual private AppDeploy runtime and staging; not established by local fixtures |
 
-[Browser result inventory](BROWSER_RESULTS.json) Â· [Page/pathway details](UI_AUDIT.md) Â· [Dependency evidence](DEPENDENCY_AUDIT.md)
+[Browser result inventory](BROWSER_RESULTS.json) · [Page/pathway details](UI_AUDIT.md) · [Dependency evidence](DEPENDENCY_AUDIT.md)
 
 ## Faults repaired locally
 
@@ -36,17 +38,17 @@ The tests exercise application handlers and real parsers with controlled boundar
 
 ## Remaining release blockers
 
-### P1 â€” live operational data is accessible without signing in
+### P1 — live operational data is accessible without signing in
 
 A fresh browser session received HTTP 200 and operational dashboard fields from the live API. All 12 internal pages were accessible anonymously. The local branch adds authentication and account scoping, but those changes are **not deployed**. New public-summary/report-history routes return 404 on the older deployment.
 
 First release work: build with the real runtime; prove anonymous denial, session lifecycle and two-account isolation in staging; then release the reviewed branch. See [live evidence](LIVE_PLATFORM_AUDIT.md).
 
-### P2 â€” approved homepage artwork is corrupt
+### P2 — approved homepage artwork is corrupt
 
 Both the checked live JPEG and local baseline file are 5,128 bytes and fail decoding. The five feature photos and related background strips are blank. The regression remains failing. Restore the intact approved original; a text-location question is pending. No substitute design was invented.
 
-### P2 â€” incomplete and unreliable data coverage
+### P2 — incomplete and unreliable data coverage
 
 The historical archive does not yet feed the dashboard index. Existing bounded windows and single-resource/layer adapters do not provide exhaustive historical coverage. Malformed production rows created by older parsers need a reviewed migration. External source outages remain visible, not relabelled as success.
 

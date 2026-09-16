@@ -37,7 +37,7 @@ test('project drawer supports keyboard dismiss and focus restoration', async ({ 
 
 test('event-only Decision Desk search preserves its project drill-down', async ({ page }) => {
   await setupAudit(page); await enter(page);
-  await page.getByPlaceholder('Search projects, locations, contractors, equipmentâ€¦').fill('shutdown');
+  await page.getByPlaceholder('Search projects, locations, contractors, equipment…').fill('shutdown');
   await page.getByRole('button').filter({ hasText: 'SHUTDOWN' }).click();
   await expect(page.locator('.hi-drawer')).toBeVisible();
   await expect(page.locator('.hi-drawer h2')).toHaveText(project.name);
@@ -85,8 +85,8 @@ test('report object response retains saved entries and discloses a bounded histo
 
 test('event-only map search keeps the matching signal and its project', async ({ page }) => {
   await setupAudit(page); await enter(page, 'map');
-  await page.getByPlaceholder('Search projects, locations, contractors, equipmentâ€¦').fill('shutdown');
-  await expect(page.locator('.map-legend')).toContainText('1 projects Â· 1 signals');
+  await page.getByPlaceholder('Search projects, locations, contractors, equipment…').fill('shutdown');
+  await expect(page.locator('.map-legend')).toContainText('1 projects · 1 signals');
   await page.locator('.visible-list button').filter({hasText: 'SHUTDOWN'}).click();
   await page.getByRole('button', {name: 'Open full project intelligence'}).click();
   await expect(page.locator('.hi-drawer h2')).toHaveText(project.name);
@@ -105,7 +105,7 @@ test('map filter changes remove a selection that no longer matches', async ({ pa
 test('signed-in public-site action is clickable and session is restored on return', async ({ page }) => {
   await setupAudit(page); await enter(page, 'projects');
   await page.getByRole('button', {name: 'Public site', exact: true}).click({timeout: 3000});
-  await expect(page.locator('main h1')).toContainText('See whatâ€™s');
+  await expect(page.locator('main h1')).toContainText('See what’s');
   await page.getByRole('button', {name: 'Log in', exact: true}).click();
   await expect(page.locator('.hi-page-head h1')).toHaveText('Decision Desk');
 });

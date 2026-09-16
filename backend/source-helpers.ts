@@ -111,17 +111,19 @@ export function projectWorkbookRows(sourceKey: string, book: WorkBook, preserveH
 }
 
 export type CkanResource = { id?: string; url?: string; format?: string; datastore_active?: boolean; created?: string; last_modified?: string };
-export async function ckanResourceRows(endpoint: string, limit: number, offset: number, pinnedResource?: CkanResource) {
-  let resource = pinnedResource;
-  if (!resource) {
+export async function selectCkanResource(endpoint: string): Promise<CkanResource | undefined> {
   const body = await sourceJson(endpoint);
   if (body.success !== true || !Array.isArray(body.result?.resources)) throw new Error('CKAN_SCHEMA_INVALID');
   const resources = [...body.result.resources].sort((a, b) => {
     const date = (resource: any) => Date.parse(String(resource.created || resource.last_modified || '')) || 0;
     return date(b) - date(a);
   });
-  resource = resources.find(item => item.datastore_active === true && item.id || ['XLSX', 'CSV'].includes(String(item.format).toUpperCase()) && item.url);
-  }
+  const resource = resources.find(item => item.datastore_active === true && item.id || ['XLSX', 'CSV'].includes(String(item.format).toUpperCase()) && item.url);
+  return resource ? { id: resource.id, url: resource.url, format: resource.format, datastore_active: resource.datastore_active } : undefined;
+}
+
+export async function ckanResourceRows(endpoint: string, limit: number, offset: number, pinnedResource?: CkanResource) {
+  const resource = pinnedResource || await selectCkanResource(endpoint);
   if (!resource) return { rows: [] as Array<{ externalId: string; raw: Record<string, unknown> }>, total: 0 };
   const selectedResource: CkanResource = { id: resource.id, url: resource.url, format: resource.format, datastore_active: resource.datastore_active };
   if (resource.datastore_active === true && resource.id) {

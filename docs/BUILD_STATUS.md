@@ -1,4 +1,9 @@
-# Local build status â€” 16 September 2026
+# Local build status — 16 September 2026
+
+## Historical evidence continuation — latest results
+
+Archived evidence now feeds the operational dashboard and CRM through a shared bounded view. Checked checkpoints, pinned provider context, byte-limited archive writes and coverage disclosures are implemented. Verification: **70 unit tests pass; 92 browser tests pass and 1 fails** for the existing corrupt homepage artwork. TypeScript, 24 static checks, 21 original hashes and the verification build pass; the 15-page PDF retains all tested content within margins. No deployment or live mutation occurred. See [continuation results and limitations](audit/HISTORICAL_EVIDENCE_PROGRESS.md). The sections below retain earlier integration/audit evidence.
+
 
 ## Full-site audit supersedes the initial counts below
 

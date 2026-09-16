@@ -1,0 +1,1224 @@
+{
+  "scope": "Local Chrome verification with synthetic fixtures; not live authentication or storage acceptance",
+  "stats": {
+    "startTime": "2026-09-16T02:09:55.985Z",
+    "duration": 206144.557,
+    "expected": 92,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "file": "archive-coverage.spec.ts",
+      "line": 4,
+      "title": "archive coverage and quality counts remain visible at width 1280",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3043,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "archive-coverage.spec.ts",
+      "line": 4,
+      "title": "archive coverage and quality counts remain visible at width 375",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1491,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "archive-coverage.spec.ts",
+      "line": 16,
+      "title": "report preview discloses archived inputs and a bounded window",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1651,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "archive-coverage.spec.ts",
+      "line": 23,
+      "title": "workspace navigation leaves mobile coverage warnings unobstructed and returns home",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1508,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page home: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2913,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page products: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1755,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page solutions: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1671,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page industries: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1797,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page insights: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1920,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page about: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1971,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page contact: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3199,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page privacy: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2055,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "desktop public page terms: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2125,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module decision-desk: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2277,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module commercial-intelligence: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2201,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module opportunities: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2167,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module projects: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2098,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module map: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 4214,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module organisations-delivery-teams: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2296,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module equipment-demand: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2413,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module resources: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2359,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module crm: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2190,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module reports: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2179,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module alerts: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1940,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "desktop module source-admin: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2028,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page home: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2980,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page products: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2788,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page solutions: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2866,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page industries: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1589,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page insights: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1716,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page about: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1601,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page contact: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1698,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page privacy: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1485,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 5,
+      "title": "mobile public page terms: content, demo and secure entry",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1739,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module decision-desk: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2432,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module commercial-intelligence: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2346,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module opportunities: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2183,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module projects: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2153,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module map: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2646,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module organisations-delivery-teams: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2177,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module equipment-demand: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2255,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module resources: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1889,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module crm: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2132,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module reports: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2033,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module alerts: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2096,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 21,
+      "title": "mobile module source-admin: direct link, reload and navigation",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1992,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data decision-desk: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1465,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data commercial-intelligence: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1146,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data opportunities: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1139,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data projects: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1221,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data map: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1316,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data organisations-delivery-teams: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1714,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data equipment-demand: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1628,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data resources: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1596,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data crm: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1384,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data reports: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1281,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data alerts: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1272,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 39,
+      "title": "empty data source-admin: truthful empty state without crash",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1244,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 47,
+      "title": "public menu, footer and browser history reach their named pages",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2419,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 66,
+      "title": "all five home feature links lead to protected workspace",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3705,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 75,
+      "title": "project search, stage filter and clearing search recover the full list",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1734,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 90,
+      "title": "opportunity priorities and search retain matching drill-downs",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1340,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 100,
+      "title": "every project entry point opens retained evidence",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3621,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 114,
+      "title": "map filters, region jumps, selection and full project pathway",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3404,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 131,
+      "title": "dashboard failure exposes retry and recovers real page content",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1352,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 140,
+      "title": "demo submission failure preserves fields and retry resets only after success",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1780,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 151,
+      "title": "CRM rejects missing project and zero quote/win, records all six result types and QA flag",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2939,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 169,
+      "title": "failed public summary keeps pages and conversion usable",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1188,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 176,
+      "title": "PDF download reports history failure truthfully",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1467,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-coverage.spec.ts",
+      "line": 184,
+      "title": "unrecognized public and operational routes recover to usable home views",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1664,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 4,
+      "title": "demo dialog contains keyboard focus, closes on Escape and restores its trigger",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2212,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 19,
+      "title": "project drawer closes when browser history changes modules",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2064,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 29,
+      "title": "project drawer supports keyboard dismiss and focus restoration",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1777,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 38,
+      "title": "event-only Decision Desk search preserves its project drill-down",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1632,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 46,
+      "title": "recent map filters exclude undated and future signals",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1624,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 56,
+      "title": "map renders evidence markup as plain text in tooltips",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1528,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 64,
+      "title": "mobile demo remains entirely reachable on a short screen",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1436,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 77,
+      "title": "report object response retains saved entries and discloses a bounded history window",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2004,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 86,
+      "title": "event-only map search keeps the matching signal and its project",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2181,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 95,
+      "title": "map filter changes remove a selection that no longer matches",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2240,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 105,
+      "title": "signed-in public-site action is clickable and session is restored on return",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1700,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 113,
+      "title": "project modal visually blocks account actions behind it",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1404,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 122,
+      "title": "public About navigation opens the page heading at the top",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1487,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 129,
+      "title": "module navigation starts the new page at the top",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2236,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 138,
+      "title": "project recency uses source activity dates and never collection timestamps",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1708,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 150,
+      "title": "homepage feature artwork decodes as an actual image",
+      "status": "unexpected",
+      "attempts": [
+        {
+          "status": "failed",
+          "durationMs": 1493,
+          "errors": [
+            "Error: approved homepage image must decode\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  159 |     });\n  160 |   });\n> 161 |   expect(imageState.loaded, 'approved homepage image must decode').toBe(true);\n      |                                                                    ^\n  162 |   expect(imageState.width).toBeGreaterThan(0); expect(imageState.height).toBeGreaterThan(0);\n  163 | });\n  164 |\n    at C:\\Users\\wkelm\\Documents\\ChatGPT\\Hire Intelligence\\tests\\browser\\audit-regressions.spec.ts:161:68"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "audit-regressions.spec.ts",
+      "line": 166,
+      "title": "mobile empty activity rows use the full content width",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1762,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "pdf-audit.spec.ts",
+      "line": 5,
+      "title": "large executive report preserves all fleet notes and calibration content",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1988,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "workflows.spec.ts",
+      "line": 54,
+      "title": "public navigation, sign-in gate and all twelve operational modules",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 4005,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "workflows.spec.ts",
+      "line": 75,
+      "title": "project drawer and map show provenance and unique mapped projects",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 2043,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "workflows.spec.ts",
+      "line": 90,
+      "title": "CRM guardrail, durable report history, account separation and PDF download",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 3244,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "workflows.spec.ts",
+      "line": 121,
+      "title": "report failures cannot expose another account or claim a successful save",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 1688,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "workflows.spec.ts",
+      "line": 133,
+      "title": "mobile conversion, footer legal pages and expired-session recovery",
+      "status": "expected",
+      "attempts": [
+        {
+          "status": "passed",
+          "durationMs": 6412,
+          "errors": []
+        }
+      ]
+    }
+  ]
+}
