@@ -17,7 +17,7 @@ export async function persistArchiveBatch(
   events: Evidence[],
   checkpoint: { nextUrl?: string; context?: BackfillContext },
 ) {
-  if (!events.length) return;
+  if (!events.length) return { acknowledgedRecords: 0 };
   const batchKey = hash({ sourceKey, start, end, checkpoint });
   const createdAt = new Date().toISOString();
   const record = (chunk: Evidence[], part: number) => ({
@@ -50,10 +50,18 @@ export async function persistArchiveBatch(
     } else chunk = candidate;
   }
   if (chunk.length) pages.push(record(chunk, pages.length));
-  for (const page of pages) {
-    const [id] = await db.add('evidence_pages', [{ ...page }]);
-    if (!id) throw new Error('EVIDENCE_PAGE_SAVE_FAILED');
+  let acknowledgedRecords = 0;
+  try {
+    for (const page of pages) {
+      const [id] = await db.add('evidence_pages', [{ ...page }]);
+      if (!id) throw new Error('EVIDENCE_PAGE_SAVE_FAILED');
+      acknowledgedRecords += page.count;
+    }
+  } catch (cause) {
+    if (cause instanceof Error) Object.assign(cause, { acknowledgedRecords, persistenceUncertain: true });
+    throw cause;
   }
+  return { acknowledgedRecords };
 }
 
 export function isDatabaseQuotaError(error: unknown) {

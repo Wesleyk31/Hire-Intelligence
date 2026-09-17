@@ -1,0 +1,933 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-18",
+  "timezone": "Australia/Perth",
+  "codeCommit": "36e2ab9c51b6653cb70482e30060eb7e59d20f67",
+  "scope": "25 source-pull work packages within proposed scopes 2151–2200; not 25 newly activated feeds.",
+  "executionPolicy": {
+    "readOnly": true,
+    "activationEnabled": false,
+    "productionWrites": false,
+    "cronChanges": false,
+    "persistRawPersonalData": false,
+    "maxConcurrentSources": 3,
+    "defaultSampleRows": 5,
+    "pilotMaxRows": 6,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "cadencesAreProposals": true,
+    "notes": "Workbook/KML/GeoJSON adapters may return more than five rows; preserve reported actual counts. Any later scheduled activation needs source acceptance and real-runtime canaries."
+  },
+  "audit": {
+    "file": "FEED_AUDIT_2026-09-17T23-01-33-900Z.json",
+    "startedAt": "2026-09-17T23:01:33.9Z",
+    "finishedAt": "2026-09-17T23:02:09.017Z",
+    "counts": {
+      "configured": 66,
+      "active": 53,
+      "disabled": 13,
+      "historicalOnly": 4,
+      "probed": 70,
+      "liveRows": 65,
+      "liveErrors": 4,
+      "liveEmpty": 1,
+      "metadataOnly": 0
+    }
+  },
+  "dataPulls": [
+    {
+      "id": 2176,
+      "kind": "DATA_PULL",
+      "title": "Queensland granted resource authorities",
+      "sourceKeys": [
+        "qld-granted-resource-authorities"
+      ],
+      "deliverable": "Recover the provider-supported workbook response; compare new grants by title ID and grant date.",
+      "status": "HTTP_202",
+      "proposedCadence": "Daily after recovery",
+      "gate": "Do not treat HTTP 202 or catalogue metadata as granted-title rows.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "qld-granted-resource-authorities",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "provenance": "https://www.data.qld.gov.au/dataset/recently-granted-resource-authorities",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ERROR",
+          "liveRows": null,
+          "error": "HTTP_202",
+          "backfillStatus": "ERROR",
+          "backfillRows": null
+        }
+      ]
+    },
+    {
+      "id": 2177,
+      "kind": "DATA_PULL",
+      "title": "Stadiums Queensland contracts",
+      "sourceKeys": [
+        "qld-stadiums-contracts-jul-dec-2025"
+      ],
+      "deliverable": "Resolve the empty datastore against the published workbook and look for a current disclosure period.",
+      "status": "EMPTY",
+      "proposedCadence": "Weekly publication check",
+      "gate": "Use only a supported download; retain the July–December 2025 period instead of relabelling it current.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "qld-stadiums-contracts-jul-dec-2025",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "provenance": "https://www.data.qld.gov.au/dataset/stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "EMPTY",
+          "liveRows": 0,
+          "error": null,
+          "backfillStatus": "EMPTY",
+          "backfillRows": 0
+        }
+      ]
+    },
+    {
+      "id": 2178,
+      "kind": "DATA_PULL",
+      "title": "NT mineral titles",
+      "sourceKeys": [
+        "nt-mineral-titles"
+      ],
+      "deliverable": "Resolve download negotiation, stream/bound archive parsing and validate title-domain identifiers.",
+      "status": "HTTP_406",
+      "proposedCadence": "Weekly initially",
+      "gate": "Separate application/grant status and domain IDs; stay disabled until schema/rights/volume acceptance.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nt-mineral-titles",
+          "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mineral-titles",
+          "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-mineral-titles",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ERROR",
+          "liveRows": null,
+          "error": "HTTP_406",
+          "backfillStatus": "ERROR",
+          "backfillRows": null
+        }
+      ]
+    },
+    {
+      "id": 2179,
+      "kind": "DATA_PULL",
+      "title": "NT petroleum and pipeline titles",
+      "sourceKeys": [
+        "nt-petroleum-pipeline-titles"
+      ],
+      "deliverable": "Recover the title archive and retain petroleum, pipeline and licence types separately.",
+      "status": "HTTP_406",
+      "proposedCadence": "Weekly initially",
+      "gate": "Pipeline rights are context, not proof of new construction or a shutdown.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nt-petroleum-pipeline-titles",
+          "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-petroleum-and-pipeline-titles",
+          "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-petroleum-and-pipeline-titles",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ERROR",
+          "liveRows": null,
+          "error": "HTTP_406",
+          "backfillStatus": "ERROR",
+          "backfillRows": null
+        }
+      ]
+    },
+    {
+      "id": 2180,
+      "kind": "DATA_PULL",
+      "title": "NT geothermal titles",
+      "sourceKeys": [
+        "nt-geothermal-titles"
+      ],
+      "deliverable": "Recover the geothermal archive with stable title identity and explicit missing event dates.",
+      "status": "HTTP_406",
+      "proposedCadence": "Weekly initially",
+      "gate": "Never reuse mineral-title fields without validating the geothermal domain.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nt-geothermal-titles",
+          "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-geothermal-title",
+          "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-geothermal-title",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ERROR",
+          "liveRows": null,
+          "error": "HTTP_406",
+          "backfillStatus": "ERROR",
+          "backfillRows": null
+        }
+      ]
+    },
+    {
+      "id": 2181,
+      "kind": "DATA_PULL",
+      "title": "NT mines",
+      "sourceKeys": [
+        "nt-mines"
+      ],
+      "deliverable": "Expand the bounded MODAT sample and reconcile mine IDs across pages and revisions.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Retain context-only and third-party material holds; unknown dates remain unknown.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nt-mines",
+          "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mines",
+          "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-mines",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 61
+        }
+      ]
+    },
+    {
+      "id": 2182,
+      "kind": "DATA_PULL",
+      "title": "NT mineral occurrences",
+      "sourceKeys": [
+        "nt-mineral-occurrences"
+      ],
+      "deliverable": "Sample the recovered archive for geospatial identity, duplicates and provenance.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Monthly after acceptance",
+      "gate": "Geological occurrences are territory context and cannot generate hire-demand alerts.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nt-mineral-occurrences",
+          "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mineral-occurrences",
+          "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-mineral-occurrences",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 100
+        }
+      ]
+    },
+    {
+      "id": 2183,
+      "kind": "DATA_PULL",
+      "title": "SA major mineral mines",
+      "sourceKeys": [
+        "sa-mining-projects"
+      ],
+      "deliverable": "Validate repeated WFS pages, stable mine identity and old-ID mappings before a staged canary.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Operating status alone does not prove mobilisation or equipment requirements.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "sa-mining-projects",
+          "endpoint": "https://services.sarig.sa.gov.au/vector/south_australia_mining_projects/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=south_australia_mining_projects%3Amajor_mines___minerals&outputFormat=application%2Fjson&sortBy=OBJECTID",
+          "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2184,
+      "kind": "DATA_PULL",
+      "title": "SA mineral/opal applications",
+      "sourceKeys": [
+        "sa-mineral-tenements"
+      ],
+      "deliverable": "Pull application identifiers, applicant/holder role and genuine application dates.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "An applicant is not a delivery contractor; applications are not awards.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "sa-mineral-tenements",
+          "endpoint": "https://services.sarig.sa.gov.au/vector/mineral_tenements/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=mineral_tenements%3Amineral_and_or_opal_exploration_licence_applications&outputFormat=application%2Fjson&sortBy=OBJECTID",
+          "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2185,
+      "kind": "DATA_PULL",
+      "title": "SA facility/infrastructure applications",
+      "sourceKeys": [
+        "sa-petroleum-tenements"
+      ],
+      "deliverable": "Validate the corrected associated-facility layer and its domain/identity mapping.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Do not market this corrected layer as all petroleum tenements.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "sa-petroleum-tenements",
+          "endpoint": "https://services.sarig.sa.gov.au/vector/petroleum_tenements/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=petroleum_tenements%3Aassociated_facility_and_infrastructure_licence_applications&outputFormat=application%2Fjson&sortBy=OBJECTID",
+          "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 3,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 3
+        }
+      ]
+    },
+    {
+      "id": 2186,
+      "kind": "DATA_PULL",
+      "title": "SA power generation",
+      "sourceKeys": [
+        "sa-power-generation"
+      ],
+      "deliverable": "Resolve the natural-ID review, validate project status and test cross-publication matching.",
+      "status": "ROWS_DISABLED_ID_REVIEW",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Keep NATURAL_ID_REVIEW_REQUIRED until an independently reviewed identifier contract exists.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "sa-power-generation",
+          "endpoint": "https://services.sarig.sa.gov.au/vector/renewable_energy_and_storage/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=renewable_energy_and_storage%3Apower_generation___all&outputFormat=application%2Fjson&sortBy=OBJECTID",
+          "provenance": "https://www.energymining.sa.gov.au/industry/geological-survey/products-and-services/map-viewers-databases-and-services/data-services",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2187,
+      "kind": "DATA_PULL",
+      "title": "NSW current mining titles",
+      "sourceKeys": [
+        "nsw-current-mining-titles"
+      ],
+      "deliverable": "Validate granted-title IDs, owner/holder roles and corrected WFS pagination.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Retain title-domain context and source-specific attribution.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nsw-current-mining-titles",
+          "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_granted&outputFormat=application%2Fjson&sortBy=tas_id",
+          "provenance": "https://data.nsw.gov.au/data/en/dataset/nsw-mining-titles",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2188,
+      "kind": "DATA_PULL",
+      "title": "NSW mining applications",
+      "sourceKeys": [
+        "nsw-mining-title-applications"
+      ],
+      "deliverable": "Validate application IDs, source dates and legacy mapping for the corrected layer.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Weekly after acceptance",
+      "gate": "Keep applications separate from grants and physical project commencement.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nsw-mining-title-applications",
+          "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mining-and-exploration%3Atitles_title_applications&outputFormat=application%2Fjson&sortBy=tas_id",
+          "provenance": "https://data.nsw.gov.au/data/en/dataset/nsw-exploration-and-mining-titles-applications",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2189,
+      "kind": "DATA_PULL",
+      "title": "NSW operating mines",
+      "sourceKeys": [
+        "nsw-major-operating-mines"
+      ],
+      "deliverable": "Validate occurrence IDs and reconcile mine names/locations with existing project identities.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Monthly after acceptance",
+      "gate": "Mine identity is context; shutdown/expansion needs separate dated evidence.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nsw-major-operating-mines",
+          "endpoint": "https://public-gs.geoscience.nsw.gov.au/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=mineral-occurrence%3Amineral_occurrence_operating_mines&outputFormat=application%2Fjson&sortBy=occurrence_id",
+          "provenance": "https://www.data.nsw.gov.au/data/dataset/nsw-major-operating-mines",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    },
+    {
+      "id": 2190,
+      "kind": "DATA_PULL",
+      "title": "National resources and energy projects",
+      "sourceKeys": [
+        "au-resources-energy-major-projects"
+      ],
+      "deliverable": "Validate the complete Consolidated sheet and compare status/revision changes by project.",
+      "status": "ROWS_DISABLED",
+      "proposedCadence": "Monthly publication check",
+      "gate": "Keep the 2025 publication date and completed-project status; do not assume a 2026 edition exists.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "au-resources-energy-major-projects",
+          "endpoint": "https://www.industry.gov.au/sites/default/files/2025-12/resources-and-energy-major-projects-2025-data.xlsx",
+          "provenance": "https://data.gov.au/data/dataset/resources-and-energy-major-projects",
+          "mode": "disabled",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 100
+        }
+      ]
+    },
+    {
+      "id": 2191,
+      "kind": "DATA_PULL",
+      "title": "Logan development applications",
+      "sourceKeys": [
+        "logan-development-applications"
+      ],
+      "deliverable": "Investigate INVALID_INPUT meaning, compare authoritative application pages and verify parcel/amendment deduplication.",
+      "status": "SAMPLED_QUARANTINED",
+      "proposedCadence": "Daily only after quality acceptance",
+      "gate": "All six fresh sample rows are quarantined; lodgement is not construction commencement.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "logan-development-applications",
+          "endpoint": "https://services5.arcgis.com/ZUCWDRj8F77Xo351/ArcGIS/rest/services/Logan_City_Undecided_Development_Applications/FeatureServer/0",
+          "provenance": "https://www.arcgis.com/sharing/rest/content/items/50489a44f46b45b5857bcc7f9aa95f20?f=json",
+          "observedAt": "2026-09-17T23:02:55.165Z",
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2192,
+      "kind": "DATA_PULL",
+      "title": "Queensland coordinated projects",
+      "sourceKeys": [
+        "qld-coordinated-projects"
+      ],
+      "deliverable": "Corroborate current project-page status and published dates for the six contextual sample projects.",
+      "status": "SAMPLED_CONTEXT_ONLY",
+      "proposedCadence": "Weekly proposed; publisher cadence unverified",
+      "gate": "Six fresh sample records are undated context and produce zero promotion-eligible events.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "qld-coordinated-projects",
+          "endpoint": "https://spatial-gis.information.qld.gov.au/arcgis/rest/services/PlanningCadastre/StatePlanning/MapServer/25",
+          "provenance": "https://www.data.qld.gov.au/dataset/coordinated-projects-the-coordinator-general",
+          "observedAt": "2026-09-17T23:02:55.165Z",
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2193,
+      "kind": "DATA_PULL",
+      "title": "CER committed and probable projects",
+      "sourceKeys": [
+        "cer-committed",
+        "cer-probable"
+      ],
+      "deliverable": "Build a bounded CSV contract and compare pipeline revisions; preserve probable versus committed stages.",
+      "status": "CATALOGUE_VERIFIED",
+      "proposedCadence": "Monthly publication check",
+      "gate": "Resolve the linking-use question; preserve source vintage and match against AEMO/EPBC rather than duplicating projects.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "cer-committed",
+          "endpoint": "https://cer.gov.au/document/power-stations-and-projects-committed",
+          "provenance": "https://cer.gov.au/markets/reports-and-data/large-scale-renewable-energy-data",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        },
+        {
+          "key": "cer-probable",
+          "endpoint": "https://cer.gov.au/document/power-stations-and-projects-probable",
+          "provenance": "https://cer.gov.au/markets/reports-and-data/large-scale-renewable-energy-data",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2194,
+      "kind": "DATA_PULL",
+      "title": "WA EPA significant proposals",
+      "sourceKeys": [
+        "wa-epa-dwer-120"
+      ],
+      "deliverable": "Resolve DWER-120 custom terms, then validate proposal IDs, boundary grouping, proponent role and decision dates.",
+      "status": "RIGHTS_GATE",
+      "proposedCadence": "Weekly proposed; cadence unverified",
+      "gate": "Custom Active Acceptance is not automatic commercial permission; DWER-103 remains excluded.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "wa-epa-dwer-120",
+          "endpoint": "https://public-services.slip.wa.gov.au/public/rest/services/SLIP_Public_Services/Environment/MapServer/115",
+          "provenance": "https://catalogue.data.wa.gov.au/dataset/epa-referred-significant-proposals",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2195,
+      "kind": "DATA_PULL",
+      "title": "NSW planning lifecycle feeds",
+      "sourceKeys": [
+        "nsw-planning-da",
+        "nsw-planning-cdc",
+        "nsw-planning-pcc"
+      ],
+      "deliverable": "Prepare the broker access requirements and, once issued, validate application/certificate linkage and daily deltas.",
+      "status": "ACCESS_GATE",
+      "proposedCadence": "Daily after access and acceptance",
+      "gate": "No access request is sent in this task; applicants/certifiers are not assumed builders.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "nsw-planning-da",
+          "endpoint": null,
+          "provenance": "https://www.planningportal.nsw.gov.au/opendata/dataset/online-da-data-api",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        },
+        {
+          "key": "nsw-planning-cdc",
+          "endpoint": null,
+          "provenance": "https://www.planningportal.nsw.gov.au/opendata/dataset/online-cdc-data-api",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        },
+        {
+          "key": "nsw-planning-pcc",
+          "endpoint": null,
+          "provenance": "https://www.planningportal.nsw.gov.au/opendata/dataset/online-pcc-data-api",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2196,
+      "kind": "DATA_PULL",
+      "title": "WA Major Resources Projects",
+      "sourceKeys": [
+        "wa-major-resources-projects"
+      ],
+      "deliverable": "Resolve the official GDA2020 archive, embedded terms, stable IDs and actual publication timestamp.",
+      "status": "DOWNLOAD_GATE",
+      "proposedCadence": "Weekly initial pull after acceptance",
+      "gate": "Use the specifically licensed Major Resources Projects product; do not substitute unrestricted access to full MINEDEX.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "wa-major-resources-projects",
+          "endpoint": null,
+          "downloadLandingPage": "https://dasc.dmirs.wa.gov.au/home?productAlias=MINEDEXMajorResProj",
+          "provenance": "https://catalogue.data.wa.gov.au/dataset/major-resources-projects",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2197,
+      "kind": "DATA_PULL",
+      "title": "National roadworks and closures",
+      "sourceKeys": [
+        "national-roadworks"
+      ],
+      "deliverable": "Resolve reuse rights, then filter genuine planned works and retain planned/actual/capture date meanings.",
+      "status": "RIGHTS_GATE",
+      "proposedCadence": "Daily after acceptance",
+      "gate": "The catalogue still says licence not specified; hazards/closures alone are not new works.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "national-roadworks",
+          "endpoint": "https://spatial.infrastructure.gov.au/server/rest/services/Hosted/RADAR_Curated_Prod_roadworks/FeatureServer/0",
+          "provenance": "https://catalogue.data.infrastructure.gov.au/dataset/harmonised-national-roadworks-and-road-closures",
+          "observedAt": null,
+          "validation": "PILOT_SAMPLE_OR_CATALOGUE_ONLY"
+        }
+      ]
+    },
+    {
+      "id": 2198,
+      "kind": "DATA_PULL",
+      "title": "AEMO generation and connections",
+      "sourceKeys": [
+        "aemo-generation-information",
+        "aemo-key-connection-information"
+      ],
+      "deliverable": "Check the official publication page, hash workbook revisions and compare project IDs/status changes.",
+      "status": "ROWS_PUBLICATION_REVIEW",
+      "proposedCadence": "Weekly publication check; ingest on change",
+      "gate": "July 2026 is the latest generation publication shown in today's check; do not invent a September file.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "aemo-generation-information",
+          "endpoint": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/nem-generation-information-july-2026.xlsx?rev=3455851f2bc945b7ab61c5ceed272992&sc_lang=en",
+          "provenance": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 100
+        },
+        {
+          "key": "aemo-key-connection-information",
+          "endpoint": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+          "provenance": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 100
+        }
+      ]
+    },
+    {
+      "id": 2199,
+      "kind": "DATA_PULL",
+      "title": "AusTender construction/maintenance awards",
+      "sourceKeys": [
+        "austender-contract-notices"
+      ],
+      "deliverable": "Follow current-window OCDS continuations and review award role, amendments, work category and start/end dates.",
+      "status": "ROWS_RELEVANCE_REVIEW",
+      "proposedCadence": "Daily after acceptance",
+      "gate": "Contract values are not hire values; unrelated software/HR awards must not inflate the rental queue.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "austender-contract-notices",
+          "endpoint": "https://api.tenders.gov.au/ocds/findByDates/contractPublished",
+          "provenance": "https://data.gov.au/data/dataset/historical-australian-government-contract-data",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 40,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 100
+        }
+      ]
+    },
+    {
+      "id": 2200,
+      "kind": "DATA_PULL",
+      "title": "Queensland civil works and water pipeline",
+      "sourceKeys": [
+        "qld-forward-procurement-pipeline",
+        "qld-tmr-major-works-tender",
+        "qld-qtrip-2025-2029",
+        "qld-tmr-contract-disclosures",
+        "qld-rail-contract-disclosures",
+        "qld-seqwater-contracts",
+        "qld-gladstone-water-board-contracts",
+        "qld-mount-isa-water-board-contracts"
+      ],
+      "deliverable": "Reconcile planned tenders, capital works and awarded packages by project/location/agency, retaining publication periods.",
+      "status": "ROWS_RELEVANCE_REVIEW",
+      "proposedCadence": "Weekly publication check",
+      "gate": "These are several existing sources in one work package, not eight new feeds or proof of equipment demand.",
+      "dependencies": [
+        2165,
+        2167,
+        2168
+      ],
+      "acceptance": "Persist a dated receipt with source URL/version, stable IDs, page/row reconciliation, event-date semantics and holds; then pass an isolated runtime canary before activation.",
+      "sources": [
+        {
+          "key": "qld-forward-procurement-pipeline",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=forward-procurement-pipeline",
+          "provenance": "https://www.data.qld.gov.au/dataset/forward-procurement-pipeline",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-tmr-major-works-tender",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=competitive-works-to-tender-department-of-transport-and-main-roads",
+          "provenance": "https://www.data.qld.gov.au/dataset/competitive-works-to-tender-department-of-transport-and-main-roads",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-qtrip-2025-2029",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=queensland-transport-and-roads-investment-program-qtrip-2025-26-to-2028-29",
+          "provenance": "https://www.data.qld.gov.au/dataset/queensland-transport-and-roads-investment-program-qtrip-2025-26-to-2028-29",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-tmr-contract-disclosures",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=tmr-contract-disclosure",
+          "provenance": "https://www.data.qld.gov.au/dataset/tmr-contract-disclosure",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-rail-contract-disclosures",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=queensland-rail-contract-disclosure-fy2025-2026",
+          "provenance": "https://www.data.qld.gov.au/dataset/queensland-rail-contract-disclosure-fy2025-2026",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-seqwater-contracts",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=seqwater-contract-disclosure-report",
+          "provenance": "https://www.data.qld.gov.au/dataset/seqwater-contract-disclosure-report",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-gladstone-water-board-contracts",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=gladstone-area-water-board-contract-disclosure-report",
+          "provenance": "https://www.data.qld.gov.au/dataset/gladstone-area-water-board-contract-disclosure-report",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        },
+        {
+          "key": "qld-mount-isa-water-board-contracts",
+          "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=miwb-contract-disclosure-register-2025-2026-csv",
+          "provenance": "https://www.data.qld.gov.au/dataset/miwb-contract-disclosure-register-2025-2026-csv",
+          "mode": "active",
+          "observedAt": "2026-09-17T23:01:33.9Z",
+          "liveStatus": "ROWS",
+          "liveRows": 5,
+          "error": null,
+          "backfillStatus": "ROWS",
+          "backfillRows": 5
+        }
+      ]
+    }
+  ]
+}

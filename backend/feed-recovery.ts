@@ -1,11 +1,14 @@
 import { inflateRawSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 
-// Verified official archive members, 2026-09-16. Title archives have different
-// identity/domain semantics and deliberately remain outside this recovery.
+// Verified official archive members, 2026-09-18. Mineral titles still exceed
+// the expansion bound and have no accepted row schema; transport is not activation.
 export const RECOVERED_KML_MEMBERS: Readonly<Record<string, string>> = {
   'nt-mines': 'MINESITES.kml',
   'nt-mineral-occurrences': 'MINERALOCCURRENCES.kml',
+  'nt-mineral-titles': 'NT_MineralTitles_kml.kml',
+  'nt-petroleum-pipeline-titles': 'NT_PetroleumPipelineTitles_kml.kml',
+  'nt-geothermal-titles': 'NT_GeothermalTitles_kml.kml',
 };
 const MAX_COMPRESSED = 25 * 1024 * 1024;
 const MAX_EXPANDED = 32 * 1024 * 1024;
@@ -198,6 +201,103 @@ const canonical = (raw: Record<string, unknown>) =>
     ),
   );
 
+// Archive schemas observed on the official exports. Unknown layers fail review;
+// explicitly listed reserve/release/regional layers never become title records.
+const TITLE_LAYERS: Readonly<
+  Record<string, Readonly<Record<string, readonly string[]>>>
+> = {
+  'nt-geothermal-titles': {
+    GEOTH_TITLE_EXPL_APPL: ['GEP'],
+    GEOTH_TITLE_EXPL_GRNT: ['GEP'],
+    GEOTH_TITLE_PROD_APPL: ['GPL'],
+    GEOTH_TITLE_PROD_CESS: ['GPL'],
+    GEOTH_TITLE_PROD_GRNT: ['GPL'],
+    GEOTH_TITLE_RETN_APPL: ['GRL'],
+    GEOTH_TITLE_RETN_CESS: ['GRL'],
+    GEOTH_TITLE_RETN_GRNT: ['GRL'],
+    RESERVES_GEOTHERMAL: [],
+  },
+  'nt-petroleum-pipeline-titles': {
+    PETRO_PIPE_EXPL_APPL: ['PL'],
+    PETRO_PIPE_EXPL_GRNT: ['PL', 'NT/PL', 'NTC/PL', 'PP'],
+    PETRO_TITLE_EXPL_APPL: ['EP', 'NTC/P'],
+    PETRO_TITLE_EXPL_GRNT: ['EP'],
+    PETRO_TITLE_OTHR_APPL: ['AA'],
+    PETRO_TITLE_OTHR_GRNT: ['AA'],
+    PETRO_TITLE_PROD_APPL: ['L'],
+    PETRO_TITLE_PROD_GRNT: ['L', 'OL'],
+    PETRO_TITLE_RETN_APPL: ['RL'],
+    PETRO_TITLE_RETN_GRNT: ['RL'],
+    TITLES_PETRO_HISTORICAL: [
+      'EP',
+      'PL',
+      'OL',
+      'RL',
+      'NTC/P',
+      'RB',
+      'AA',
+      'PP',
+      'OP',
+      'RI',
+    ],
+    COASTAL_RESERVES_PETROLEUM: [],
+    PETRO_ACREAGE_RELEASE_AREAS: [],
+    PETRO_RESV_PROP: [],
+    PETRO_TITLE_EXPL_ALRA: [],
+    RESERVES_PETROLEUM: [],
+  },
+};
+function titleIdentity(
+  sourceKey: string,
+  block: string,
+  raw: Record<string, unknown>,
+): string | undefined {
+  const layers = TITLE_LAYERS[sourceKey];
+  if (!layers) throw new Error('KML_TITLE_SCHEMA_REVIEW_REQUIRED');
+  const schemas = [
+    ...block.matchAll(
+      /<(?:\w+:)?SchemaData\b[^>]*schemaUrl=['"]([^'"]+)['"]/gi,
+    ),
+  ];
+  const layer = schemas[0]?.[1].replace(/^#kml_schema_ft_/, '');
+  if (
+    schemas.length !== 1 ||
+    !Object.prototype.hasOwnProperty.call(layers, layer)
+  )
+    throw new Error('KML_TITLE_SCHEMA_REVIEW_REQUIRED');
+  const types = layers[layer];
+  if (!types.length) return undefined;
+  const type = String(raw.TI_TYPE_CD || '');
+  if (!types.includes(type)) throw new Error('KML_TITLE_DOMAIN_INVALID');
+  // Exact provider sentinel, observed in empty title layers. A missing real ID fails.
+  if (
+    !raw.TITLEID &&
+    !raw.SW_MEMBER &&
+    !raw.TI_NUMBER &&
+    raw.PTY_NAME === 'Please Ignore this system generated record' &&
+    raw.UNIQ_ID === '170367'
+  )
+    return undefined;
+  const titleId = String(raw.TITLEID || ''),
+    uniqueId = String(raw.UNIQ_ID || '');
+  if (!titleId || !/^\d+$/.test(uniqueId))
+    throw new Error('KML_TITLE_IDENTITY_MISSING');
+  if (!titleId.startsWith(type) || !/^[A-Z/]+\d+(?:\/\d+)?$/.test(titleId))
+    throw new Error('KML_TITLE_DOMAIN_INVALID');
+  raw.sourceLayer = layer;
+  raw.titleDomain =
+    sourceKey === 'nt-geothermal-titles'
+      ? 'geothermal'
+      : /^(?:PL|PP|NT\/PL|NTC\/PL)$/.test(type)
+        ? 'pipeline'
+        : 'petroleum';
+  raw.name = titleId;
+  raw.holder = raw.PTY_NAME || '';
+  return [sourceKey, layer, titleId, uniqueId]
+    .map(encodeURIComponent)
+    .join(':');
+}
+
 export function recoveredKmlRows(sourceKey: string, bytes: Uint8Array) {
   const member = RECOVERED_KML_MEMBERS[sourceKey];
   if (!member) throw new Error('KML_SOURCE_REVIEW_REQUIRED');
@@ -227,8 +327,13 @@ export function recoveredKmlRows(sourceKey: string, bytes: Uint8Array) {
     throw new Error('KML_INVALID_BODY');
   const unique = new Map<
     string,
-    { externalId: string; raw: Record<string, unknown>; qualityFlags: string[] }
+    {
+      externalId: string;
+      raw: Record<string, unknown>;
+      qualityFlags: string[];
+    }
   >();
+  const titleSource = sourceKey.endsWith('-titles');
   for (const match of matches) {
     const block = match[1],
       raw: Record<string, unknown> = Object.create(null);
@@ -239,7 +344,9 @@ export function recoveredKmlRows(sourceKey: string, bytes: Uint8Array) {
     for (const field of block.matchAll(
       /<(?:\w+:)?SimpleData\b[^>]*name=['"]([^'"]+)['"][^>]*>([\s\S]*?)<\/(?:\w+:)?SimpleData>/gi,
     )) {
-      const key = plainText(field[1]),
+      const key = titleSource
+          ? plainText(field[1]).toUpperCase()
+          : plainText(field[1]),
         value = plainText(field[2]);
       if (Object.prototype.hasOwnProperty.call(raw, key) && raw[key] !== value)
         throw new Error('KML_FIELD_COLLISION');
@@ -249,8 +356,12 @@ export function recoveredKmlRows(sourceKey: string, bytes: Uint8Array) {
       /<(?:\w+:)?description\b[^>]*>([\s\S]*?)<\/(?:\w+:)?description>/i,
     )?.[1];
     if (description) raw.description = plainText(description);
-    const externalId = String(raw.MODAT_ID || '').trim();
-    if (!/^\d+$/.test(externalId)) throw new Error('KML_IDENTITY_MISSING');
+    const externalId = titleSource
+      ? titleIdentity(sourceKey, block, raw)
+      : String(raw.MODAT_ID || '').trim();
+    if (titleSource && externalId === undefined) continue;
+    if (!externalId || (!titleSource && !/^\d+$/.test(externalId)))
+      throw new Error('KML_IDENTITY_MISSING');
     const previous = unique.get(externalId);
     if (previous && canonical(previous.raw) !== canonical(raw))
       throw new Error('KML_IDENTITY_COLLISION');
@@ -260,6 +371,10 @@ export function recoveredKmlRows(sourceKey: string, bytes: Uint8Array) {
       qualityFlags: ['CONTEXT_ONLY', 'SOURCE_RIGHTS_REVIEW_REQUIRED'],
     });
   }
+  if (!unique.size)
+    throw new Error(
+      titleSource ? 'KML_TITLE_ROWS_MISSING' : 'KML_FEATURES_MISSING',
+    );
   const rows = [...unique.values()].sort((a, b) =>
     a.externalId.localeCompare(b.externalId),
   );

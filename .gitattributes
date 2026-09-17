@@ -1,0 +1,2 @@
+# Keep the executable hashbang compatible with Vite's SSR transform on Windows.
+scripts/inventory-evidence.mjs text eol=lf

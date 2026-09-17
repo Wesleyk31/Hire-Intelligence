@@ -999,3 +999,9 @@
 .hi-review-panel [role='alert'] {
   color: #a52028;
 }
+.hi-health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 16px; margin: 18px 0; }
+.hi-health-grid dt { color: #697080; font-size: 12px; margin-bottom: 5px; }
+.hi-health-grid dd { margin: 0; font-size: 13px; font-weight: 600; }
+.hi-source-contract, .hi-receipt-list details { border: 1px solid #e1e4e9; border-radius: 8px; padding: 16px; margin: 14px 0; }
+.hi-source-contract summary, .hi-receipt-list summary { cursor: pointer; font-weight: 600; }
+.hi-receipt-list p { font-size: 13px; line-height: 1.6; }

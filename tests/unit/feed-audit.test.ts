@@ -127,6 +127,7 @@ it('preserves fetched and acknowledged counts but stops insertion retries after 
   vi.stubGlobal('fetch', vi.fn(async () => json({ features: [{ attributes: { objectid: 1, name: 'QA bridge' } }, { attributes: { objectid: 2, name: 'QA road' } }] })));
   vi.spyOn(db, 'list').mockResolvedValue({ items: [] });
   vi.spyOn(db, 'add').mockImplementation(async (table: string) => table === 'opportunities' ? ['saved-one', null] : ['saved-state']);
+  vi.spyOn(db, 'update').mockImplementation(async (_table: string, updates: any[]) => updates.map(() => true));
   const state = await runSource(source('wa-mining-tenements'));
   expect(state.recordsFetched).toBe(2);
   expect(state.opportunitiesPromoted).toBe(1);

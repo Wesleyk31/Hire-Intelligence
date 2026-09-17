@@ -1,0 +1,53 @@
+[
+  {
+    "page": "01-fieldnotes",
+    "exercised": [
+      "data-brief-filter=all",
+      "data-brief-filter=project",
+      "data-brief-filter=maintenance",
+      "data-brief-filter=equipment",
+      "detail-dialog open/close/Escape/focus"
+    ],
+    "passed": true
+  },
+  {
+    "page": "02-signal-room",
+    "exercised": [
+      "data-workspace-tab=signals",
+      "data-workspace-tab=demand",
+      "data-workspace-tab=evidence",
+      "detail-dialog open/close/Escape/focus"
+    ],
+    "passed": true
+  },
+  {
+    "page": "03-territory",
+    "exercised": [
+      "data-region=WA",
+      "data-region=QLD",
+      "data-region=NSW"
+    ],
+    "passed": true
+  },
+  {
+    "page": "04-fleet-forward",
+    "exercised": [
+      "data-equipment=earthmoving",
+      "data-equipment=access",
+      "data-equipment=power",
+      "detail-dialog open/close/Escape/focus"
+    ],
+    "passed": true
+  },
+  {
+    "page": "05-evidence-to-action",
+    "exercised": [
+      "data-workflow=source",
+      "data-workflow=context",
+      "data-workflow=outcome",
+      "detail-dialog open/close/Escape/focus",
+      "all three FAQ disclosures"
+    ],
+    "passed": true
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "page": "01-fieldnotes",
+    "widths": {
+      "320": true,
+      "390": true,
+      "768": true,
+      "1024": true,
+      "1440": true
+    },
+    "images": true,
+    "formValidation": true,
+    "formSimulation": true,
+    "dialogKeyboardContainment": true,
+    "escapeCloseBackdrop": true,
+    "focusRestored": true,
+    "mobileMenu": true,
+    "linksValid": true,
+    "errors": [],
+    "submissions": []
+  },
+  {
+    "page": "02-signal-room",
+    "widths": {
+      "320": true,
+      "390": true,
+      "768": true,
+      "1024": true,
+      "1440": true
+    },
+    "images": true,
+    "formValidation": true,
+    "formSimulation": true,
+    "dialogKeyboardContainment": true,
+    "escapeCloseBackdrop": true,
+    "focusRestored": true,
+    "mobileMenu": true,
+    "linksValid": true,
+    "errors": [],
+    "submissions": []
+  },
+  {
+    "page": "03-territory",
+    "widths": {
+      "320": true,
+      "390": true,
+      "768": true,
+      "1024": true,
+      "1440": true
+    },
+    "images": true,
+    "formValidation": true,
+    "formSimulation": true,
+    "dialogKeyboardContainment": true,
+    "escapeCloseBackdrop": true,
+    "focusRestored": true,
+    "mobileMenu": true,
+    "linksValid": true,
+    "errors": [],
+    "submissions": []
+  },
+  {
+    "page": "04-fleet-forward",
+    "widths": {
+      "320": true,
+      "390": true,
+      "768": true,
+      "1024": true,
+      "1440": true
+    },
+    "images": true,
+    "formValidation": true,
+    "formSimulation": true,
+    "dialogKeyboardContainment": true,
+    "escapeCloseBackdrop": true,
+    "focusRestored": true,
+    "mobileMenu": true,
+    "linksValid": true,
+    "errors": [],
+    "submissions": []
+  },
+  {
+    "page": "05-evidence-to-action",
+    "widths": {
+      "320": true,
+      "390": true,
+      "768": true,
+      "1024": true,
+      "1440": true
+    },
+    "images": true,
+    "formValidation": true,
+    "formSimulation": true,
+    "dialogKeyboardContainment": true,
+    "escapeCloseBackdrop": true,
+    "focusRestored": true,
+    "mobileMenu": true,
+    "linksValid": true,
+    "errors": [],
+    "submissions": []
+  }
+]

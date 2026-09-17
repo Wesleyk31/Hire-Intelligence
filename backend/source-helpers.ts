@@ -74,8 +74,20 @@ async function requestBytes(url: string, accept: string): Promise<Uint8Array> {
         'user-agent': 'HirerIntelligence/1.0 public-open-data-client',
       },
     });
-    if (!response.ok || response.status === 202 || response.status === 204)
-      throw new Error('HTTP_' + response.status);
+    const challenge = response.headers.get('x-amzn-waf-action') === 'challenge';
+    if (
+      !response.ok ||
+      response.status === 202 ||
+      response.status === 204 ||
+      challenge
+    ) {
+      // A tee/clone can defer cancellation until every reader closes. Reporting
+      // the transport failure must not wait on an unrelated response reader.
+      void response.body?.cancel().catch(() => {});
+      throw new Error(
+        'HTTP_' + response.status + (challenge ? ':PROVIDER_CHALLENGE' : ''),
+      );
+    }
     const maximum = 25 * 1024 * 1024;
     if (Number(response.headers.get('content-length')) > maximum) {
       await response.body?.cancel();
@@ -291,7 +303,10 @@ export async function ckanResourceRows(
   const resource = pinnedResource || (await selectCkanResource(endpoint));
   if (!resource)
     return {
-      rows: [] as Array<{ externalId: string; raw: Record<string, unknown> }>,
+      rows: [] as Array<{
+        externalId: string;
+        raw: Record<string, unknown>;
+      }>,
       total: 0,
     };
   const selectedResource: CkanResource = {
@@ -300,6 +315,9 @@ export async function ckanResourceRows(
     format: resource.format,
     datastore_active: resource.datastore_active,
   };
+  const stadiumsPublication =
+    new URL(endpoint).searchParams.get('id') ===
+    'stadiums-queensland-sq-contract-disclosure-july-to-december-2025';
   if (resource.datastore_active === true && resource.id) {
     const url = new URL('/api/3/action/datastore_search', endpoint);
     url.searchParams.set('resource_id', resource.id);
@@ -308,6 +326,29 @@ export async function ckanResourceRows(
     const page = await sourceJson(url.toString());
     if (page.success !== true || !Array.isArray(page.result?.records))
       throw new Error('CKAN_SCHEMA_INVALID');
+    // This published workbook is explicitly not fully represented by its datastore.
+    // Stay on the identical resource and period; never substitute a newer disclosure.
+    if (
+      resource.id === '045ac29a-ae16-4e08-82c8-3618500ec5bf' &&
+      stadiumsPublication &&
+      offset === 0 &&
+      page.result.total === 0 &&
+      page.result.records.length === 0 &&
+      resource.url &&
+      String(resource.format).toUpperCase() === 'XLSX'
+    ) {
+      try {
+        return await ckanResourceRows(endpoint, limit, offset, {
+          ...selectedResource,
+          datastore_active: false,
+        });
+      } catch (error) {
+        throw new Error(
+          'CKAN_EMPTY_DATASTORE:' +
+            (error instanceof Error ? error.message : String(error)),
+        );
+      }
+    }
     return {
       rows: page.result.records.map((raw: Record<string, unknown>) => ({
         externalId: recordIdentity(raw),
@@ -330,10 +371,33 @@ export async function ckanResourceRows(
         defval: '',
       })
     : [];
+  if (stadiumsPublication) {
+    // This is only a conservative row-shape guard. The challenged workbook's
+    // actual sheets/schema have not been accepted; even matching rows stay held.
+    if (
+      !all.length ||
+      all.some((raw) => {
+        const fields = new Map(
+          Object.entries(raw).map(([name, value]) => [key(name), text(value)]),
+        );
+        return (
+          !fields.get('contractreferencenumber') ||
+          !fields.get('contractdescriptionname')
+        );
+      })
+    )
+      throw new Error('STADIUMS_WORKBOOK_SCHEMA_REVIEW_REQUIRED');
+  }
   return {
     rows: all
       .slice(offset, offset + limit)
-      .map((raw) => ({ externalId: recordIdentity(raw), raw })),
+      .map((raw) => ({
+        externalId: recordIdentity(raw),
+        raw,
+        ...(stadiumsPublication
+          ? { qualityFlags: ['SOURCE_SCHEMA_REVIEW_REQUIRED', 'CONTEXT_ONLY'] }
+          : {}),
+      })),
     total: all.length,
     resource: selectedResource,
   };
@@ -722,7 +786,7 @@ function nationalMajorProjectRows(book: WorkBook): Record<string, unknown>[] {
   return [...rows.values()];
 }
 
-/** NT MODAT archives only; title archives retain their separate review gates. */
+/** Official NT archives; title layers have separate identity and domain contracts. */
 export async function ckanKmlRows(sourceKey: string, endpoint: string) {
   const body = await sourceJson(endpoint);
   if (body.success !== true || !Array.isArray(body.result?.resources))

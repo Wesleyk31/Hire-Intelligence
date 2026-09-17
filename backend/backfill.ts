@@ -1,5 +1,6 @@
-import { persistArchiveBatch, isDatabaseQuotaError } from './archive-storage';
-import { db } from '@appdeploy/sdk';
+import { persistArchiveBatch, isDatabaseQuotaError } from "./archive-storage";
+import { beginPull, finishPull } from "./pull-receipts";
+import { db } from "@appdeploy/sdk";
 import {
   collectBackfillPage,
   prepareBackfillContext,
@@ -7,7 +8,7 @@ import {
   type BackfillSource,
   type BackfillContext,
   type Evidence,
-} from './backfill-fetch';
+} from "./backfill-fetch";
 
 type Cursor = {
   sourceKey: string;
@@ -27,38 +28,38 @@ type Control = {
 };
 
 async function saveCursor(cursor: Cursor) {
-  const page = await db.list<Cursor>('backfill_cursors', { limit: 100 });
+  const page = await db.list<Cursor>("backfill_cursors", { limit: 100 });
   const current = page.items.find(
     (item) => item.sourceKey === cursor.sourceKey,
   );
   const [saved] = current
-    ? await db.update('backfill_cursors', [
+    ? await db.update("backfill_cursors", [
         { id: current.id, record: { ...cursor } },
       ])
-    : await db.add('backfill_cursors', [{ ...cursor }]);
-  if (!saved) throw new Error('BACKFILL_CURSOR_SAVE_FAILED');
+    : await db.add("backfill_cursors", [{ ...cursor }]);
+  if (!saved) throw new Error("BACKFILL_CURSOR_SAVE_FAILED");
 }
 
 async function saveControl(control: Control) {
-  const page = await db.list<Control>('backfill_control', { limit: 1 });
+  const page = await db.list<Control>("backfill_control", { limit: 1 });
   const [saved] = page.items.length
-    ? await db.update('backfill_control', [
+    ? await db.update("backfill_control", [
         { id: page.items[0].id, record: { ...control } },
       ])
-    : await db.add('backfill_control', [{ ...control }]);
-  if (!saved) throw new Error('BACKFILL_CONTROL_SAVE_FAILED');
+    : await db.add("backfill_control", [{ ...control }]);
+  if (!saved) throw new Error("BACKFILL_CONTROL_SAVE_FAILED");
 }
 
 export async function getBackfillStatus(sources: BackfillSource[]) {
-  const cursors = (await db.list<Cursor>('backfill_cursors', { limit: 100 }))
+  const cursors = (await db.list<Cursor>("backfill_cursors", { limit: 100 }))
     .items;
-  const controls = (await db.list<Control>('backfill_control', { limit: 1 }))
+  const controls = (await db.list<Control>("backfill_control", { limit: 1 }))
     .items;
   const control = controls[0];
   const processed = cursors.reduce((sum, cursor) => sum + cursor.processed, 0);
   const completedSources = cursors.filter((cursor) => cursor.completed).length;
   const start = control?.nextIndex || 0;
-  let nextSource = '';
+  let nextSource = "";
   for (let step = 0; step < sources.length; step++) {
     const source = sources[(start + step) % sources.length];
     const cursor = cursors.find((item) => item.sourceKey === source.key);
@@ -74,12 +75,12 @@ export async function getBackfillStatus(sources: BackfillSource[]) {
     processed,
     completedSources,
     totalSources: sources.length,
-    nextSource: nextSource || 'COMPLETE',
-    lastSource: control?.lastSource || '',
-    lastRun: control?.lastRun || '',
+    nextSource: nextSource || "COMPLETE",
+    lastSource: control?.lastSource || "",
+    lastRun: control?.lastRun || "",
     lastError: lastErrorCursor
-      ? lastErrorCursor.sourceKey + ': ' + lastErrorCursor.lastError
-      : '',
+      ? lastErrorCursor.sourceKey + ": " + lastErrorCursor.lastError
+      : "",
     cursors: cursors.map((cursor) => ({
       sourceKey: cursor.sourceKey,
       cursor: cursor.cursor,
@@ -94,15 +95,15 @@ export async function getBackfillStatus(sources: BackfillSource[]) {
 
 export async function runBackfillBatch(sources: BackfillSource[]) {
   if (!sources.length) return getBackfillStatus(sources);
-  const cursors = (await db.list<Cursor>('backfill_cursors', { limit: 100 }))
+  const cursors = (await db.list<Cursor>("backfill_cursors", { limit: 100 }))
     .items;
-  const controls = (await db.list<Control>('backfill_control', { limit: 1 }))
+  const controls = (await db.list<Control>("backfill_control", { limit: 1 }))
     .items;
   const control = controls[0] || {
     nextIndex: 0,
     runs: 0,
-    lastSource: '',
-    lastRun: '',
+    lastSource: "",
+    lastRun: "",
   };
   let selectedIndex = -1;
   for (let step = 0; step < sources.length; step++) {
@@ -123,10 +124,23 @@ export async function runBackfillBatch(sources: BackfillSource[]) {
     cursor: 0,
     processed: 0,
     completed: false,
-    lastRun: '',
-    lastError: '',
+    lastRun: "",
+    lastError: "",
   };
   const now = new Date().toISOString();
+  const handle = await beginPull({
+    source,
+    mode: "BACKFILL",
+    startedAt: now,
+    checkpoint: { start: current.cursor, end: null },
+  });
+  let events: Evidence[] | undefined;
+  let received: number | undefined;
+  let acknowledged = 0;
+  let writeAttempted = false;
+  let uncertain = false;
+  let failureMessage: string | undefined;
+  let cursorEnd: number | null = null;
   try {
     current = {
       ...current,
@@ -145,38 +159,78 @@ export async function runBackfillBatch(sources: BackfillSource[]) {
       current.nextUrl,
       current.context,
     );
+    const providerContext = { ...current.context };
+    for (const field of ["wfsLayer", "ckanResource", "kmlSnapshot"] as const) {
+      const value = page.context?.[field];
+      if (value !== undefined)
+        Object.assign(providerContext, { [field]: value });
+    }
     if (
-      page.context?.wfsLayer &&
-      page.context.wfsLayer !== current.context?.wfsLayer
+      JSON.stringify(providerContext) !== JSON.stringify(current.context || {})
     ) {
-      // Pin the first selected layer before archival; retries must not rediscover another layer.
+      // Pin resource identity before archival, including an empty-datastore workbook
+      // fallback. Do not pin WFS page progress before its evidence is acknowledged.
       current = {
         ...current,
-        context: { ...current.context, wfsLayer: page.context.wfsLayer },
+        context: providerContext,
       };
       await saveCursor({ ...current, lastRun: now });
     }
-    const events = page.rows.map((row) => normalizeEvidence(source, row, now));
-    await persistArchiveBatch(source.key, current.cursor, page.next, events, {
-      nextUrl: current.nextUrl,
-      context: current.context,
-    });
+    received = page.rows.length;
+    cursorEnd = page.next;
+    events = page.rows.map((row) => normalizeEvidence(source, row, now));
+    writeAttempted = events.length > 0;
+    const saved = await persistArchiveBatch(
+      source.key,
+      current.cursor,
+      page.next,
+      events,
+      {
+        nextUrl: current.nextUrl,
+        context: current.context,
+      },
+    );
+    acknowledged = saved.acknowledgedRecords;
     await saveCursor({
       sourceKey: source.key,
       cursor: page.next,
       processed: current.processed + events.length,
       completed: page.completed,
-      nextUrl: page.nextUrl || '',
+      nextUrl: page.nextUrl || "",
       context: page.context || current.context || {},
       lastRun: now,
-      lastError: '',
+      lastError: "",
     });
   } catch (cause) {
     if (isDatabaseQuotaError(cause)) throw cause;
-    const message = cause instanceof Error ? cause.message : 'BACKFILL_FAILED';
-    console.warn('HIRER_BACKFILL_FAILED', source.key, message);
+    const message = cause instanceof Error ? cause.message : "BACKFILL_FAILED";
+    failureMessage = message;
+    const failure = cause as {
+      acknowledgedRecords?: number;
+      persistenceUncertain?: boolean;
+    };
+    acknowledged = failure?.acknowledgedRecords ?? acknowledged;
+    uncertain = failure?.persistenceUncertain === true;
+    console.warn("HIRER_BACKFILL_FAILED", source.key, message);
     await saveCursor({ ...current, lastRun: now, lastError: message });
   }
+  await finishPull(handle, {
+    source,
+    mode: "BACKFILL",
+    startedAt: now,
+    finishedAt: new Date().toISOString(),
+    rows: events,
+    received,
+    acknowledged,
+    writeAttempted,
+    uncertain,
+    failure: failureMessage,
+    checkpoint: {
+      start: current.cursor,
+      end: cursorEnd,
+      resource: current.context,
+    },
+  });
   await saveControl({
     nextIndex: (selectedIndex + 1) % sources.length,
     runs: control.runs + 1,

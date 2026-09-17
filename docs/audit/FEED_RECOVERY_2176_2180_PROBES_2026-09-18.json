@@ -1,0 +1,1201 @@
+{
+  "at": "2026-09-17T23:13:38.731Z",
+  "methodology": "Bounded official GETs; 20s and 25MiB compressed, 32MiB expansion. Field names/counts only; no raw holder data persisted.",
+  "results": [
+    {
+      "key": "qld-granted-resource-authorities",
+      "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+      "status": 202,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "content-length": "0",
+        "x-amzn-waf-action": "challenge"
+      },
+      "bytes": 0
+    },
+    {
+      "key": "nt-mineral-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "status": 200,
+      "headers": {
+        "content-type": "application/x-zip-compressed",
+        "content-length": "9935944",
+        "last-modified": "Thu, 17 Sep 2026 20:41:33 GMT",
+        "etag": "\"a4142cede446dd1:0\""
+      },
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "status": 200,
+      "headers": {
+        "content-type": "application/x-zip-compressed",
+        "content-length": "7593483",
+        "last-modified": "Thu, 17 Sep 2026 20:42:08 GMT",
+        "etag": "\"21ebf61e546dd1:0\""
+      },
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+      "status": 200,
+      "headers": {
+        "content-type": "application/x-zip-compressed",
+        "content-length": "56125",
+        "last-modified": "Thu, 17 Sep 2026 20:42:08 GMT",
+        "etag": "\"779b72e546dd1:0\""
+      },
+      "bytes": 56125,
+      "entries": [
+        {
+          "name": "NT_GeothermalTitles_kml.kml",
+          "size": 679770
+        }
+      ],
+      "expandedBytes": 679770,
+      "kml": [
+        {
+          "name": "NT_GeothermalTitles_kml.kml",
+          "placemarks": 114,
+          "bySchema": {
+            "#kml_schema_ft_GEOTH_TITLE_EXPL_APPL": {
+              "count": 89,
+              "fields": [
+                "TITLEID",
+                "SW_MEMBER",
+                "TI_TYPE_CD",
+                "TI_NUMBER",
+                "STATUS",
+                "TS_TYPE",
+                "DT_EFFECT",
+                "PTY_NAME",
+                "PCT",
+                "HLD_TY_CD",
+                "HLD_TYPE",
+                "AREA_SQKM",
+                "AREA_UNITS",
+                "AREA_MEAS",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TITLEID": {
+                  "unique": 22,
+                  "samples": [
+                    "GEP34471",
+                    "GEP33174",
+                    "GEP33180",
+                    "GEP33179",
+                    "GEP33178",
+                    "GEP33321",
+                    "GEP33173",
+                    "GEP33325",
+                    "GEP33322",
+                    "GEP33176",
+                    "GEP33175",
+                    "GEP33245"
+                  ]
+                },
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GEP"
+                  ]
+                },
+                "STATUS": {
+                  "unique": 1,
+                  "samples": [
+                    "Current"
+                  ]
+                },
+                "TS_TYPE": {
+                  "unique": 1,
+                  "samples": [
+                    "Application"
+                  ]
+                },
+                "DT_EFFECT": {
+                  "unique": 5,
+                  "samples": [
+                    "20260213000000",
+                    "20220321000000",
+                    "20220523000000",
+                    "20220504000000",
+                    "20220328000000"
+                  ]
+                },
+                "HLD_TY_CD": {
+                  "unique": 2,
+                  "samples": [
+                    "A",
+                    "M"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 89,
+                  "samples": [
+                    "495867",
+                    "495866",
+                    "495865",
+                    "495864",
+                    "494696",
+                    "494695",
+                    "494694",
+                    "494693",
+                    "494691",
+                    "494690",
+                    "494689",
+                    "494688"
+                  ]
+                },
+                "SW_MEMBER": {
+                  "unique": 22,
+                  "samples": [
+                    "340412",
+                    "317832",
+                    "317838",
+                    "317837",
+                    "317836",
+                    "320826",
+                    "317831",
+                    "320830",
+                    "324026",
+                    "317834",
+                    "317833",
+                    "319447"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_EXPL_GRNT": {
+              "count": 9,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GEP"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 9,
+                  "samples": [
+                    "170367",
+                    "497543",
+                    "497542",
+                    "497541",
+                    "497540",
+                    "494713",
+                    "494712",
+                    "494711",
+                    "494710"
+                  ]
+                },
+                "TITLEID": {
+                  "unique": 2,
+                  "samples": [
+                    "GEP33024",
+                    "GEP32833"
+                  ]
+                },
+                "STATUS": {
+                  "unique": 1,
+                  "samples": [
+                    "Current"
+                  ]
+                },
+                "TS_TYPE": {
+                  "unique": 1,
+                  "samples": [
+                    "Grant"
+                  ]
+                },
+                "DT_EFFECT": {
+                  "unique": 2,
+                  "samples": [
+                    "20251127000000",
+                    "20220428000000"
+                  ]
+                },
+                "DT_GRNT": {
+                  "unique": 2,
+                  "samples": [
+                    "20251127000000",
+                    "20220428000000"
+                  ]
+                },
+                "DT_EXPIRY": {
+                  "unique": 2,
+                  "samples": [
+                    "20301127000000",
+                    "20240427000000"
+                  ]
+                },
+                "HLD_TY_CD": {
+                  "unique": 2,
+                  "samples": [
+                    "A",
+                    "M"
+                  ]
+                },
+                "SW_MEMBER": {
+                  "unique": 2,
+                  "samples": [
+                    "338564",
+                    "318605"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_PROD_APPL": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GPL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_PROD_CESS": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GPL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_PROD_GRNT": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GPL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_RETN_APPL": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GRL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_RETN_CESS": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GRL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_GEOTH_TITLE_RETN_GRNT": {
+              "count": 1,
+              "fields": [
+                "TI_TYPE_CD",
+                "PTY_NAME",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GRL"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 1,
+                  "samples": [
+                    "170367"
+                  ]
+                }
+              }
+            },
+            "#kml_schema_ft_RESERVES_GEOTHERMAL": {
+              "count": 10,
+              "fields": [
+                "TITLEID",
+                "SW_MEMBER",
+                "TI_TYPE_CD",
+                "TI_NUMBER",
+                "STATUS",
+                "TS_TYPE",
+                "DT_EFFECT",
+                "PTY_NAME",
+                "PCT",
+                "HLD_TY_CD",
+                "HLD_TYPE",
+                "AREA_SQKM",
+                "AREA_UNITS",
+                "AREA_MEAS",
+                "UNIQ_ID"
+              ],
+              "values": {
+                "TITLEID": {
+                  "unique": 10,
+                  "samples": [
+                    "GRO10",
+                    "GRO5",
+                    "GRO4",
+                    "GRO9",
+                    "GRO8",
+                    "GRO7",
+                    "GRO6",
+                    "GRO3",
+                    "GRO2",
+                    "GRO1"
+                  ]
+                },
+                "TI_TYPE_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "GRO"
+                  ]
+                },
+                "STATUS": {
+                  "unique": 1,
+                  "samples": [
+                    "Current"
+                  ]
+                },
+                "TS_TYPE": {
+                  "unique": 1,
+                  "samples": [
+                    "Grant"
+                  ]
+                },
+                "DT_EFFECT": {
+                  "unique": 6,
+                  "samples": [
+                    "20251218000000",
+                    "20091022000000",
+                    "20220506000000",
+                    "20171005000000",
+                    "20170112000000",
+                    "20161101000000"
+                  ]
+                },
+                "HLD_TY_CD": {
+                  "unique": 1,
+                  "samples": [
+                    "C"
+                  ]
+                },
+                "UNIQ_ID": {
+                  "unique": 10,
+                  "samples": [
+                    "496988",
+                    "495940",
+                    "495935",
+                    "495805",
+                    "495800",
+                    "495795",
+                    "495790",
+                    "495785",
+                    "495780",
+                    "495775"
+                  ]
+                },
+                "SW_MEMBER": {
+                  "unique": 10,
+                  "samples": [
+                    "338611",
+                    "337751",
+                    "337750",
+                    "337755",
+                    "337754",
+                    "337753",
+                    "337752",
+                    "337749",
+                    "337748",
+                    "337747"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "qld-stadiums-contracts-jul-dec-2025",
+      "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+      "status": 202,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "content-length": "0",
+        "x-amzn-waf-action": "challenge"
+      },
+      "bytes": 0
+    },
+    {
+      "key": "nt-mineral-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+      "at": "2026-09-17T23:14:57.585Z",
+      "range": "bytes=-65557",
+      "status": 206,
+      "headers": {
+        "content-range": "bytes 9870387-9935943/9935944",
+        "content-type": "application/x-zip-compressed",
+        "content-length": "65557",
+        "etag": "\"a4142cede446dd1:0\"",
+        "last-modified": "Thu, 17 Sep 2026 20:41:33 GMT"
+      },
+      "bytes": 65557,
+      "declaredKmlExpansion": 117447591,
+      "member": "NT_MineralTitles_kml.kml"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+      "at": "2026-09-17T23:14:58.479Z",
+      "status": 200,
+      "headers": {
+        "content-type": "application/x-zip-compressed",
+        "content-length": "7593483",
+        "etag": "\"21ebf61e546dd1:0\"",
+        "last-modified": "Thu, 17 Sep 2026 20:42:08 GMT"
+      },
+      "bytes": 7593483,
+      "expandedBytes": 26401651,
+      "bySchema": {
+        "#kml_schema_ft_COASTAL_RESERVES_PETROLEUM": {
+          "count": 1,
+          "titleRows": 1,
+          "types": [
+            "NTC/RB"
+          ],
+          "states": [
+            "Grant"
+          ],
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_PETRO_ACREAGE_RELEASE_AREAS": {
+          "count": 1,
+          "titleRows": 0,
+          "types": [],
+          "states": [],
+          "fields": [
+            "ID",
+            "OPEN_DATE",
+            "CLOSE_DATE",
+            "STATUS",
+            "BLOCKS",
+            "HYPERLINK"
+          ]
+        },
+        "#kml_schema_ft_PETRO_PIPE_EXPL_APPL": {
+          "count": 1,
+          "titleRows": 0,
+          "types": [
+            "PL"
+          ],
+          "states": [],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_PETRO_PIPE_EXPL_GRNT": {
+          "count": 110,
+          "titleRows": 109,
+          "types": [
+            "PL",
+            "NT/PL",
+            "NTC/PL",
+            "PP"
+          ],
+          "states": [
+            "Grant",
+            "Renew Retained"
+          ],
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID",
+            "DT_EXPIRY",
+            "DT_RW_GRNT",
+            "DT_RW_APPL"
+          ]
+        },
+        "#kml_schema_ft_PETRO_RESV_PROP": {
+          "count": 801,
+          "titleRows": 0,
+          "types": [],
+          "states": [],
+          "fields": [
+            "R_NAME",
+            "R_SOURCE",
+            "DTSOURCE",
+            "DTCOMPILED",
+            "TRANCHE",
+            "CATNUMBER",
+            "CATDESC",
+            "UNIQ_ID",
+            "COMMENTS"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_EXPL_ALRA": {
+          "count": 2,
+          "titleRows": 2,
+          "types": [],
+          "states": [],
+          "fields": [
+            "MORA_ID",
+            "ORGANISATION",
+            "TITLEID",
+            "DT_APPL",
+            "DT_VT_STRT",
+            "DT_VT_FINL",
+            "ACTIVE",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_EXPL_APPL": {
+          "count": 171,
+          "titleRows": 170,
+          "types": [
+            "EP",
+            "NTC/P"
+          ],
+          "states": [
+            "Application",
+            "Revised Application"
+          ],
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID",
+            "DT_CONSENT",
+            "DT_VT_STRT",
+            "DT_VT_FINL"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_EXPL_GRNT": {
+          "count": 77,
+          "titleRows": 76,
+          "types": [
+            "EP"
+          ],
+          "states": [
+            "Reduction Retained",
+            "Renew Relinquished",
+            "Renew Retained",
+            "Suspension and Extension"
+          ],
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "PTY_NAME",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID",
+            "PCT",
+            "DT_RW_APPL",
+            "DT_RW_GRNT"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_OTHR_APPL": {
+          "count": 1,
+          "titleRows": 0,
+          "types": [
+            "AA"
+          ],
+          "states": [],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_OTHR_GRNT": {
+          "count": 4,
+          "titleRows": 3,
+          "types": [
+            "AA"
+          ],
+          "states": [
+            "Grant"
+          ],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID",
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_PROD_APPL": {
+          "count": 1,
+          "titleRows": 0,
+          "types": [
+            "L"
+          ],
+          "states": [],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_PROD_GRNT": {
+          "count": 21,
+          "titleRows": 20,
+          "types": [
+            "L",
+            "OL"
+          ],
+          "states": [
+            "Grant",
+            "Renew Retained"
+          ],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID",
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "DT_RW_GRNT",
+            "DT_RW_APPL"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_RETN_APPL": {
+          "count": 7,
+          "titleRows": 6,
+          "types": [
+            "RL"
+          ],
+          "states": [
+            "Application"
+          ],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID",
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS"
+          ]
+        },
+        "#kml_schema_ft_PETRO_TITLE_RETN_GRNT": {
+          "count": 7,
+          "titleRows": 6,
+          "types": [
+            "RL"
+          ],
+          "states": [
+            "Renew Retained"
+          ],
+          "fields": [
+            "TI_TYPE_CD",
+            "PTY_NAME",
+            "UNIQ_ID",
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "DT_GRNT",
+            "DT_EXPIRY",
+            "DT_RW_GRNT",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS"
+          ]
+        },
+        "#kml_schema_ft_RESERVES_PETROLEUM": {
+          "count": 211,
+          "titleRows": 211,
+          "types": [
+            "RB"
+          ],
+          "states": [
+            "Grant"
+          ],
+          "fields": [
+            "TITLEID",
+            "SW_MEMBER",
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "STATUS",
+            "TS_TYPE",
+            "DT_EFFECT",
+            "PTY_NAME",
+            "PCT",
+            "HLD_TY_CD",
+            "HLD_TYPE",
+            "AREA_SQKM",
+            "AREA_UNITS",
+            "AREA_MEAS",
+            "UNIQ_ID"
+          ]
+        },
+        "#kml_schema_ft_TITLES_PETRO_HISTORICAL": {
+          "count": 218,
+          "titleRows": 218,
+          "types": [
+            "EP",
+            "PL",
+            "OL",
+            "RL",
+            "NTC/P",
+            "RB",
+            "AA",
+            "PP",
+            "OP",
+            "RI"
+          ],
+          "states": [
+            "Ceased",
+            "Grant",
+            "Granted"
+          ],
+          "fields": [
+            "TI_TYPE_CD",
+            "TI_NUMBER",
+            "TS_TYPE",
+            "TS_TYPE_CD",
+            "STATUS",
+            "DT_CEASED",
+            "RP_ID",
+            "YEAR",
+            "AREA_MEAS",
+            "MEAS_TY",
+            "AREA_SQKM",
+            "LGLN_TY_CD",
+            "LGLN_TYPE",
+            "ACTIVE",
+            "HANDLE_URL",
+            "PTY_NAME",
+            "HLD_TYPE",
+            "PCT",
+            "UNIQ_ID",
+            "TITLEID",
+            "DT_GRNT",
+            "AREA_UNITS",
+            "REGISTER"
+          ]
+        }
+      }
+    }
+  ],
+  "stadiumsPublications": {
+    "url": "https://www.data.qld.gov.au/api/3/action/package_search?q=stadiums+contract+disclosure&rows=10",
+    "status": 200,
+    "count": 370,
+    "results": [
+      {
+        "id": "stadiums-queensland-contract-disclosure-2019-2020",
+        "title": "Stadiums Queensland Contract Disclosure 2019 - 2020",
+        "modified": "2023-07-31T04:33:49.502563",
+        "resources": [
+          {
+            "id": "f5ae96ff-d15d-4a26-a288-3b09fb1029c0",
+            "url": "https://www.data.qld.gov.au/dataset/7bf6846b-d92a-4a44-b404-da379991a1a6/resource/f5ae96ff-d15d-4a26-a288-3b09fb1029c0/download/stadiums-queensland-contract-disclosure-2019-2020-draft.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "sq-contract-disclosure-2022",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure 2022 - 2023",
+        "modified": "2023-07-31T04:19:08.897095",
+        "resources": [
+          {
+            "id": "d793329e-fbdf-4211-aff8-60b6bceb3b27",
+            "url": "https://www.data.qld.gov.au/dataset/e51dd6e6-db9b-4bb8-a5f8-44b8d3285d80/resource/d793329e-fbdf-4211-aff8-60b6bceb3b27/download/stadiums-queensland-contract-disclosure-2022-2023-draft.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "sq-contracts-10k",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure 2021 - 2022",
+        "modified": "2023-07-31T04:18:53.431681",
+        "resources": [
+          {
+            "id": "79901bbd-2204-47e5-89a8-93cc14b96ead",
+            "url": "https://www.data.qld.gov.au/dataset/8cbc3f76-cb22-42ff-9a03-b84f1e62eadf/resource/79901bbd-2204-47e5-89a8-93cc14b96ead/download/sq-contract-disclosure-2022-v3.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      },
+      {
+        "id": "sq-contracts21",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure 2020 - 2021",
+        "modified": "2023-07-31T04:18:33.356757",
+        "resources": [
+          {
+            "id": "ac1389b9-230b-4ad6-8f17-9e09274bac94",
+            "url": "https://www.data.qld.gov.au/dataset/dc109d65-04bd-492d-84d1-4effea7e93d1/resource/ac1389b9-230b-4ad6-8f17-9e09274bac94/download/contract-disclosure-2021.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-january-to-march-2026",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure January to March 2026",
+        "modified": "2026-05-01T03:46:31.487939",
+        "resources": [
+          {
+            "id": "696adb25-8f6c-4c1c-aa39-fb2dbf750098",
+            "url": "https://www.data.qld.gov.au/dataset/23bbabaf-18c2-426a-a443-8a5e396d6ee9/resource/696adb25-8f6c-4c1c-aa39-fb2dbf750098/download/stadiums-queensland-contract-disclosure-january-to-march-2026.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure July to December 2025",
+        "modified": "2026-04-21T23:41:09.279412",
+        "resources": [
+          {
+            "id": "045ac29a-ae16-4e08-82c8-3618500ec5bf",
+            "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-january-to-june-2025",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure January to June 2025",
+        "modified": "2025-07-16T01:56:22.839704",
+        "resources": [
+          {
+            "id": "23ab7ad8-e5d7-4458-976b-90430c02018b",
+            "url": "https://www.data.qld.gov.au/dataset/2e9180d6-0621-4d22-8dfe-addccbbe731a/resource/23ab7ad8-e5d7-4458-976b-90430c02018b/download/stadiums-queensland-contract-disclosure-january-to-june-2025.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-july-to-december-2024",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure July to December 2024",
+        "modified": "2025-07-01T04:04:08.338518",
+        "resources": [
+          {
+            "id": "69bb696f-75c0-406b-9fdd-d05f3b6e612c",
+            "url": "https://www.data.qld.gov.au/dataset/4b63c16b-265e-4335-ae9e-20c9cd3839f1/resource/69bb696f-75c0-406b-9fdd-d05f3b6e612c/download/stadiums-queensland-contract-disclosure-july-to-december-2024.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-january-to-june-2024",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure January to June 2024",
+        "modified": "2024-10-14T01:13:35.528487",
+        "resources": [
+          {
+            "id": "a4e77e4f-d14a-45f7-91a4-765cec78cfe5",
+            "url": "https://www.data.qld.gov.au/dataset/f43d9d8e-ca6c-4836-a962-27e6a39f4cf2/resource/a4e77e4f-d14a-45f7-91a4-765cec78cfe5/download/stadiums-queensland-sq-contract-disclosure-january-to-june-2024.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-july-to-december-2023",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure July to December 2023",
+        "modified": "2024-04-15T23:32:16.592488",
+        "resources": [
+          {
+            "id": "be4484bf-63b5-4540-bcc8-1fc9ecac3281",
+            "url": "https://www.data.qld.gov.au/dataset/873f46c0-0950-4185-8542-c004d3768ee9/resource/be4484bf-63b5-4540-bcc8-1fc9ecac3281/download/stadiums-queensland-sq-contract-disclosure-july-to-december-2023.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      }
+    ]
+  },
+  "stadiumsLatestPublications": {
+    "url": "https://www.data.qld.gov.au/api/3/action/package_search?q=title%3Astadiums+AND+title%3Adisclosure&sort=metadata_modified+desc&rows=5",
+    "at": "2026-09-17T23:21:07.367Z",
+    "status": 200,
+    "count": 11,
+    "results": [
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-register-1-april-to-30-june-2026",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure  1 April to 30 June 2026",
+        "metadataModified": "2026-07-14T08:16:49.371971",
+        "resources": [
+          {
+            "id": "7066bf58-7f81-415c-a129-341f8127e092",
+            "url": "https://www.data.qld.gov.au/dataset/959c4c50-1eff-45c2-bca0-7c0fc244654e/resource/7066bf58-7f81-415c-a129-341f8127e092/download/contract-disclosure-1-april-2026-to-30-june-2026.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-january-to-march-2026",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure January to March 2026",
+        "metadataModified": "2026-05-01T03:46:31.487939",
+        "resources": [
+          {
+            "id": "696adb25-8f6c-4c1c-aa39-fb2dbf750098",
+            "url": "https://www.data.qld.gov.au/dataset/23bbabaf-18c2-426a-a443-8a5e396d6ee9/resource/696adb25-8f6c-4c1c-aa39-fb2dbf750098/download/stadiums-queensland-contract-disclosure-january-to-march-2026.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure July to December 2025",
+        "metadataModified": "2026-04-21T23:41:09.279412",
+        "resources": [
+          {
+            "id": "045ac29a-ae16-4e08-82c8-3618500ec5bf",
+            "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+            "format": "XLSX",
+            "datastoreActive": true
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-january-to-june-2025",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure January to June 2025",
+        "metadataModified": "2025-07-16T01:56:22.839704",
+        "resources": [
+          {
+            "id": "23ab7ad8-e5d7-4458-976b-90430c02018b",
+            "url": "https://www.data.qld.gov.au/dataset/2e9180d6-0621-4d22-8dfe-addccbbe731a/resource/23ab7ad8-e5d7-4458-976b-90430c02018b/download/stadiums-queensland-contract-disclosure-january-to-june-2025.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      },
+      {
+        "id": "stadiums-queensland-sq-contract-disclosure-july-to-december-2024",
+        "title": "Stadiums Queensland (SQ) Contract Disclosure July to December 2024",
+        "metadataModified": "2025-07-01T04:04:08.338518",
+        "resources": [
+          {
+            "id": "69bb696f-75c0-406b-9fdd-d05f3b6e612c",
+            "url": "https://www.data.qld.gov.au/dataset/4b63c16b-265e-4335-ae9e-20c9cd3839f1/resource/69bb696f-75c0-406b-9fdd-d05f3b6e612c/download/stadiums-queensland-contract-disclosure-july-to-december-2024.xlsx",
+            "format": "XLSX",
+            "datastoreActive": false
+          }
+        ]
+      }
+    ]
+  },
+  "completeArchiveParserChecks": [
+    {
+      "key": "nt-geothermal-titles",
+      "at": "2026-09-17T23:21:40.303Z",
+      "method": "Production recoveredKmlRows evaluated against complete official bytes downloaded by bounded GET; no storage writes.",
+      "compressedBytes": 56125,
+      "archiveSha256": "a1d13b11c129184fa03b707b96541c89d8a2e85596ac93952fa3f4cee7ec3353",
+      "parserSha256": "a0875300916dc2d680a47ad112c96fce12509d57db114d64e40e6b49602aada9",
+      "rows": 96,
+      "uniqueIds": 96,
+      "layers": {
+        "GEOTH_TITLE_EXPL_APPL": 88,
+        "GEOTH_TITLE_EXPL_GRNT": 8
+      },
+      "domains": {
+        "geothermal": 96
+      },
+      "allContextAndRightsHeld": true,
+      "snapshot": "c971c629fe0024fbdaa3c775cad31a0fb2fe0ffd1ad26b04a136ccabbfb6a256"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "at": "2026-09-17T23:21:40.920Z",
+      "method": "Production recoveredKmlRows evaluated against complete official bytes downloaded by bounded GET; no storage writes.",
+      "compressedBytes": 7593483,
+      "archiveSha256": "14b21a02a1aec24dab5de670d57f7b902c2b1ca93b033bf200d225d437a37785",
+      "parserSha256": "a0875300916dc2d680a47ad112c96fce12509d57db114d64e40e6b49602aada9",
+      "rows": 608,
+      "uniqueIds": 608,
+      "layers": {
+        "PETRO_PIPE_EXPL_GRNT": 109,
+        "PETRO_TITLE_EXPL_APPL": 170,
+        "PETRO_TITLE_EXPL_GRNT": 76,
+        "PETRO_TITLE_OTHR_GRNT": 3,
+        "PETRO_TITLE_PROD_GRNT": 20,
+        "PETRO_TITLE_RETN_APPL": 6,
+        "PETRO_TITLE_RETN_GRNT": 6,
+        "TITLES_PETRO_HISTORICAL": 218
+      },
+      "domains": {
+        "pipeline": 122,
+        "petroleum": 486
+      },
+      "allContextAndRightsHeld": true,
+      "snapshot": "046edc1a2bce1008ce0b051d9fc27ff35bf94e89be3b6c9e8bc989553eb37e7b"
+    }
+  ]
+}

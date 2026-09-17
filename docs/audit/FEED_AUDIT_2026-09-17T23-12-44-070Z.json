@@ -1,0 +1,522 @@
+{
+  "startedAt": "2026-09-17T23:12:44.070Z",
+  "finishedAt": "2026-09-17T23:12:46.173Z",
+  "methodology": {
+    "readOnly": true,
+    "auditClock": "2026-09-17T23:12:44.070Z",
+    "concurrency": 3,
+    "sampleLimit": 5,
+    "requestTimeoutMs": 18000,
+    "maxBodyBytes": 26214400,
+    "redirects": "follow",
+    "parser": "Actual TypeScript collector and backfill code evaluated without SDK handlers; query row limits reduced to five; XLSX bodies bounded by bytes/time. Cursor completion is not meaningful after sample limit reduction.",
+    "scope": "All registry sources, including disabled and historical-only; external read access and parser validity only. No deployed ingestion asserted."
+  },
+  "codeHashes": {
+    "index": "4a8f354a0616d0c76201658984d913cccf842ce57fdb1625431659d7ea3e58db",
+    "backfillFetch": "64f254d54b862022293ce7c79b88fe4a738294b6585e2946c70265a346b0063d",
+    "domainHardening": "ad65de29f76eb83d63a259ba0a06216a4c4edb75373755dacee9f9a7e724212f",
+    "sourceHelpers": "c9f2fceff0567f0ba9b6b86b4f0fd41227bad94f2c44c07cd19d5b34eb00859f",
+    "feedRecovery": "134ada23bbc690765602c5ee10f2c9a14bb17b8cfda91b82fd7c50f49cc54177"
+  },
+  "counts": {
+    "configured": 66,
+    "active": 53,
+    "disabled": 13,
+    "historicalOnly": 4,
+    "probed": 5,
+    "liveRows": 0,
+    "liveErrors": 4,
+    "liveEmpty": 1,
+    "metadataOnly": 0
+  },
+  "results": [
+    {
+      "key": "qld-granted-resource-authorities",
+      "name": "Queensland Recently Granted Resource Authorities",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+      "provenance": "https://www.data.qld.gov.au/dataset/recently-granted-resource-authorities",
+      "startedAt": "2026-09-17T23:12:44.489Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_202"
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "startedAt": "2026-09-17T23:12:44.490Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=recently-granted-resource-authorities",
+          "redirected": false,
+          "bytes": 35839,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "46414b29-d9ca-4395-985b-690b5d9bd97b",
+              "name": "Permit granted in August 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-09-15T23:28:03.143663",
+              "lastModified": "2026-09-15T23:28:46.606149"
+            },
+            {
+              "id": "a022159d-4be7-474f-ab42-6fdb7a2104f6",
+              "name": "Permit granted in July 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a022159d-4be7-474f-ab42-6fdb7a2104f6/download/granted-permits-july-2026.xlsx",
+              "datastoreActive": true,
+              "created": "2026-08-24T04:05:14.880672",
+              "lastModified": "2026-09-15T23:28:46.609922"
+            },
+            {
+              "id": "6a8b54e1-03bc-4955-96b5-847368253477",
+              "name": "Permit granted in June 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/6a8b54e1-03bc-4955-96b5-847368253477/download/granted-permits-june-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-07-13T03:34:56.151905",
+              "lastModified": "2026-09-15T23:28:46.613648"
+            },
+            {
+              "id": "1e971178-58be-4415-ae40-8f0cfab476d9",
+              "name": "Permits granted in May 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/1e971178-58be-4415-ae40-8f0cfab476d9/download/granted-permits-may-2026-.xlsx",
+              "datastoreActive": true,
+              "created": "2026-07-01T05:43:10.352639",
+              "lastModified": "2026-09-15T23:28:46.617419"
+            },
+            {
+              "id": "943d74ef-0003-4df9-9529-ebb09f8f58aa",
+              "name": "Permits granted in April 2026 ",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/943d74ef-0003-4df9-9529-ebb09f8f58aa/download/granted-permits-april-2026-.xlsx",
+              "datastoreActive": false,
+              "created": "2026-05-28T22:48:57.013449",
+              "lastModified": "2026-09-15T23:28:46.621767"
+            },
+            {
+              "id": "36cb6f97-7a6c-42af-bb49-cd09bae8645c",
+              "name": "Permits granted in March 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/36cb6f97-7a6c-42af-bb49-cd09bae8645c/download/granted-permits-march-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-04-14T01:30:35.738328",
+              "lastModified": "2026-09-15T23:28:46.625637"
+            },
+            {
+              "id": "a4499aa1-3a01-4873-b753-8f1689057218",
+              "name": "Permits granted in February 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/a4499aa1-3a01-4873-b753-8f1689057218/download/granted-permits-february-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-03-23T22:31:07.094278",
+              "lastModified": "2026-09-15T23:28:46.629484"
+            },
+            {
+              "id": "20e66adf-8e73-4dc4-bb19-fc1cb49ef364",
+              "name": "Permits granted in January 2026",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/20e66adf-8e73-4dc4-bb19-fc1cb49ef364/download/granted-permits-january-2026.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-19T01:53:14.380273",
+              "lastModified": "2026-09-15T23:28:46.633370"
+            },
+            {
+              "id": "b250ed4d-8b19-4bfc-9099-e26eca15040f",
+              "name": "Permits granted in 2025",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/b250ed4d-8b19-4bfc-9099-e26eca15040f/download/granted-permits-2025.xlsx",
+              "datastoreActive": false,
+              "created": "2026-02-10T23:14:38.081070",
+              "lastModified": "2026-09-15T23:28:46.637238"
+            },
+            {
+              "id": "f7cf24bb-2ce4-40f9-b38f-1c0e3122b902",
+              "name": "Permits granted in 2024",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/f7cf24bb-2ce4-40f9-b38f-1c0e3122b902/download/granted-permits-2024.xlsx",
+              "datastoreActive": false,
+              "created": "2025-01-22T03:44:23.980119",
+              "lastModified": "2026-09-15T23:28:46.641085"
+            }
+          ],
+          "metadataModified": "2026-09-15T23:29:57.632644",
+          "durationMs": 381
+        },
+        {
+          "url": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "startedAt": "2026-09-17T23:12:44.875Z",
+          "status": 202,
+          "finalUrl": "https://www.data.qld.gov.au/dataset/8a194ebc-371e-43c9-b1ca-96d2640087a0/resource/46414b29-d9ca-4395-985b-690b5d9bd97b/download/granted-permits-august-2026.xlsx",
+          "redirected": false,
+          "bytes": 0,
+          "contentType": "text/html; charset=UTF-8",
+          "featureTypes": [],
+          "looksLikeHtml": false,
+          "durationMs": 32
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nt-mineral-titles",
+      "name": "Northern Territory Mineral Titles",
+      "mode": "disabled",
+      "method": "CKAN_KML",
+      "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mineral-titles",
+      "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-mineral-titles",
+      "disableReason": "Official ZIP expands 117,389,620 bytes, above the 32MiB recovery bound; a verified scalable title export, schema/identity reconciliation and scheduled ingestion are required.",
+      "startedAt": "2026-09-17T23:12:44.552Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "requests": [
+        {
+          "url": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mineral-titles",
+          "startedAt": "2026-09-17T23:12:44.553Z",
+          "status": 200,
+          "finalUrl": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-mineral-titles",
+          "redirected": false,
+          "bytes": 6100,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "a0adb63a-ef40-460f-a1e4-ce8b392b1f57",
+              "name": "NT Mineral Titles (TAB)",
+              "format": "MapInfo TAB",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_tab.zip",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:04:43.245027",
+              "lastModified": null
+            },
+            {
+              "id": "9d197493-dfd4-4ba8-8458-7beba1cc749c",
+              "name": "NT Mineral Titles (KML)",
+              "format": "KML",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T01:31:26.659489",
+              "lastModified": null
+            },
+            {
+              "id": "f68f4fbd-4342-466d-938c-e607c0f325db",
+              "name": "NT Mineral Titles (SHP)",
+              "format": "SHP",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_shp.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T01:51:29.316213",
+              "lastModified": null
+            },
+            {
+              "id": "5028955a-32d9-4bcf-9549-14b2f20efcbe",
+              "name": "Metadata",
+              "format": "HTML",
+              "url": "http://www.ntlis.nt.gov.au/metadata/export_data?type=html&metadata_id=2DBCB771208F06B6E040CD9B0F274EFE",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:07:43.009313",
+              "lastModified": null
+            }
+          ],
+          "metadataModified": "2025-06-22T23:21:59.276118",
+          "durationMs": 644
+        },
+        {
+          "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+          "startedAt": "2026-09-17T23:12:45.197Z",
+          "status": 406,
+          "finalUrl": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_MineralTitles_kml.zip",
+          "redirected": false,
+          "bytes": 1346,
+          "contentType": "text/html",
+          "featureTypes": [],
+          "looksLikeHtml": true,
+          "durationMs": 625
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nt-petroleum-pipeline-titles",
+      "name": "Northern Territory Petroleum and Pipeline Titles",
+      "mode": "disabled",
+      "method": "CKAN_KML",
+      "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-petroleum-and-pipeline-titles",
+      "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-petroleum-and-pipeline-titles",
+      "disableReason": "Official ZIP contains 1,634 mixed-domain placemarks including release blocks and regional polygons; title-specific schema/identity review and scheduled ingestion are required.",
+      "startedAt": "2026-09-17T23:12:44.560Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "requests": [
+        {
+          "url": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-petroleum-and-pipeline-titles",
+          "startedAt": "2026-09-17T23:12:44.560Z",
+          "status": 200,
+          "finalUrl": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-petroleum-and-pipeline-titles",
+          "redirected": false,
+          "bytes": 6042,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "dbde3ec2-c426-4821-aa2a-2053a1e21403",
+              "name": "NT Petroleum and Pipeline Titles (TAB)",
+              "format": "MapInfo TAB",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_tab.zip",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:13:06.214064",
+              "lastModified": null
+            },
+            {
+              "id": "7dd4ac18-3b4a-453f-85a7-b8006ef0a0fb",
+              "name": "NT Petroleum Pipeline Titles (KML)",
+              "format": "KML",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T02:00:04.109002",
+              "lastModified": null
+            },
+            {
+              "id": "4f8d5257-e797-4733-ab0b-ac086ee42b95",
+              "name": "NT Petroleum Pipeline Titles (SHP)",
+              "format": "SHP",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_shp.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T02:01:08.379228",
+              "lastModified": null
+            },
+            {
+              "id": "401a0f2a-2ae1-41c4-9369-d8a986bf4b80",
+              "name": "Metadata",
+              "format": "HTML",
+              "url": "http://www.ntlis.nt.gov.au/metadata/export_data?type=html&metadata_id=FB244D05EFB6203BE040CD9B21446E40",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:13:36.797285",
+              "lastModified": null
+            }
+          ],
+          "metadataModified": "2025-06-20T04:19:08.843208",
+          "durationMs": 661
+        },
+        {
+          "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+          "startedAt": "2026-09-17T23:12:45.221Z",
+          "status": 406,
+          "finalUrl": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_PetroleumPipelineTitles_kml.zip",
+          "redirected": false,
+          "bytes": 1346,
+          "contentType": "text/html",
+          "featureTypes": [],
+          "looksLikeHtml": true,
+          "durationMs": 625
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "nt-geothermal-titles",
+      "name": "Northern Territory Geothermal Titles",
+      "mode": "disabled",
+      "method": "CKAN_KML",
+      "endpoint": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-geothermal-title",
+      "provenance": "https://data.nt.gov.au/dataset/strike---northern-territory-geothermal-title",
+      "disableReason": "Official ZIP contains 114 placemarks but repeated TITLEID/UNIQ_ID values; holder/multipart identity and date semantics need review before scheduled ingestion.",
+      "startedAt": "2026-09-17T23:12:44.913Z",
+      "live": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "backfill": {
+        "status": "ERROR",
+        "error": "HTTP_406"
+      },
+      "requests": [
+        {
+          "url": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-geothermal-title",
+          "startedAt": "2026-09-17T23:12:44.913Z",
+          "status": 200,
+          "finalUrl": "https://data.nt.gov.au/api/3/action/package_show?id=strike---northern-territory-geothermal-title",
+          "redirected": false,
+          "bytes": 5851,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "cf529a0b-0f9e-4724-b7a9-5bc4292819b0",
+              "name": "NT Geothermal Titles (TAB)",
+              "format": "MapInfo TAB",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_tab.zip",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:19:23.455583",
+              "lastModified": null
+            },
+            {
+              "id": "ad73b76a-db24-45b2-a0f2-efd7194fb8bc",
+              "name": "NT Geothermal Titles (KML)",
+              "format": "KML",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T02:12:58.334798",
+              "lastModified": null
+            },
+            {
+              "id": "9063ac97-5eb8-4b75-a5d8-31b19263ba4a",
+              "name": "NT Geothermal Titles (SHP)",
+              "format": "SHP",
+              "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_shp.zip",
+              "datastoreActive": false,
+              "created": "2020-06-23T02:13:31.698668",
+              "lastModified": null
+            },
+            {
+              "id": "1fbcff5c-0c43-4d56-9c32-bf76ebcb69b1",
+              "name": "Metadata",
+              "format": "HTML",
+              "url": "https://www.ntlis.nt.gov.au/metadata/export_data?type=html&metadata_id=FB119D65BD6ACCF7E040CD9B214409BC",
+              "datastoreActive": false,
+              "created": "2019-02-04T01:19:52.254071",
+              "lastModified": null
+            }
+          ],
+          "metadataModified": "2025-06-20T04:17:58.481882",
+          "durationMs": 627
+        },
+        {
+          "url": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+          "startedAt": "2026-09-17T23:12:45.541Z",
+          "status": 406,
+          "finalUrl": "https://geoscience.nt.gov.au/contents/prod/Downloads/NT_GeothermalTitles_kml.zip",
+          "redirected": false,
+          "bytes": 1346,
+          "contentType": "text/html",
+          "featureTypes": [],
+          "looksLikeHtml": true,
+          "durationMs": 631
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    },
+    {
+      "key": "qld-stadiums-contracts-jul-dec-2025",
+      "name": "Stadiums Queensland Contract Disclosure July to December 2025",
+      "mode": "active",
+      "method": "CKAN_PACKAGE",
+      "endpoint": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+      "provenance": "https://www.data.qld.gov.au/dataset/stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+      "startedAt": "2026-09-17T23:12:45.828Z",
+      "live": {
+        "status": "EMPTY",
+        "recordsFetched": 0,
+        "usableRows": 0,
+        "metadataOnlyRows": 0,
+        "rawFieldNames": [],
+        "roles": {},
+        "datedRows": 0,
+        "oldestSourceDate": null,
+        "newestSourceDate": null,
+        "uniqueIds": 0,
+        "normalizedProjectIsExternalId": 0
+      },
+      "backfill": {
+        "status": "EMPTY",
+        "rows": 0,
+        "next": 0,
+        "completed": true,
+        "hasNextPage": false,
+        "resourceId": "045ac29a-ae16-4e08-82c8-3618500ec5bf",
+        "rawFieldNames": [],
+        "datedRows": 0,
+        "roles": []
+      },
+      "requests": [
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "startedAt": "2026-09-17T23:12:45.829Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/package_show?id=stadiums-queensland-sq-contract-disclosure-july-to-december-2025",
+          "redirected": false,
+          "bytes": 5117,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "resources": [
+            {
+              "id": "045ac29a-ae16-4e08-82c8-3618500ec5bf",
+              "name": "Stadiums Queensland Contract Disclosure July to December 2025.xlsx",
+              "format": "XLSX",
+              "url": "https://www.data.qld.gov.au/dataset/b2e90365-5e3f-41d2-a2a1-05b7f59034bd/resource/045ac29a-ae16-4e08-82c8-3618500ec5bf/download/stadiums-queensland-contract-disclosure-july-to-december-2025.xlsx",
+              "datastoreActive": true,
+              "created": "2026-04-21T23:41:08.243651",
+              "lastModified": "2026-04-21T23:41:08.215839"
+            }
+          ],
+          "metadataModified": "2026-04-21T23:41:09.279412",
+          "durationMs": 174
+        },
+        {
+          "url": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=045ac29a-ae16-4e08-82c8-3618500ec5bf",
+          "startedAt": "2026-09-17T23:12:46.004Z",
+          "status": 200,
+          "finalUrl": "https://www.data.qld.gov.au/api/3/action/datastore_search?limit=5&resource_id=045ac29a-ae16-4e08-82c8-3618500ec5bf",
+          "redirected": false,
+          "bytes": 993,
+          "contentType": "application/json;charset=utf-8",
+          "topLevelKeys": [
+            "help",
+            "success",
+            "result"
+          ],
+          "responseRows": 0,
+          "sampleFieldNames": [],
+          "total": 0,
+          "durationMs": 166
+        }
+      ],
+      "endpointStatus": "REACHABLE",
+      "deployedIngestion": "NOT_TESTED_LOCAL_READ_ONLY"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-09-17T23:02:55.165Z",
+  "codeCommit": "36e2ab9c51b6653cb70482e30060eb7e59d20f67",
+  "method": "Existing scripts/probe-source-pilots.ts; public GET requests; two pages of three rows; no SDK or production writes.",
+  "pilots": [
+    {
+      "source": "logan-development-applications",
+      "startedAt": "2026-09-17T23:02:50.650Z",
+      "filter": "Application_Description like '%Warehouse%'",
+      "summary": {
+        "inputRows": 6,
+        "groupedRecords": 6,
+        "usableEvidence": 0,
+        "quarantined": 6,
+        "excluded": 0,
+        "duplicateRows": 0,
+        "datedEvidence": 0,
+        "promotionEligible": 0,
+        "qualityFlags": {
+          "UPSTREAM_REJECTION:INVALID_INPUT": 6
+        }
+      },
+      "fetch": {
+        "metadataReachable": true,
+        "schemaVerified": true,
+        "pages": 2,
+        "rowsFetched": 6,
+        "completed": false,
+        "truncated": true,
+        "durationMs": 1791,
+        "productionReliabilityVerified": false,
+        "sourceLastModifiedAt": "2026-09-17T18:47:13.377Z"
+      },
+      "limitations": "Single-environment sample only. No scheduled-ingestion, full-coverage or production-reliability claim; no live data written."
+    },
+    {
+      "source": "qld-coordinated-projects",
+      "startedAt": "2026-09-17T23:02:52.451Z",
+      "filter": "projectstatus like 'Current%'",
+      "summary": {
+        "inputRows": 6,
+        "groupedRecords": 6,
+        "usableEvidence": 6,
+        "quarantined": 0,
+        "excluded": 0,
+        "duplicateRows": 0,
+        "datedEvidence": 0,
+        "promotionEligible": 0,
+        "qualityFlags": {
+          "UNDATED_CONTEXT": 6
+        }
+      },
+      "fetch": {
+        "metadataReachable": true,
+        "schemaVerified": true,
+        "pages": 2,
+        "rowsFetched": 6,
+        "completed": false,
+        "truncated": true,
+        "durationMs": 2714,
+        "productionReliabilityVerified": false
+      },
+      "limitations": "Single-environment sample only. No scheduled-ingestion, full-coverage or production-reliability claim; no live data written."
+    }
+  ],
+  "rawPersonalDataStored": false
+}

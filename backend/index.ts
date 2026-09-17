@@ -1,4 +1,6 @@
 import { RECOVERED_KML_MEMBERS } from './feed-recovery';
+import { buildSourceContract } from './registry-contracts';
+import { beginPull, finishPull, readPullHistory } from './pull-receipts';
 import { isEvidenceEligible } from './evidence-eligibility';
 import {
   sourceWfsPage,
@@ -72,6 +74,7 @@ export type SourceDef = {
   match?: string;
   enabled?: boolean;
   disableReason?: string;
+  registryMode?: 'HISTORICAL_ONLY';
 };
 type SourceState = {
   sourceKey: string;
@@ -346,7 +349,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-mineral-titles',
     enabled: false,
     disableReason:
-      'Official ZIP expands 117,389,620 bytes, above the 32MiB recovery bound; a verified scalable title export, schema/identity reconciliation and scheduled ingestion are required.',
+      'Official ZIP declared 117,447,591 expanded bytes on 2026-09-18, above the 32MiB bound; scalable title export, schema/identity reconciliation, rights review and scheduled ingestion acceptance remain required.',
   },
   {
     key: 'nt-petroleum-pipeline-titles',
@@ -362,7 +365,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-petroleum-and-pipeline-titles',
     enabled: false,
     disableReason:
-      'Official ZIP contains 1,634 mixed-domain placemarks including release blocks and regional polygons; title-specific schema/identity review and scheduled ingestion are required.',
+      'Title-specific archive parser verified 2026-09-18; context only. Current bounded downloads time out. Rights/date review, legacy-ID reconciliation and real canary/scheduled ingestion acceptance remain required.',
   },
   {
     key: 'nt-geothermal-titles',
@@ -378,7 +381,7 @@ export const SOURCES: SourceDef[] = [
       'https://data.nt.gov.au/dataset/strike---northern-territory-geothermal-title',
     enabled: false,
     disableReason:
-      'Official ZIP contains 114 placemarks but repeated TITLEID/UNIQ_ID values; holder/multipart identity and date semantics need review before scheduled ingestion.',
+      'Title/holder archive parser and bounded download verified 2026-09-18; context only. Rights/date review, legacy-ID reconciliation and real canary/scheduled ingestion acceptance remain required.',
   },
   {
     key: 'nt-mines',
@@ -1035,7 +1038,7 @@ export const SOURCES: SourceDef[] = [
   },
 ];
 const LIVE_SOURCES = SOURCES.filter((source) => source.enabled !== false);
-const HISTORICAL_SOURCES: SourceDef[] = [
+export const HISTORICAL_SOURCES: SourceDef[] = [
   {
     key: 'wa-historical-exploration-points',
     name: 'WA Historical Exploration Activity - Points',
@@ -1089,7 +1092,7 @@ const HISTORICAL_SOURCES: SourceDef[] = [
       'https://www.data.qld.gov.au/dataset/building-and-asset-services-work-register',
   },
 ];
-const BACKFILL_SOURCES: SourceDef[] = [...LIVE_SOURCES, ...HISTORICAL_SOURCES];
+const BACKFILL_SOURCES: SourceDef[] = [...LIVE_SOURCES, ...HISTORICAL_SOURCES.map(source => ({ ...source, registryMode: 'HISTORICAL_ONLY' as const }))];
 
 const text = (v: unknown) =>
   typeof v === 'string'
@@ -1698,7 +1701,12 @@ async function persistOpportunities(items: Opportunity[]) {
 }
 export async function runSource(source: SourceDef): Promise<SourceState> {
   const started = Date.now();
+  const startedAt = new Date(started).toISOString();
+  const handle = await beginPull({ source, mode: 'REFRESH', startedAt });
   let collected: Awaited<ReturnType<typeof collect>> | undefined;
+  let state: SourceState;
+  let failureMessage: string | undefined;
+  let writeAttempted = false;
   try {
     collected = await collect(source);
     const unique = [
@@ -1706,11 +1714,12 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
         collected.opportunities.map((row) => [row.externalId, row]),
       ).values(),
     ];
+    writeAttempted = unique.length > 0;
     const promoted = await persistOpportunities(unique);
     const datedRecords = unique.filter((row) =>
       Number.isFinite(Date.parse(row.sourceObservedAt || '')),
     ).length;
-    const state: SourceState = {
+    state = {
       sourceKey: source.key,
       name: source.name,
       status:
@@ -1725,6 +1734,7 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
       datedRecords,
       undatedRecords: unique.length - datedRecords,
       persistenceFailures: unique.length - promoted,
+      persistenceUncertain: promoted < unique.length,
       message: !unique.length
         ? 'Source reachable but no usable project records returned'
         : promoted < unique.length
@@ -1737,11 +1747,10 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
       licence: source.licence,
       provenance: source.provenance,
     };
-    await upsertState(state);
-    return state;
   } catch (cause) {
     if (isDatabaseQuotaError(cause)) throw cause;
     const message = cause instanceof Error ? cause.message : 'SOURCE_FAILED';
+    failureMessage = message;
     if (message === 'SOURCE_STATE_SAVE_FAILED') throw cause;
     console.warn('HIRER_SOURCE_FAILED', source.key, message);
     const failure = cause as {
@@ -1751,7 +1760,7 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
     const uncertain =
       failure?.persistenceUncertain === true ||
       message.includes('PENDING_ADDS_RECONCILIATION');
-    const state: SourceState = {
+    state = {
       sourceKey: source.key,
       name: source.name,
       status: 'FAILED',
@@ -1768,9 +1777,17 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
       licence: source.licence,
       provenance: source.provenance,
     };
-    await upsertState(state);
-    return state;
   }
+  // Finalise exactly once. If this acknowledgement fails, the persisted RUNNING intent
+  // remains an explicit unknown outcome; do not retry evidence or fabricate success.
+  await finishPull(handle, {
+    source, mode: 'REFRESH', startedAt, finishedAt: new Date().toISOString(),
+    received: collected?.recordsFetched, rows: collected?.opportunities,
+    acknowledged: state.opportunitiesPromoted, writeAttempted,
+    uncertain: state.persistenceUncertain, failure: failureMessage,
+  });
+  await upsertState(state);
+  return state;
 }
 
 function pilotMetrics(rows: PilotOutcome[]) {
@@ -2037,6 +2054,22 @@ export const handler = router({
           return error(cause.message, 400);
         throw cause;
       }
+    },
+  ],
+  'GET /api/sources/contracts': [
+    requireAuth(),
+    async () => json({ contracts: [
+      ...SOURCES.map(source => buildSourceContract(source)),
+      ...HISTORICAL_SOURCES.map(source => buildSourceContract(source, 'HISTORICAL_ONLY')),
+    ] }),
+  ],
+  'GET /api/sources/:key/health': [
+    requireAuth(),
+    async (ctx) => {
+      const source = SOURCES.find(item => item.key === ctx.params.key) || HISTORICAL_SOURCES.find(item => item.key === ctx.params.key);
+      if (!source) return error('Unknown source', 404);
+      if (ctx.query?.cursor && ctx.query.cursor.length > 4096) return error('Invalid receipt cursor', 400);
+      return json(await readPullHistory(source, HISTORICAL_SOURCES.some(item => item.key === source.key) ? 'HISTORICAL_ONLY' : 'REGISTRY', ctx.query?.cursor));
     },
   ],
   'GET /api/sources/:key/diagnostic': [

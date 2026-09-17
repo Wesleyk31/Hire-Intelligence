@@ -1,5 +1,6 @@
 import { evidenceHoldReasons } from '../backend/evidence-eligibility';
 import SourceDiagnostics from './SourceDiagnostics';
+import SourceHealth from './SourceHealth';
 import EvidenceExplorer from './EvidenceExplorer';
 import SourcePilotPanel from './SourcePilotPanel';
 import { FormEvent, lazy, useEffect, useMemo, useRef, useState } from 'react';
@@ -111,6 +112,7 @@ type SourceState = {
   undatedRecords?: number;
   duplicateRecords?: number;
   persistenceFailures?: number;
+  persistenceUncertain?: boolean;
   licence?: string;
   provenance?: string;
 };
@@ -1966,8 +1968,8 @@ function SourceAdminPage({ dashboard }: { dashboard: Dashboard }) {
       <section className="hi-card">
         <div className="hi-card-toolbar">
           <CardHeader
-            title="Current Source Health"
-            subtitle="Current live source health and normalized record counts."
+            title="Recorded refresh status"
+            subtitle="Latest refresh summaries. Inspect contracts and pull receipts below for rights, source dates and uncertain writes."
           />
         </div>
         <div className="hi-source-list">
@@ -1977,18 +1979,19 @@ function SourceAdminPage({ dashboard }: { dashboard: Dashboard }) {
               <span>
                 <b>{source.name}</b>
                 <small>
-                  {source.recordsFetched} fetched ·{' '}
-                  {source.opportunitiesPromoted || 0} normalized ·{' '}
+                  {source.status === 'FAILED' && source.recordsFetched === 0 ? 'Unknown' : source.recordsFetched} fetched ·{' '}
+                  {source.opportunitiesPromoted || 0} acknowledged saves ·{' '}
                   {source.message || 'provenance retained'}
                 </small>
                 {source.durationMs !== undefined && (
                   <small>
-                    {source.durationMs} ms · {source.datedRecords ?? 0} dated ·{' '}
-                    {source.undatedRecords ?? 0} undated ·{' '}
-                    {source.duplicateRecords ?? 0} duplicates ·{' '}
-                    {source.persistenceFailures ?? 0} failed saves
+                    {source.durationMs} ms · {source.datedRecords ?? 'Unknown'} dated ·{' '}
+                    {source.undatedRecords ?? 'Unknown'} undated ·{' '}
+                    {source.duplicateRecords ?? 'Unknown'} duplicates ·{' '}
+                    {source.persistenceFailures ?? 'Unknown'} unacknowledged rows
                   </small>
                 )}
+                {source.persistenceUncertain && <small>Storage outcome requires reconciliation; additional rows may exist.</small>}
               </span>
               <em className={`hi-badge ${source.status.toLowerCase()}`}>
                 {source.status}
@@ -2002,6 +2005,7 @@ function SourceAdminPage({ dashboard }: { dashboard: Dashboard }) {
           )}
         </div>
       </section>
+      <SourceHealth />
       <EvidenceExplorer />
       <SourcePilotPanel />
       <SourceDiagnostics
