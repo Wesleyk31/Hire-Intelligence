@@ -193,7 +193,8 @@ it('retains progress after a later archive chunk fails and deduplicates its repl
   await runBackfillBatch([source]);
   const result=await call('GET /api/dashboard');
   expect(result.data.universe.loaded).toBe(6);
-  expect(result.data.universe.duplicateRecords).toBeGreaterThan(0);
+  expect(result.data.universe.duplicateRecords).toBe(0);
+  expect(memory.tables.evidence_pages.flatMap(page=>page.events)).toHaveLength(6);
   expect(memory.tables.backfill_cursors[0].processed).toBe(6);
 });
 

@@ -10,6 +10,9 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.backend.json",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "test:browser:automation": "playwright test --config playwright.automation.config.ts",
+    "automation:run": "node scripts/automation/runner.mjs",
+    "automation:check-schema": "node scripts/check-automation-schema.mjs",
     "dev:verification": "vite --config vite.verification.config.ts",
     "build:verification": "vite build --config vite.verification.config.ts"
   },

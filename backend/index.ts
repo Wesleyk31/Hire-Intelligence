@@ -1,4 +1,6 @@
 import { RECOVERED_KML_MEMBERS } from './feed-recovery';
+import { createAutomationRoutes } from './automation-api';
+import { AUTOMATION_VERSION } from './automation-state';
 import { buildSourceContract } from './registry-contracts';
 import { beginPull, finishPull, readPullHistory } from './pull-receipts';
 import { isEvidenceEligible } from './evidence-eligibility';
@@ -7,7 +9,6 @@ import {
   RECOVERED_WFS_LAYERS,
   projectRecordIdentity,
 } from './source-helpers';
-import { runRefreshSlice } from './refresh-scheduler';
 import { fetchSourcePilot } from './source-pilots';
 import {
   SOURCE_PILOT_CONTRACTS,
@@ -28,7 +29,7 @@ import {
 } from './source-helpers';
 import { router, json, error, db, requireAuth } from '@appdeploy/sdk';
 import { read, utils } from 'xlsx';
-import { getBackfillStatus, runBackfillBatch } from './backfill';
+import { getBackfillStatus } from './backfill';
 import {
   buildCalibrationMetrics,
   buildProjectIntelligence,
@@ -1092,7 +1093,13 @@ export const HISTORICAL_SOURCES: SourceDef[] = [
       'https://www.data.qld.gov.au/dataset/building-and-asset-services-work-register',
   },
 ];
-const BACKFILL_SOURCES: SourceDef[] = [...LIVE_SOURCES, ...HISTORICAL_SOURCES.map(source => ({ ...source, registryMode: 'HISTORICAL_ONLY' as const }))];
+const BACKFILL_SOURCES: SourceDef[] = [
+  ...LIVE_SOURCES,
+  ...HISTORICAL_SOURCES.map((source) => ({
+    ...source,
+    registryMode: 'HISTORICAL_ONLY' as const,
+  })),
+];
 
 const text = (v: unknown) =>
   typeof v === 'string'
@@ -1532,6 +1539,11 @@ export async function collect(source: SourceDef) {
     .filter((r) => !r.metadataOnly)
     .map((r) => ({
       ...rawOpportunity(source, r.externalId, r.raw, observedAt),
+      rawEvidence: r.raw,
+      publisher: source.owner,
+      sourceUrl: source.provenance,
+      sourceRecordId: r.externalId,
+      licence: source.licence,
       qualityFlags: r.qualityFlags,
     }));
   return {
@@ -1781,10 +1793,16 @@ export async function runSource(source: SourceDef): Promise<SourceState> {
   // Finalise exactly once. If this acknowledgement fails, the persisted RUNNING intent
   // remains an explicit unknown outcome; do not retry evidence or fabricate success.
   await finishPull(handle, {
-    source, mode: 'REFRESH', startedAt, finishedAt: new Date().toISOString(),
-    received: collected?.recordsFetched, rows: collected?.opportunities,
-    acknowledged: state.opportunitiesPromoted, writeAttempted,
-    uncertain: state.persistenceUncertain, failure: failureMessage,
+    source,
+    mode: 'REFRESH',
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    received: collected?.recordsFetched,
+    rows: collected?.opportunities,
+    acknowledged: state.opportunitiesPromoted,
+    writeAttempted,
+    uncertain: state.persistenceUncertain,
+    failure: failureMessage,
   });
   await upsertState(state);
   return state;
@@ -1934,32 +1952,20 @@ async function buildDashboardV2(userId: string, cursor?: string) {
 }
 
 export const refreshSourcesHandler = async () => {
-  const result = await runRefreshSlice(LIVE_SOURCES, runSource);
-  const failed = result.states.filter((state) => state.status !== 'SUCCESS');
-  if (failed.length)
-    console.warn(
-      'LIVE_SOURCE_REFRESH_DEGRADED',
-      failed.map((state) => state.sourceKey + ':' + state.message).join('|'),
-    );
   return {
-    statusCode: 200,
+    statusCode: 410,
     body: JSON.stringify({
-      status: failed.length ? 'DEGRADED' : 'SUCCESS',
-      processed: result.states.length,
-      nextIndex: result.nextIndex,
-      cycleWrapped: result.cycleWrapped,
-      failed: failed.map((state) => state.sourceKey),
+      status: 'RETIRED',
+      reason: 'GitHub Actions owns serialized production ingestion.',
     }),
   };
 };
 export const backfillSourcesHandler = async () => {
-  const last = await runBackfillBatch(BACKFILL_SOURCES);
-  if (last.lastError) console.warn('BACKFILL_DEGRADED', last.lastError);
   return {
-    statusCode: 200,
+    statusCode: 410,
     body: JSON.stringify({
-      status: last.lastError ? 'DEGRADED' : 'SUCCESS',
-      backfill: last,
+      status: 'RETIRED',
+      reason: 'GitHub Actions owns serialized production ingestion.',
     }),
   };
 };
@@ -2027,11 +2033,19 @@ async function buildPublicSummary() {
 }
 
 export const handler = router({
+  ...createAutomationRoutes({
+    sources: [...SOURCES, ...HISTORICAL_SOURCES],
+    liveSources: LIVE_SOURCES,
+    backfillSources: BACKFILL_SOURCES,
+    collect,
+    runSource,
+  }),
   'GET /api/_healthcheck': [
     async () =>
       json({
         message: 'Success',
         engine: 'scope-2000-production',
+        automationVersion: AUTOMATION_VERSION,
         sources: LIVE_SOURCES.length,
         deferred: SOURCES.length - LIVE_SOURCES.length,
       }),
@@ -2058,18 +2072,34 @@ export const handler = router({
   ],
   'GET /api/sources/contracts': [
     requireAuth(),
-    async () => json({ contracts: [
-      ...SOURCES.map(source => buildSourceContract(source)),
-      ...HISTORICAL_SOURCES.map(source => buildSourceContract(source, 'HISTORICAL_ONLY')),
-    ] }),
+    async () =>
+      json({
+        contracts: [
+          ...SOURCES.map((source) => buildSourceContract(source)),
+          ...HISTORICAL_SOURCES.map((source) =>
+            buildSourceContract(source, 'HISTORICAL_ONLY'),
+          ),
+        ],
+      }),
   ],
   'GET /api/sources/:key/health': [
     requireAuth(),
     async (ctx) => {
-      const source = SOURCES.find(item => item.key === ctx.params.key) || HISTORICAL_SOURCES.find(item => item.key === ctx.params.key);
+      const source =
+        SOURCES.find((item) => item.key === ctx.params.key) ||
+        HISTORICAL_SOURCES.find((item) => item.key === ctx.params.key);
       if (!source) return error('Unknown source', 404);
-      if (ctx.query?.cursor && ctx.query.cursor.length > 4096) return error('Invalid receipt cursor', 400);
-      return json(await readPullHistory(source, HISTORICAL_SOURCES.some(item => item.key === source.key) ? 'HISTORICAL_ONLY' : 'REGISTRY', ctx.query?.cursor));
+      if (ctx.query?.cursor && ctx.query.cursor.length > 4096)
+        return error('Invalid receipt cursor', 400);
+      return json(
+        await readPullHistory(
+          source,
+          HISTORICAL_SOURCES.some((item) => item.key === source.key)
+            ? 'HISTORICAL_ONLY'
+            : 'REGISTRY',
+          ctx.query?.cursor,
+        ),
+      );
     },
   ],
   'GET /api/sources/:key/diagnostic': [

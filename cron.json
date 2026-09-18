@@ -1,16 +1,1 @@
-[
-  {
-    "name": "hirer-live-refresh-incremental",
-    "cron": "*/5 * * * *",
-    "handler": "refreshSourcesHandler",
-    "timezone": "Australia/Perth",
-    "payload": {}
-  },
-  {
-    "name": "hirer-history-backfill",
-    "cron": "2,17,32,47 * * * *",
-    "handler": "backfillSourcesHandler",
-    "timezone": "Australia/Perth",
-    "payload": {}
-  }
-]
+[]

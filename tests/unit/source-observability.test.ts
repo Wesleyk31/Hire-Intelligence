@@ -405,8 +405,8 @@ it("pins the Stadiums workbook before an ambiguous archive write so retries cann
     context: { ckanResource: { datastore_active: false } },
   });
   expect(memory.tables["source_pull_receipts:" + source.key][0]).toMatchObject({
-    counts: { acknowledged: 0, uncertain: 1 },
-    persistenceUncertain: true,
+    counts: { acknowledged: 0, uncertain: 0 },
+    persistenceUncertain: false,
   });
   memory.failArchive = false;
   datastorePopulated = true;

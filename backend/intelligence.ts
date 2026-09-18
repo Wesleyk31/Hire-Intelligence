@@ -198,7 +198,7 @@ function classifyStage(
   record: IntelligenceEvidence,
   source?: IntelligenceSource,
 ): StageSignal {
-  const haystack = [
+  let haystack = [
     record.project,
     record.description,
     record.sourceKey,
@@ -213,6 +213,44 @@ function classifyStage(
       : '',
     reliability: sourceReliability(record.sourceKey, source),
   };
+  // A work-type keyword in a proposal or a denial is not evidence of active work.
+  // Retain a separately affirmative award/commencement clause when one exists,
+  // but do not let source names or conditional clauses supply that affirmation.
+  const clauses = [record.project, record.description]
+    .join('. ')
+    .toLowerCase()
+    .split(/[.!?;]+|\b(?:but|however)\b/);
+  const workTerms =
+    /\b(?:construction|civil works|earthworks?|roadworks?|mobilisation|mobilization|site establishment|site setup|contract|award(?:ed)?|commenc(?:e|ed|ement)|works?)\b/;
+  const conditional =
+    /\b(?:proposed|proposal|concept|feasibility|planned|expected|anticipated|future|potential|will|would|could|may|subject to|pending)\b/;
+  const negative = /\b(?:no|not|never|without)\b/;
+  const hasUncommittedWork =
+    clauses.some((clause) => workTerms.test(clause)) &&
+    clauses.some(
+      (clause) =>
+        conditional.test(clause) ||
+        (workTerms.test(clause) && negative.test(clause)),
+    );
+  if (hasUncommittedWork) {
+    const affirmative = clauses.filter(
+      (clause) => !conditional.test(clause) && !negative.test(clause),
+    );
+    const hasCommittedWork = affirmative.some((clause) =>
+      /\b(?:contract(?:s)?\s+(?:(?:has|have)\s+been\s+)?awarded|awarded\s+contract|(?:construction|earthworks?|works?|mobilisation|mobilization)\s+(?:(?:has|have|is|are|now|already|been)\s+)*(?:commenced|begun|began|started|underway|under way|in progress))\b/.test(
+        clause,
+      ),
+    );
+    if (!hasCommittedWork)
+      return {
+        ...base,
+        label: 'WATCH',
+        confidence: 0.5,
+        reason:
+          'Published work is proposed, conditional or explicitly uncommitted; active work has not been established.',
+      };
+    haystack = affirmative.join(' ');
+  }
   if (
     includesAny(haystack, [
       'completed',

@@ -30,10 +30,16 @@ export type BackfillSource = {
   method: string;
   endpoint: string;
   provenance: string;
+  owner?: string;
+  publisher?: string;
+  datasetId?: string;
+  licence?: string;
+  licenceUrl?: string;
 };
 export type RawRow = {
   externalId: string;
   raw: Record<string, unknown>;
+  originalEvidence?: Record<string, unknown>;
   qualityFlags?: string[];
 };
 export type BackfillContext = {
@@ -51,6 +57,15 @@ export type Page = {
   context?: BackfillContext;
 };
 export type Evidence = {
+  rawEvidence?: Record<string, unknown>;
+  publisher?: string;
+  dataset?: string;
+  sourceUrl?: string;
+  sourceRecordId?: string;
+  licence?: string;
+  licenceUrl?: string;
+  evidenceConfidence?: unknown;
+  inferenceStatus?: unknown;
   qualityFlags?: string[];
   sourceKey: string;
   externalId: string;
@@ -94,6 +109,15 @@ export function normalizeEvidence(
   return {
     sourceKey: source.key,
     externalId: row.externalId,
+    rawEvidence: structuredClone(row.originalEvidence || row.raw),
+    publisher: source.publisher || source.owner,
+    dataset: source.datasetId,
+    sourceUrl: source.provenance,
+    sourceRecordId: row.externalId,
+    licence: source.licence,
+    licenceUrl: source.licenceUrl,
+    evidenceConfidence: row.raw.evidenceConfidence ?? row.raw.confidence,
+    inferenceStatus: row.raw.inferenceStatus ?? row.raw.inference_status,
     qualityFlags: row.qualityFlags ? [...new Set(row.qualityFlags)] : undefined,
     project:
       find(row.raw, [
@@ -162,6 +186,9 @@ async function arcgis(source: BackfillSource, cursor: number): Promise<Page> {
   const rows = body.features.map((feature: any) => ({
     externalId: recordIdentity(feature.attributes || {}),
     raw: (feature.attributes || {}) as Record<string, unknown>,
+    originalEvidence: Object.keys(feature).some((key) => key !== 'attributes')
+      ? feature
+      : undefined,
   }));
   const total = paginationTotal(body.total ?? body.totalCount, 'ARCGIS');
   let completed = paginationCompleted(
@@ -291,7 +318,11 @@ async function wfs(
     }
     if (body.features.length > BATCH) throw new Error('WFS_PAGE_OVERFLOW');
     // Once a valid layer responds, integrity failures must surface, never select a different layer.
-    const rows = sourceWfsRows(source.key, body.features);
+    const rows = retainWfsEvidence(
+      source.key,
+      sourceWfsRows(source.key, body.features),
+      body.features,
+    );
     const checkpoint = checkpointWfsPage(
       source.key,
       requestUrl,
@@ -315,19 +346,45 @@ async function wfs(
   }
   throw new Error('WFS_NO_JSON_FEATURES');
 }
+function retainWfsEvidence(
+  sourceKey: string,
+  rows: RawRow[],
+  features: unknown[],
+): RawRow[] {
+  const originals = new Map<string, unknown[]>();
+  // Keep every original multipart feature even when the established normalizer
+  // combines matching source identities for display.
+  for (const feature of features) {
+    const id = sourceWfsRows(sourceKey, [feature])[0].externalId;
+    originals.set(id, [...(originals.get(id) || []), feature]);
+  }
+  return rows.map((row) => ({
+    ...row,
+    originalEvidence: { features: originals.get(row.externalId) || [] },
+  }));
+}
 async function wfsDirect(
   source: BackfillSource,
   cursor: number,
   context?: BackfillContext,
 ): Promise<Page> {
+  let originalFeatures: unknown[] = [];
   const { checkpoint, ...page } = await sourceWfsPage(
     source,
     cursor,
     BATCH,
-    sourceJson,
+    async (url) => {
+      const body = await sourceJson(url);
+      if (Array.isArray(body.features)) originalFeatures = body.features;
+      return body;
+    },
     context?.wfs,
   );
-  return { ...page, context: { ...context, wfs: checkpoint } };
+  return {
+    ...page,
+    rows: retainWfsEvidence(source.key, page.rows, originalFeatures),
+    context: { ...context, wfs: checkpoint },
+  };
 }
 function validateOcdsPageUrl(
   candidate: string,
@@ -412,6 +469,7 @@ async function ocds(
       externalId:
         text(contract?.id || release.id || release.ocid) ||
         recordIdentity(release),
+      originalEvidence: release,
       raw: {
         title: release.tender?.title || contract?.id || release.id,
         description: release.tender?.description || award?.description || '',
@@ -512,6 +570,7 @@ async function kml(
         .trim() || '';
     return {
       externalId: name || text(cursor + index + 1),
+      originalEvidence: { placemark: block },
       raw: { name, description },
     };
   });
@@ -566,6 +625,7 @@ async function geojson(source: BackfillSource, cursor: number): Promise<Page> {
         feature.id || feature.properties?.id || cursor + index + 1,
       ),
       raw: geoJsonRaw(feature),
+      originalEvidence: feature,
     }));
   return {
     rows,

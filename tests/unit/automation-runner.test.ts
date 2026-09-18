@@ -1,0 +1,534 @@
+import { describe, expect, test } from "vitest";
+import {
+  assertTrustedRun,
+  createClient,
+  runScheduledJob,
+  collectWatchdog,
+  checkProductionSmoke,
+  reportQa,
+} from "../../scripts/automation/runner.mjs";
+
+const env = {
+  GITHUB_REPOSITORY: "Wesleyk31/Hire-Intelligence",
+  GITHUB_REF: "refs/heads/main",
+  GITHUB_EVENT_NAME: "workflow_dispatch",
+  GITHUB_RUN_ID: "123",
+  GITHUB_RUN_ATTEMPT: "2",
+  GITHUB_SHA: "a".repeat(40),
+  GITHUB_TOKEN: "github-token",
+  ACTIONS_ID_TOKEN_REQUEST_URL:
+    "https://oidc.actions.githubusercontent.com/token?x=1",
+  ACTIONS_ID_TOKEN_REQUEST_TOKEN: "oidc-request-token",
+};
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+
+describe("automation runner safety", () => {
+  test("rejects pull requests and non-main manual runs before accessing production", () => {
+    expect(() =>
+      assertTrustedRun({ ...env, GITHUB_EVENT_NAME: "pull_request" }),
+    ).toThrow(/trusted main/);
+    expect(() =>
+      assertTrustedRun({ ...env, GITHUB_REF: "refs/heads/feature" }),
+    ).toThrow(/trusted main/);
+    expect(() =>
+      assertTrustedRun({ ...env, GITHUB_REPOSITORY: "someone/fork" }),
+    ).toThrow(/trusted main/);
+    expect(() => assertTrustedRun(env)).not.toThrow();
+  });
+
+  test("requests the audience-bound OIDC token and sends only the dedicated production header", async () => {
+    const traffic: Array<{ url: string; init: RequestInit }> = [];
+    const client = createClient({
+      env,
+      fetchImpl: async (url: string, init: RequestInit) => {
+        traffic.push({ url: String(url), init });
+        return String(url).startsWith("https://oidc.")
+          ? json({ value: "short-lived-jwt" })
+          : json({ status: "SUCCESS" });
+      },
+    });
+    await client.request("/api/automation/run", {
+      method: "POST",
+      body: { job: "live-refresh" },
+    });
+    expect(new URL(traffic[0].url).searchParams.get("audience")).toBe(
+      "hirer-intelligence-production",
+    );
+    expect(new Headers(traffic[0].init.headers).get("Authorization")).toBe(
+      "Bearer oidc-request-token",
+    );
+    expect(
+      new Headers(traffic[1].init.headers).get("X-Hirer-Automation-Token"),
+    ).toBe("short-lived-jwt");
+    expect(new Headers(traffic[1].init.headers).has("Authorization")).toBe(
+      false,
+    );
+  });
+
+  test("does not retry a mutation after an HTTP failure or expose response credentials", async () => {
+    let requests = 0;
+    const client = createClient({
+      env,
+      fetchImpl: async (url: string) => {
+        if (String(url).startsWith("https://oidc."))
+          return json({ value: "short-lived-jwt" });
+        requests += 1;
+        return json({ error: "short-lived-jwt private backend text" }, 503);
+      },
+    });
+    await expect(
+      client.request("/api/automation/run", { method: "POST", body: {} }),
+    ).rejects.toThrow("HTTP 503");
+    expect(requests).toBe(1);
+  });
+
+  test("health probes continue after one failed source and persist the aggregate failure", async () => {
+    const mutations: any[] = [];
+    const client = {
+      request: async (path: string, options?: any) => {
+        if (path.endsWith("/registry"))
+          return {
+            sources: [
+              { source_id: "failed", status: "ACTIVE" },
+              { source_id: "good", status: "DEGRADED" },
+              { source_id: "held", status: "REVIEW_REQUIRED" },
+            ],
+          };
+        mutations.push({ path, ...options.body });
+        if (options.body.sourceKey === "failed") throw new Error("HTTP 503");
+        return { status: "SUCCESS" };
+      },
+    };
+    await expect(
+      runScheduledJob("source-health", { client, env }),
+    ).rejects.toThrow(/source-health/);
+    expect(
+      mutations
+        .filter((item) => item.path.endsWith("/run"))
+        .map((item) => item.sourceKey),
+    ).toEqual(["failed", "good"]);
+    expect(mutations.at(-1)).toMatchObject({
+      job: "source-health",
+      status: "FAILED",
+      runId: "123",
+      runAttempt: "2",
+      details: { checked: 2, failed: 1 },
+    });
+  });
+
+  test("an interrupted health scan resumes with unobserved and oldest sources before recently checked sources", async () => {
+    const probes: string[] = [];
+    const client = {
+      request: async (path: string, options?: any) => {
+        if (path.endsWith("/registry"))
+          return {
+            sources: [
+              {
+                source_id: "recent",
+                status: "ACTIVE",
+                last_checked_at: "2026-09-18T03:00:00Z",
+              },
+              {
+                source_id: "old",
+                status: "ACTIVE",
+                last_checked_at: "2026-09-16T00:00:00Z",
+              },
+              {
+                source_id: "never-checked",
+                status: "ACTIVE",
+                last_checked_at: null,
+              },
+              {
+                source_id: "unknown-timestamp",
+                status: "DEGRADED",
+                last_checked_at: "invalid",
+              },
+              {
+                source_id: "oldest",
+                status: "DEGRADED",
+                last_checked_at: "2026-09-15T00:00:00Z",
+              },
+              {
+                source_id: "held",
+                status: "REVIEW_REQUIRED",
+                last_checked_at: null,
+              },
+            ],
+          };
+        if (path.endsWith("/run")) probes.push(options.body.sourceKey);
+        return { status: "SUCCESS" };
+      },
+    };
+    await runScheduledJob("source-health", { client, env });
+    expect(probes).toEqual([
+      "never-checked",
+      "unknown-timestamp",
+      "oldest",
+      "old",
+      "recent",
+    ]);
+  });
+
+  test("does not call any mutations for a malformed registry", async () => {
+    const paths: string[] = [];
+    const client = {
+      request: async (path: string) => {
+        paths.push(path);
+        return { sources: [{}] };
+      },
+    };
+    await expect(
+      runScheduledJob("source-health", { client, env }),
+    ).rejects.toThrow(/registry/);
+    expect(paths).toEqual(["/api/automation/registry"]);
+  });
+
+  test.each(["FAILED", "DEGRADED", "RUNNING", undefined])(
+    "fails the process for unsuccessful server status %s",
+    async (status) => {
+      await expect(
+        runScheduledJob("historical-backfill", {
+          env,
+          client: { request: async () => ({ status }) },
+        }),
+      ).rejects.toThrow(/historical-backfill/);
+    },
+  );
+
+  test("accepts an exhausted backfill without requesting a restart", async () => {
+    const payloads: any[] = [];
+    await expect(
+      runScheduledJob("historical-backfill", {
+        env,
+        client: {
+          request: async (_: string, opts: any) => {
+            payloads.push(opts.body);
+            return { status: "COMPLETE" };
+          },
+        },
+      }),
+    ).resolves.toMatchObject({ status: "COMPLETE" });
+    expect(payloads).toEqual([
+      {
+        job: "historical-backfill",
+        runId: "123",
+        runAttempt: "2",
+        commitSha: "a".repeat(40),
+      },
+    ]);
+  });
+});
+
+describe("independent workflow watchdog", () => {
+  test("records missing workflows as stale and API failures as failed, then reports all observations", async () => {
+    let report: any;
+    const observations = await collectWatchdog({
+      env,
+      now: Date.parse("2026-09-18T04:00:00Z"),
+      fetchImpl: async (url: string) => {
+        const path = String(url);
+        if (path.includes("source-health.yml"))
+          return json({ workflow_runs: [] });
+        if (path.includes("source-validation.yml")) return json({}, 503);
+        return json({
+          workflow_runs: [
+            {
+              id: 2,
+              status: "completed",
+              conclusion: "failure",
+              created_at: "2026-09-18T03:55:00Z",
+              updated_at: "2026-09-18T03:57:00Z",
+              html_url: "https://github.com/example/2",
+            },
+            {
+              id: 1,
+              status: "completed",
+              conclusion: "success",
+              created_at: "2026-09-18T03:40:00Z",
+              updated_at: "2026-09-18T03:42:00Z",
+              html_url: "https://github.com/example/1",
+            },
+          ],
+        });
+      },
+      client: {
+        request: async (_: string, options: any) => {
+          report = options.body;
+          return { status: "SUCCESS" };
+        },
+      },
+    });
+    expect(
+      observations.find((item: any) => item.workflow === "source-health.yml"),
+    ).toMatchObject({ status: "STALE", lastRun: null, lastSuccessAt: null });
+    expect(
+      observations.find(
+        (item: any) => item.workflow === "source-validation.yml",
+      ),
+    ).toMatchObject({ status: "FAILED", failureCount: 1 });
+    expect(
+      observations.find(
+        (item: any) => item.workflow === "live-source-refresh.yml",
+      ),
+    ).toMatchObject({
+      status: "FAILED",
+      failureCount: 1,
+      lastSuccessAt: "2026-09-18T03:42:00Z",
+      expectedMinutes: 15,
+    });
+    expect(report).toMatchObject({
+      job: "workflow-watchdog",
+      status: "FAILED",
+      details: { observations },
+    });
+    expect(observations).toHaveLength(5);
+  });
+
+  test("does not call a previous success healthy when no recent run exists", async () => {
+    const observations = await collectWatchdog({
+      env,
+      now: Date.parse("2026-09-18T04:00:00Z"),
+      fetchImpl: async () =>
+        json({
+          workflow_runs: [
+            {
+              id: 1,
+              status: "completed",
+              conclusion: "success",
+              created_at: "2026-09-15T00:00:00Z",
+              updated_at: "2026-09-15T00:05:00Z",
+            },
+          ],
+        }),
+      client: { request: async () => ({ status: "SUCCESS" }) },
+    });
+    expect(observations.every((item: any) => item.status === "STALE")).toBe(
+      true,
+    );
+  });
+});
+
+test("a newly queued run cannot make an old successful workflow healthy", async () => {
+  const observations = await collectWatchdog({
+    env,
+    now: Date.parse("2026-09-18T04:00:00Z"),
+    fetchImpl: async () =>
+      json({
+        workflow_runs: [
+          {
+            id: 2,
+            status: "queued",
+            conclusion: null,
+            created_at: "2026-09-18T03:59:00Z",
+            updated_at: "2026-09-18T03:59:00Z",
+          },
+          {
+            id: 1,
+            status: "completed",
+            conclusion: "success",
+            created_at: "2026-09-15T00:00:00Z",
+            updated_at: "2026-09-15T00:05:00Z",
+          },
+        ],
+      }),
+    client: { request: async () => ({ status: "SUCCESS" }) },
+  });
+  expect(observations.every((item: any) => item.status === "DEGRADED")).toBe(
+    true,
+  );
+});
+
+test.each([
+  ["live-source-refresh.yml", "2026-09-18T03:19:00Z", "STALE"],
+  ["source-health.yml", "2026-09-18T01:55:00Z", "HEALTHY"],
+])(
+  "watchdog uses the server's cadence grace for %s",
+  async (workflow, timestamp, expected) => {
+    const observations = await collectWatchdog({
+      env,
+      now: Date.parse("2026-09-18T04:00:00Z"),
+      fetchImpl: async () =>
+        json({
+          workflow_runs: [
+            {
+              id: 1,
+              status: "completed",
+              conclusion: "success",
+              created_at: timestamp,
+              updated_at: timestamp,
+            },
+          ],
+        }),
+      client: { request: async () => ({ status: "SUCCESS" }) },
+    });
+    expect(
+      observations.find((item: any) => item.workflow === workflow)?.status,
+    ).toBe(expected);
+  },
+);
+
+describe("production acceptance and reporting", () => {
+  const valid = {
+    opportunities: [
+      {
+        id: "stored-1",
+        equipmentPrediction: { label: "PREDICTED", classes: ["Excavator"] },
+      },
+    ],
+    evidenceReferences: [{ sourceUrl: "https://data.example.gov.au/record/1" }],
+    sources: [{ source_id: "source-1" }],
+    errors: [],
+    coverage: { bounded: true },
+  };
+  const clientFor = (smoke: any, storedHealth: any = {}) => ({
+    request: async (path: string) =>
+      path.endsWith("/health")
+        ? {
+            schemaVersion: 1,
+            automationVersion: "production-automation-v1",
+            ...storedHealth,
+          }
+        : path.endsWith("/summary")
+          ? { metrics: { active: 1 }, sources: { configured: 1 } }
+          : smoke,
+  });
+  test("logs only compact stored operational observations and preserves unknown metrics", async () => {
+    const result = await checkProductionSmoke({
+      client: clientFor(valid, {
+        source_counts: { ACTIVE: 3, DEGRADED: 2, DISABLED: 1 },
+        source_count_basis: "PERSISTED_REGISTRY_ONLY",
+        unobserved_sources: 7,
+        sources: [{ credentials: "private-token" }],
+        backfill: {
+          last_backfill_run: "2026-09-18T03:00:00Z",
+          records_processed: 500,
+          evidence_processed: 40,
+          pages_processed: 2,
+          duplicates_skipped: 3,
+          sources_completed: 1,
+          sources_remaining: 4,
+          metrics_basis:
+            "Acknowledged automation runs since rollout; pre-rollout unique evidence/page totals are unknown.",
+          archive_index: {
+            complete: false,
+            pagesIndexed: 9,
+            invalidRecords: 1,
+            nextToken: "private-token",
+          },
+          sources: [{ checkpoint: "private-token" }],
+        },
+        jobs: [
+          {
+            job: "live-refresh",
+            status: "FAILED",
+            health: "FAILED",
+            failure_count: 2,
+            last_run: "2026-09-18T03:01:00Z",
+            last_success_at: null,
+            details: { token: "private-token" },
+          },
+        ],
+      }),
+    });
+    expect(result.health).toMatchObject({
+      source_counts: { ACTIVE: 3, DEGRADED: 2, DISABLED: 1, CANDIDATE: null },
+      unobserved_sources: 7,
+      backfill: {
+        evidence_processed: 40,
+        pages_processed: 2,
+        archive_index: { complete: false, pagesIndexed: 9 },
+      },
+      jobs: [
+        {
+          job: "live-refresh",
+          status: "FAILED",
+          health: "FAILED",
+          last_success_at: null,
+        },
+      ],
+    });
+    expect(JSON.stringify(result)).not.toContain("private-token");
+    const unknown = await checkProductionSmoke({ client: clientFor(valid) });
+    expect(unknown.health.backfill.evidence_processed).toBeNull();
+    expect(unknown.health.unobserved_sources).toBeNull();
+  });
+
+  test("checks real API shapes and fails when loaded records have no evidence references", async () => {
+    await expect(
+      checkProductionSmoke({ client: clientFor(valid) }),
+    ).resolves.toMatchObject({
+      status: "SUCCESS",
+      opportunities: 1,
+      evidenceReferences: 1,
+    });
+    await expect(
+      checkProductionSmoke({
+        client: clientFor({ ...valid, evidenceReferences: [] }),
+      }),
+    ).rejects.toThrow(/evidence/);
+    await expect(
+      checkProductionSmoke({
+        client: clientFor({ ...valid, errors: ["storage unavailable"] }),
+      }),
+    ).rejects.toThrow(/backend/);
+  });
+
+  test("rejects malformed API and unsupported evidence references", async () => {
+    await expect(
+      checkProductionSmoke({
+        client: clientFor({ ...valid, sources: undefined }),
+      }),
+    ).rejects.toThrow(/sources/);
+    await expect(
+      checkProductionSmoke({
+        client: clientFor({ ...valid, evidenceReferences: [{}] }),
+      }),
+    ).rejects.toThrow(/evidence/);
+  });
+
+  test("records empty stored evidence honestly without manufacturing records", async () => {
+    await expect(
+      checkProductionSmoke({
+        client: clientFor({
+          ...valid,
+          opportunities: [],
+          evidenceReferences: [],
+        }),
+      }),
+    ).resolves.toMatchObject({
+      status: "SUCCESS",
+      dataStatus: "EMPTY",
+      opportunities: 0,
+    });
+  });
+
+  test("records failing browser or static checks as failed and rejects unknown outcomes", async () => {
+    let report: any;
+    const client = {
+      request: async (_: string, options: any) => {
+        report = options.body;
+        return { status: "SUCCESS" };
+      },
+    };
+    await expect(
+      reportQa({
+        env: {
+          ...env,
+          QA_STATIC_RESULT: "failure",
+          QA_API_RESULT: "success",
+          QA_BROWSER_RESULT: "success",
+        },
+        client,
+      }),
+    ).rejects.toThrow(/QA/);
+    expect(report).toMatchObject({
+      job: "deployment-qa",
+      status: "FAILED",
+      details: { authenticatedBrowser: false },
+    });
+  });
+});

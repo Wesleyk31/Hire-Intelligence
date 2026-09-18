@@ -1,0 +1,116 @@
+name: Production QA
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  deployment_status:
+  schedule:
+    - cron: "26 */6 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  acceptance:
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: "11.19.0"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint automation and check types
+        run: |
+          node scripts/automation/check-workflows.mjs
+          pnpm exec prettier --check .github/workflows scripts/automation scripts/check-automation-schema.mjs playwright.automation.config.ts tests/unit/automation-runner.test.ts tests/unit/automation-schema.test.ts tests/browser/automation-smoke.spec.ts docs/automation
+          pnpm typecheck
+      - name: Unit, collector, inference and checkpoint contracts
+        run: pnpm test
+      - name: Schema and non-destructive migration checks
+        run: node scripts/check-automation-schema.mjs
+      - name: Compile frontend using the isolated SDK verification adapter
+        run: pnpm build:verification
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Browser acceptance with isolated local fixtures
+        run: pnpm exec playwright test --config playwright.automation.config.ts
+      - name: Retain local browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: local-browser-acceptance
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  production:
+    needs: acceptance
+    if: >-
+      always() &&
+      github.repository == 'Wesleyk31/Hire-Intelligence' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'main'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: hirer-production-automation
+      cancel-in-progress: false
+      queue: max
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: "11.19.0"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Production API and stored evidence checks
+        id: api
+        run: node scripts/automation/runner.mjs production-smoke
+      - name: Install Chromium
+        if: always()
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Production public site and authentication boundary
+        id: browser
+        if: always()
+        run: pnpm exec playwright test --config playwright.automation.config.ts
+        env:
+          HI_SMOKE_TARGET: production
+      - name: Persist actual QA and E2E outcomes
+        if: always()
+        run: node scripts/automation/runner.mjs report
+        env:
+          QA_STATIC_RESULT: ${{ needs.acceptance.result }}
+          QA_API_RESULT: ${{ steps.api.outcome }}
+          QA_BROWSER_RESULT: ${{ steps.browser.outcome }}
+          QA_DATA_STATUS: ${{ steps.api.outputs.data_status }}
+      - name: Retain production browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: production-browser-smoke
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

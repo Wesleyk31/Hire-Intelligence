@@ -1,5 +1,18 @@
 # Hire Intelligence
 
+[![Production QA](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/deployment-qa.yml/badge.svg?branch=main)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/deployment-qa.yml)
+[![Source Health](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/source-health.yml/badge.svg?branch=main)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/source-health.yml)
+[![Historical Backfill](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/historical-backfill.yml/badge.svg?branch=main)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/historical-backfill.yml)
+[![E2E / Smoke Tests](https://img.shields.io/github/actions/workflow/status/Wesleyk31/Hire-Intelligence/deployment-qa.yml?branch=main&label=E2E%20%2F%20Smoke%20Tests)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/deployment-qa.yml)
+
+## Production automation
+
+GitHub Actions schedules live refresh, hourly source health, bounded historical backfill, controlled candidate validation, production QA and an independent workflow watchdog. AppDeploy stores real checkpoints, evidence and health observations. The badges show actual GitHub workflow conclusions; the E2E badge shares the QA workflow because browser checks run there. A badge does not certify every source or all production data.
+
+Production scheduling requires the workflows on `main`, the native AppDeploy backend deployed, and the old AppDeploy ingestion crons removed so all writers share GitHub concurrency. No deployment or source success is implied by this README. See [schedules and permissions](docs/automation/GITHUB_ACTIONS.md), [architecture and data integrity](docs/automation/ARCHITECTURE.md), and [cutover/recovery](docs/automation/OPERATIONS.md). Use `pnpm automation:check-schema` and `pnpm test:browser:automation` for local checks.
+
+## Earlier restoration and audit history
+
 Restored and continued locally on 16 September 2026 from `Hire-Intelligence-Codex-Ready.zip` and the exact AppDeploy baseline `1789467699311` for app `hirer-intelligence-mfj58p`.
 
 The supplied archive was a hardening overlay, not a standalone application. All 31 baseline files were retrieved, the 21 supplied handoff checksums were verified, and the baseline was saved in commit `ee19a02`. Work continues on `codex/hire-production-hardening`.
@@ -14,7 +27,7 @@ The historical-evidence continuation connects archived records to the dashboard 
 
 The 28-item hardening overlay is integrated into the application. Additional tested repairs address project identity collisions, source-date and contractor-role accuracy, ingestion during dashboard reads, report history isolation, failed report saves, session recovery and mobile sign-in layout. See [build status](docs/BUILD_STATUS.md) for verification evidence and remaining work.
 
-No deployment or GitHub push was performed. The live AppDeploy application does not acquire these local changes automatically.
+At the time of those earlier audit results, no deployment or GitHub push had been performed. The live AppDeploy application does not acquire local changes automatically.
 
 ## Install and verify
 
