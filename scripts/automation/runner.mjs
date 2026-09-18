@@ -60,13 +60,89 @@ function identity(env) {
   };
 }
 
-async function readJson(response, label) {
-  if (!response.ok) throw new Error(`${label}: HTTP ${response.status}`);
-  if (
-    !/application\/(?:[\w.+-]+\+)?json\b/i.test(
-      response.headers.get("content-type") || "",
-    )
-  ) {
+function safeFailureDetails(data, secrets = []) {
+  const redact = (value) => {
+    if (typeof value !== "string" || !value.trim()) return "";
+    let text = value;
+    for (const secret of [
+      ...secrets,
+      process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN,
+      process.env.GITHUB_TOKEN,
+    ]) {
+      if (typeof secret === "string" && secret.length > 3)
+        text = text.split(secret).join("[REDACTED]");
+    }
+    if (/unexpected (?:token|non-whitespace)|not valid JSON/i.test(text))
+      return "INVALID_JSON_RESPONSE (response excerpt omitted)";
+    text = text
+      .replace(/https?:\/\/[^\s"'<>]+/gi, "[URL omitted]")
+      .replace(
+        /\b(?:authorization|proxy-authorization|cookie|set-cookie|x-hirer-automation-token|x-api-key)\s*[:=][^\r\n]*/gi,
+        "[credential header omitted]",
+      )
+      .replace(/\b(?:bearer|basic)\s+[^\s;,]+/gi, "[credential omitted]")
+      .replace(
+        /\b(?:api[_-]?key|access[_-]?token|refresh[_-]?token|token|secret|password)\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s;,]+)/gi,
+        "[credential omitted]",
+      )
+      .replace(
+        /\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g,
+        "[JWT omitted]",
+      )
+      .replace(/[A-Za-z0-9_+/=-]{48,}/g, "[long value omitted]")
+      .replace(/<[^]*$/g, "[response markup omitted]")
+      .replace(/[\u0000-\u001f\u007f]+/g, " ");
+    return text.slice(0, 220).trim();
+  };
+  const details = [];
+  const add = (reason, source) => {
+    if (details.length >= 8) return;
+    const message = redact(reason);
+    if (!message) return;
+    const key =
+      typeof source === "string" && /^[a-z0-9][a-z0-9-]{0,119}$/.test(source)
+        ? source + ": "
+        : "";
+    details.push(key + message);
+  };
+  // Only these backend-generated diagnostics are allowed into failure logs.
+  // Never serialize headers, request bodies, records, evidence, or arbitrary error objects.
+  add(data?.failure_reason);
+  add(data?.run?.failure_reason);
+  if (Array.isArray(data?.states)) {
+    for (const state of data.states.slice(0, 20)) {
+      if (state?.status !== "SUCCESS")
+        add(state?.message || state?.failure_reason, state?.sourceKey);
+    }
+  }
+  add(data?.discovery?.failure_reason);
+  if (Array.isArray(data?.candidates)) {
+    for (const candidate of data.candidates.slice(0, 20)) {
+      if (!["SUCCESS", "ACTIVE", "VERIFIED"].includes(candidate?.status))
+        add(candidate?.failure_reason, candidate?.source_id);
+    }
+  }
+  return [...new Set(details)].join("; ").slice(0, 1900);
+}
+
+async function readJson(response, label, secrets = []) {
+  const isJson = /application\/(?:[\w.+-]+\+)?json\b/i.test(
+    response.headers.get("content-type") || "",
+  );
+  if (!response.ok) {
+    let details = "";
+    if (isJson) {
+      try {
+        details = safeFailureDetails(await response.json(), secrets);
+      } catch {
+        /* Keep HTTP failure visible if its body is invalid. */
+      }
+    }
+    throw new Error(
+      `${label}: HTTP ${response.status}${details ? " — " + details : ""}`,
+    );
+  }
+  if (!isJson) {
     throw new Error(
       `${label}: expected JSON response, received another content type`,
     );
@@ -106,7 +182,9 @@ export function createClient({ env = process.env, fetchImpl = fetch } = {}) {
       signal: AbortSignal.timeout(30_000),
       redirect: "error",
     });
-    const data = await readJson(response, "GitHub OIDC");
+    const data = await readJson(response, "GitHub OIDC", [
+      env.ACTIONS_ID_TOKEN_REQUEST_TOKEN,
+    ]);
     if (typeof data.value !== "string" || !data.value)
       throw new Error("GitHub OIDC returned no token.");
     return data.value;
@@ -126,7 +204,11 @@ export function createClient({ env = process.env, fetchImpl = fetch } = {}) {
         redirect: "error",
       });
       // Mutations are not retried here: the server owns bounded retries and checkpoints.
-      return readJson(response, path);
+      return readJson(response, path, [
+        headers["X-Hirer-Automation-Token"],
+        env.ACTIONS_ID_TOKEN_REQUEST_TOKEN,
+        env.GITHUB_TOKEN,
+      ]);
     },
   };
 }
@@ -136,8 +218,16 @@ function requireSuccess(result, job) {
     result?.status !== "SUCCESS" &&
     !(job === "historical-backfill" && result?.status === "COMPLETE")
   ) {
+    const status = ["FAILED", "DEGRADED", "RUNNING", "COMPLETE"].includes(
+      result?.status,
+    )
+      ? result.status
+      : result?.status === undefined
+        ? "MISSING"
+        : "UNKNOWN";
+    const details = safeFailureDetails(result);
     throw new Error(
-      `${job} did not succeed (status ${String(result?.status ?? "MISSING")}).`,
+      `${job} did not succeed (status ${status}).${details ? " " + details : ""}`,
     );
   }
   return result;

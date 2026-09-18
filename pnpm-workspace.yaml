@@ -1,0 +1,4 @@
+# Keep pnpm's strict build policy; approve only the pinned compiler binary installer.
+allowBuilds:
+  esbuild@0.25.12: true
+  core-js: false

@@ -86,6 +86,96 @@ describe("automation runner safety", () => {
     expect(requests).toBe(1);
   });
 
+  test("HTTP failures include bounded selected source diagnostics while omitting secrets and raw evidence", async () => {
+    const client = createClient({
+      env,
+      fetchImpl: async (url: string) =>
+        String(url).startsWith("https://oidc.")
+          ? json({ value: "short-lived-jwt" })
+          : json(
+              {
+                status: "FAILED",
+                failure_reason: "SOURCE_BATCH_FAILED short-lived-jwt",
+                run: { failure_reason: "PAGINATION_NON_INCREASING" },
+                states: [
+                  {
+                    sourceKey: "failed-feed",
+                    status: "FAILED",
+                    message:
+                      "HTTP_403 token=private-secret https://publisher.example/data?key=private-secret",
+                  },
+                  {
+                    sourceKey: "good-feed",
+                    status: "SUCCESS",
+                    message: "raw successful response",
+                  },
+                ],
+                discovery: { failure_reason: "CATALOGUE_UNAVAILABLE" },
+                candidates: [
+                  {
+                    source_id: "candidate-feed",
+                    status: "REVIEW_REQUIRED",
+                    failure_reason: "SCHEMA_CHANGED " + "details ".repeat(1000),
+                  },
+                ],
+                headers: { authorization: "private-secret" },
+                evidence: "raw evidence must not appear",
+              },
+              503,
+            ),
+    });
+    const error = await client
+      .request("/api/automation/run", { method: "POST", body: {} })
+      .catch((failure: Error) => failure);
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toContain("HTTP 503");
+    expect(error.message).toContain("SOURCE_BATCH_FAILED");
+    expect(error.message).toContain("PAGINATION_NON_INCREASING");
+    expect(error.message).toContain("failed-feed: HTTP_403");
+    expect(error.message).toContain("CATALOGUE_UNAVAILABLE");
+    expect(error.message).toContain("candidate-feed: SCHEMA_CHANGED");
+    expect(error.message).not.toMatch(
+      /private-secret|short-lived-jwt|raw evidence|raw successful|publisher\.example/,
+    );
+    expect(error.message.length).toBeLessThan(2200);
+  });
+
+  test("unsuccessful JSON status preserves concrete failure reasons even with HTTP 200", async () => {
+    await expect(
+      runScheduledJob("live-refresh", {
+        env,
+        client: {
+          request: async () => ({
+            status: "FAILED",
+            states: [
+              {
+                sourceKey: "failed-feed",
+                status: "FAILED",
+                message: "SOURCE_SCHEMA_CHANGED",
+              },
+            ],
+          }),
+        },
+      }),
+    ).rejects.toThrow("failed-feed: SOURCE_SCHEMA_CHANGED");
+  });
+
+  test("HTML error bodies stay excluded from diagnostics", async () => {
+    const client = createClient({
+      env,
+      fetchImpl: async (url: string) =>
+        String(url).startsWith("https://oidc.")
+          ? json({ value: "short-lived-jwt" })
+          : new Response("<html>private source body</html>", {
+              status: 502,
+              headers: { "content-type": "text/html" },
+            }),
+    });
+    await expect(
+      client.request("/api/automation/run", { method: "POST", body: {} }),
+    ).rejects.toThrow(/^\/api\/automation\/run: HTTP 502$/);
+  });
+
   test("health probes continue after one failed source and persist the aggregate failure", async () => {
     const mutations: any[] = [];
     const client = {
