@@ -35,6 +35,10 @@ for (const file of expected) {
       /github\.repository == 'Wesleyk31\/Hire-Intelligence'/,
     ],
     ["main branch guard", /github\.ref == 'refs\/heads\/main'/],
+    [
+      "explicit production enable control",
+      /vars\.HI_PRODUCTION_AUTOMATION_ENABLED == 'true'/,
+    ],
     ["OIDC permissions", /id-token: write/],
     ["credential-free checkout", /persist-credentials: false/],
   ])

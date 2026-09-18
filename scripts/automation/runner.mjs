@@ -7,6 +7,15 @@ export const PRODUCTION_SITE =
   "https://hirer-intelligence-mfj58p.v2.appdeploy.ai";
 const REPOSITORY = "Wesleyk31/Hire-Intelligence";
 const AUDIENCE = "hirer-intelligence-production";
+
+export class PlatformUnavailableError extends Error {
+  constructor(label) {
+    super(
+      `${label}: HTTP 402 — APP_TEMPORARILY_UNAVAILABLE. AppDeploy is blocking the application. Pause production automation and check hosting availability before resuming; no retry was attempted.`,
+    );
+    this.name = "PlatformUnavailableError";
+  }
+}
 export const MONITORED_WORKFLOWS = [
   {
     workflow: "live-source-refresh.yml",
@@ -131,13 +140,17 @@ async function readJson(response, label, secrets = []) {
   );
   if (!response.ok) {
     let details = "";
+    let data;
     if (isJson) {
       try {
-        details = safeFailureDetails(await response.json(), secrets);
+        data = await response.json();
+        details = safeFailureDetails(data, secrets);
       } catch {
         /* Keep HTTP failure visible if its body is invalid. */
       }
     }
+    if (response.status === 402 && data?.code === "APP_TEMPORARILY_UNAVAILABLE")
+      throw new PlatformUnavailableError(label);
     throw new Error(
       `${label}: HTTP ${response.status}${details ? " — " + details : ""}`,
     );
@@ -152,6 +165,25 @@ async function readJson(response, label, secrets = []) {
   } catch {
     throw new Error(`${label}: invalid JSON response`);
   }
+}
+
+// One public request verifies the running backend before obtaining an identity,
+// reading the database, scanning sources or trying to persist an outage report.
+export async function checkPlatformAvailability({ fetchImpl = fetch } = {}) {
+  const response = await fetchImpl(PRODUCTION_API + "/api/_healthcheck", {
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(30_000),
+    redirect: "error",
+  });
+  const health = await readJson(response, "AppDeploy health check");
+  if (
+    health?.message !== "Success" ||
+    health?.automationVersion !== "production-automation-v1"
+  )
+    throw new Error(
+      "AppDeploy health check returned an unexpected backend version or response.",
+    );
+  return { status: "AVAILABLE" };
 }
 
 export function createClient({ env = process.env, fetchImpl = fetch } = {}) {
@@ -282,6 +314,7 @@ export async function runScheduledJob(job, { client, env = process.env }) {
       requireSuccess(result, job);
       outcomes.push({ source_id: source.source_id, status: "SUCCESS" });
     } catch (error) {
+      if (error instanceof PlatformUnavailableError) throw error;
       outcomes.push({
         source_id: source.source_id,
         status: "FAILED",
@@ -304,10 +337,20 @@ export async function runScheduledJob(job, { client, env = process.env }) {
     }),
     "source-health report persistence",
   );
-  if (status === "FAILED")
+  if (status === "FAILED") {
+    const failures = safeFailureDetails({
+      states: outcomes
+        .filter((outcome) => outcome.status === "FAILED")
+        .map((outcome) => ({
+          sourceKey: outcome.source_id,
+          status: outcome.status,
+          message: outcome.error,
+        })),
+    });
     throw new Error(
-      `source-health failed: ${failed} failed probes; ${active.length} eligible sources.`,
+      `source-health failed: ${failed} failed probes; ${active.length} eligible sources. ${failures}`,
     );
+  }
   return { status, ...details };
 }
 
@@ -465,8 +508,12 @@ function compactStoredHealth(health) {
           "sources_remaining",
         ].map((key) => [key, count(backfill[key])]),
       ),
-      metrics_basis:
-        backfill.metrics_basis === metricsBasis ? metricsBasis : "NOT_VERIFIED",
+      metrics_basis: [
+        metricsBasis,
+        "ACKNOWLEDGED_RUNS_SINCE_AUTOMATION_ROLLOUT",
+      ].includes(backfill.metrics_basis)
+        ? backfill.metrics_basis
+        : "NOT_VERIFIED",
       archive_index: backfill.archive_index
         ? {
             complete:
@@ -593,6 +640,7 @@ export async function reportQa({ client, env = process.env }) {
         "QA report persistence",
       );
     } catch (error) {
+      if (error instanceof PlatformUnavailableError) throw error;
       errors.push(error);
     }
   }
@@ -604,7 +652,12 @@ export async function reportQa({ client, env = process.env }) {
 }
 
 export async function main(command = process.argv[2], env = process.env) {
+  if (command === "platform-check") {
+    console.log(JSON.stringify(await checkPlatformAvailability()));
+    return;
+  }
   const client = createClient({ env });
+  await checkPlatformAvailability();
   let result;
   if (command === "production-smoke") {
     result = await checkProductionSmoke({ client });

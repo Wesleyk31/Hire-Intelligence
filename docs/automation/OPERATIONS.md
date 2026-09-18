@@ -2,6 +2,21 @@
 
 The workflow implementation and a live production rollout are separate milestones. The AppDeploy deployment must contain the restricted automation routes before GitHub production jobs can succeed. A local test pass or green fixture build does not verify that deployment.
 
+## Hosting outage pause and recovery
+
+Repository variable `HI_PRODUCTION_AUTOMATION_ENABLED` must equal the literal `true` before **any** of the six production jobs can run, including manual dispatch. Missing, false or other values keep production jobs skipped. Set it to `false` under Settings > Secrets and variables > Actions > Variables to pause future production jobs. Also disable the five production-only workflows during a prolonged incident; this prevents empty scheduled runs. Keep `deployment-qa.yml` enabled for PR/main code acceptance. Running jobs are not interrupted by a variable change: inspect and allow an in-flight writer to finish before intervening in persisted state.
+
+The 19 September incident is paused. Native AppDeploy crons remain removed. Code checks and fixture browser tests continue independently; the workflow summary explicitly discloses that production was skipped. This pause is not a successful source-health observation and does not update the production database. The watchdog is paused too, so stale production timestamps during maintenance are expected.
+
+Recovery must verify service restoration rather than assume a reset time guarantees it:
+
+1. After the provider's limit reset or confirmed capacity restoration, run `node scripts/automation/runner.mjs platform-check`. This sends one public request, requires no GitHub credentials, and does not touch the database. It must exit zero with `AVAILABLE` and the expected backend version. A deployment marked ready is not sufficient.
+2. Review the hosting allowance and observed usage before restoring the original high-frequency schedules. The provider reported a 100-credit free daily allowance and a 14-credit deployment minimum. Per-operation costs were not exposed; no safe sustained ingestion rate has been verified. Do not assume a daily reset alone makes the previous workload sustainable.
+3. Keep the five production-only workflows disabled, set the variable to `true`, and manually dispatch `deployment-qa.yml` on main. Verify the real API/browser and report writes. If they fail, restore the variable to `false` and diagnose the exact failure. Code acceptance alone is insufficient.
+4. Re-enable and dispatch the production workflows individually after capacity and source issues are resolved; check persisted receipts and last-success timestamps. Re-enable the watchdog after the monitored jobs have completed. Existing failed runs remain available as incident evidence. Do not reset cursors, reseed evidence, or turn native crons back on.
+
+Each runner checks the lightweight host endpoint before accessing production state. HTTP 402 with `APP_TEMPORARILY_UNAVAILABLE` stops a source scan immediately; it does not issue a failure write to the same unavailable host. Ordinary source failures still continue through the scan, persist the aggregate, and fail with bounded, redacted source diagnostics. This is per-run protection, not automatic global re-enablement or a hosting quota bypass.
+
 ## Cutover sequence
 
 1. Run `pnpm typecheck`, `pnpm test`, `pnpm automation:check-schema`, the automation formatting/safety checks and `pnpm test:browser:automation`. The schema check is read-only static analysis; it must not be described as a live database migration.

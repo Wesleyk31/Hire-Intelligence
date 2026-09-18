@@ -6,6 +6,8 @@ import {
   collectWatchdog,
   checkProductionSmoke,
   reportQa,
+  checkPlatformAvailability,
+  PlatformUnavailableError,
 } from "../../scripts/automation/runner.mjs";
 
 const env = {
@@ -25,6 +27,111 @@ const json = (body: unknown, status = 200) =>
     status,
     headers: { "content-type": "application/json" },
   });
+
+describe("platform outage containment", () => {
+  test("checks the lightweight public backend without requesting credentials", async () => {
+    const urls: string[] = [];
+    await expect(
+      checkPlatformAvailability({
+        fetchImpl: async (url: string, options: RequestInit) => {
+          urls.push(url);
+          expect(
+            new Headers(options.headers).has("X-Hirer-Automation-Token"),
+          ).toBe(false);
+          return json({
+            message: "Success",
+            automationVersion: "production-automation-v1",
+          });
+        },
+      }),
+    ).resolves.toEqual({ status: "AVAILABLE" });
+    expect(urls).toEqual([
+      "https://api-v2.appdeploy.ai/app/hirer-intelligence-mfj58p/api/_healthcheck",
+    ]);
+  });
+
+  test("identifies the provider outage without leaking arbitrary response text", async () => {
+    const error = await checkPlatformAvailability({
+      fetchImpl: async () =>
+        json(
+          {
+            code: "APP_TEMPORARILY_UNAVAILABLE",
+            message: "private-provider-response",
+          },
+          402,
+        ),
+    }).catch((failure: Error) => failure);
+    expect(error).toBeInstanceOf(PlatformUnavailableError);
+    expect(error.message).toContain("HTTP 402");
+    expect(error.message).toContain("APP_TEMPORARILY_UNAVAILABLE");
+    expect(error.message).not.toContain("private-provider-response");
+  });
+
+  test.each([{}, { message: "Success", automationVersion: "obsolete" }])(
+    "rejects a false or stale health response",
+    async (body) => {
+      await expect(
+        checkPlatformAvailability({ fetchImpl: async () => json(body) }),
+      ).rejects.toThrow(/health/);
+    },
+  );
+
+  test("stops a source scan immediately when the host blocks requests", async () => {
+    const paths: string[] = [];
+    const client = {
+      request: async (path: string) => {
+        paths.push(path);
+        if (path.endsWith("/registry"))
+          return {
+            sources: [
+              { source_id: "one", status: "ACTIVE" },
+              { source_id: "two", status: "ACTIVE" },
+            ],
+          };
+        throw new PlatformUnavailableError("source check");
+      },
+    };
+    await expect(
+      runScheduledJob("source-health", { env, client }),
+    ).rejects.toBeInstanceOf(PlatformUnavailableError);
+    expect(paths).toEqual(["/api/automation/registry", "/api/automation/run"]);
+  });
+
+  test("does not repeat QA writes against an unavailable platform", async () => {
+    let calls = 0;
+    await expect(
+      reportQa({
+        env,
+        client: {
+          request: async () => {
+            calls++;
+            throw new PlatformUnavailableError("report");
+          },
+        },
+      }),
+    ).rejects.toBeInstanceOf(PlatformUnavailableError);
+    expect(calls).toBe(1);
+  });
+
+  test("prints the failed source and safe reason for ordinary probe failures", async () => {
+    await expect(
+      runScheduledJob("source-health", {
+        env,
+        client: {
+          request: async (path: string) => {
+            if (path.endsWith("/registry"))
+              return {
+                sources: [{ source_id: "broken-feed", status: "ACTIVE" }],
+              };
+            if (path.endsWith("/run"))
+              throw new Error("HTTP_503 token=private-value");
+            return { status: "SUCCESS" };
+          },
+        },
+      }),
+    ).rejects.toThrow(/broken-feed: HTTP_503 \[credential omitted\]/);
+  });
+});
 
 describe("automation runner safety", () => {
   test("rejects pull requests and non-main manual runs before accessing production", () => {
@@ -485,6 +592,18 @@ describe("production acceptance and reporting", () => {
         : path.endsWith("/summary")
           ? { metrics: { active: 1 }, sources: { configured: 1 } }
           : smoke,
+  });
+  test("preserves the deployed metrics basis enum", async () => {
+    const result = await checkProductionSmoke({
+      client: clientFor(valid, {
+        backfill: {
+          metrics_basis: "ACKNOWLEDGED_RUNS_SINCE_AUTOMATION_ROLLOUT",
+        },
+      }),
+    });
+    expect(result.health.backfill.metrics_basis).toBe(
+      "ACKNOWLEDGED_RUNS_SINCE_AUTOMATION_ROLLOUT",
+    );
   });
   test("logs only compact stored operational observations and preserves unknown metrics", async () => {
     const result = await checkProductionSmoke({

@@ -1,4 +1,4 @@
-name: Production QA
+name: Code checks and production QA
 
 on:
   pull_request:
@@ -12,8 +12,21 @@ on:
 permissions: {}
 
 jobs:
+  production-status:
+    if: vars.HI_PRODUCTION_AUTOMATION_ENABLED != 'true' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Disclose paused production checks
+        run: |
+          echo '### Production automation is PAUSED' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Only code acceptance is running. A green code check does not verify production health. See docs/automation/OPERATIONS.md before resuming production.' >> "$GITHUB_STEP_SUMMARY"
+
   acceptance:
-    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'main')
+    if: >-
+      (github.event_name != 'schedule' || vars.HI_PRODUCTION_AUTOMATION_ENABLED == 'true') &&
+      (github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.ref == 'main'))
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -59,6 +72,7 @@ jobs:
     needs: acceptance
     if: >-
       always() &&
+      vars.HI_PRODUCTION_AUTOMATION_ENABLED == 'true' &&
       github.repository == 'Wesleyk31/Hire-Intelligence' &&
       github.ref == 'refs/heads/main' &&
       github.event_name != 'pull_request' &&
@@ -84,20 +98,23 @@ jobs:
           node-version: "22"
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Verify the hosting platform before production checks
+        id: platform
+        run: node scripts/automation/runner.mjs platform-check
       - name: Production API and stored evidence checks
         id: api
         run: node scripts/automation/runner.mjs production-smoke
       - name: Install Chromium
-        if: always()
+        if: always() && steps.platform.outcome == 'success'
         run: pnpm exec playwright install --with-deps chromium
       - name: Production public site and authentication boundary
         id: browser
-        if: always()
+        if: always() && steps.platform.outcome == 'success'
         run: pnpm exec playwright test --config playwright.automation.config.ts
         env:
           HI_SMOKE_TARGET: production
       - name: Persist actual QA and E2E outcomes
-        if: always()
+        if: always() && steps.platform.outcome == 'success'
         run: node scripts/automation/runner.mjs report
         env:
           QA_STATIC_RESULT: ${{ needs.acceptance.result }}

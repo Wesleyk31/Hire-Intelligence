@@ -36,6 +36,10 @@ No `DATABASE_URL`, deployment token, source API key, or shared API secret belong
 
 The public frontend serves the SPA shell at unknown paths, including `/api/...`; do not use that origin for API health. The runner rejects non-JSON responses even when HTTP status is 200. It follows no redirects when sending credentials.
 
+## Production enable control
+
+All six production jobs require repository variable `HI_PRODUCTION_AUTOMATION_ENABLED` to be exactly `true`. Missing or false means skipped, including manual dispatch. PR/main acceptance remains available while production is paused. The workflow summary states when a passing code check excludes production. For a prolonged incident, disable the five production-only workflows to prevent empty scheduled runs, and retain `deployment-qa.yml` for code checks. See the hosting outage recovery procedure in OPERATIONS.md. The schedules below are configured cadence, not a claim that paused jobs are executing.
+
 ## Failure and concurrency behavior
 
 Every job has a timeout. Every production job that can mutate stored state uses `hirer-production-automation` with `cancel-in-progress: false` and `queue: max`, including QA reports and watchdog reports. The shared group runs one writer at a time and retains up to 100 pending jobs; arrivals beyond that limit are canceled. This prevents ordinary scheduled arrivals from replacing one another while a health scan runs. See [GitHub concurrency queue behavior](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency#example-queueing-multiple-pending-runs). Backend jobs remain bounded; queue overflow, canceled, stale and missing runs still need attention. Concurrency does not provide transactional database guarantees; checkpoint commits and idempotency remain backend responsibilities.
@@ -56,7 +60,7 @@ QA and E2E reports store each step's actual outcome. A failed or skipped accepta
 
 ## Deployment and operations
 
-Merging/pushing these files to the default `main` branch enables GitHub scheduling when repository Actions permissions allow it. The backend must also be deployed through the existing native AppDeploy deployment tooling. A GitHub push does not deploy AppDeploy automatically; this repository contains no fabricated deployment token or unsupported deployment API invocation.
+Merging/pushing these files to the default `main` branch makes GitHub schedules available when the workflows are enabled and repository Actions permissions allow them. Production jobs additionally require `HI_PRODUCTION_AUTOMATION_ENABLED=true`. The backend must also be deployed through the existing native AppDeploy deployment tooling. A GitHub push does not deploy AppDeploy automatically; this repository contains no fabricated deployment token or unsupported deployment API invocation.
 
 The `deployment_status` hook runs when an actual successful GitHub deployment event names `main`. AppDeploy may not emit this GitHub event, so main-push checks and the six-hour canary remain independent triggers. Dispatch Production QA after the AppDeploy deployment to verify the new backend is actually present. During deployment order transitions the API version check should fail until the production automation routes are deployed.
 

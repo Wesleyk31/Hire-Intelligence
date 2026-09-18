@@ -1,5 +1,7 @@
 # Production automation rollout — 18 September 2026
 
+**Current status, 19 September (Perth): production automation paused for a hosting outage.** AppDeploy's public backend returns HTTP 402 and the deployment service reports `CREDITS_USAGE_LIMIT_REACHED`. The incident and exact historical run evidence are recorded in [INCIDENT_2026-09-19.md](INCIDENT_2026-09-19.md). Earlier successful rollout checks below do not imply current availability.
+
 ## Architecture and implementation
 
 Hirer Intelligence remains a React/Vite/TypeScript application on AppDeploy with its existing managed key-value database. GitHub Actions invokes narrowly scoped backend operations using verified, short-lived GitHub OIDC identities bound to this repository, immutable repository/owner IDs, main, an approved workflow and run identity. No database URL, permanent production API token or source credentials were added.
@@ -56,7 +58,7 @@ AppDeploy validation initially identified missing staged backfill interfaces and
 
 ## Live workflow results and remaining limitations
 
-Final GitHub run IDs, rollout snapshot and observed database health will be recorded below after production execution. Until then, live OIDC authentication, persistent automation migration, source-health execution and backfill maintenance are NOT VERIFIED.
+Snapshot 1789694012430 was deployed. Live OIDC and bounded legacy backfill indexing succeeded in run 35294648359; source health ran and reported three failed probes. Code acceptance passed on commit 5c0441516d6dc37f79e38eb296c7110966f0e657. Production API smoke passed at 2026-09-18T01:22:41Z, then the browser received HTTP 402 at 01:23:04Z. Subsequent production jobs failed with the same hosting response. Stored checkpoints and remaining source failures cannot currently be inspected through the blocked API. See the incident report for links and recovery limits.
 
 There are no intentionally missing long-lived secrets. Runtime requirements are Actions enabled, workflow contents/id-token permissions, public provider access and AppDeploy database capacity. Provider outages and unsupported/changed legacy schemas must remain visible failures rather than being bypassed.
 
