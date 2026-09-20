@@ -1,6 +1,6 @@
 # Hire Intelligence
 
-**Production automation is paused (19 September 2026, Perth).** AppDeploy returns HTTP 402 `APP_TEMPORARILY_UNAVAILABLE`; its deployment service separately confirms `CREDITS_USAGE_LIMIT_REACHED` with a daily reset at 2026-09-19 00:00 UTC (08:00 Perth). Code acceptance can run independently. A passing code badge during the pause does **not** verify production. See the [incident evidence](docs/automation/INCIDENT_2026-09-19.md) and [recovery procedure](docs/automation/OPERATIONS.md).
+**Economy-mode recovery, 20 September 2026 (Perth).** The production API is available again, and source-probe, authentication and health-report repairs have been deployed. Schedules are reduced from 269 to 24 runs/day. See the [current recovery results](docs/automation/RECOVERY_2026-09-20.md), [original incident](docs/automation/INCIDENT_2026-09-19.md) and [operating procedure](docs/automation/OPERATIONS.md). Code-check badges alone do not verify production or source availability.
 
 [![Production QA](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/deployment-qa.yml/badge.svg?branch=main)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/deployment-qa.yml)
 [![Source Health](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/source-health.yml/badge.svg?branch=main)](https://github.com/Wesleyk31/Hire-Intelligence/actions/workflows/source-health.yml)
@@ -9,7 +9,7 @@
 
 ## Production automation
 
-When enabled, GitHub Actions schedules live refresh, hourly source health, bounded historical backfill, controlled candidate validation, production QA and a workflow watchdog. AppDeploy stores real checkpoints, evidence and health observations. The QA badge includes isolated local acceptance; its production job is skipped while paused. The E2E badge also includes fixture browser tests. Badges do not certify live source availability or all production data.
+When enabled, GitHub Actions schedules live refresh every two hours, daily source health and candidate validation, historical backfill and the watchdog every six hours, and production QA twice daily. AppDeploy stores real checkpoints, evidence and health observations. The QA badge includes isolated local acceptance; its production job is skipped while paused. The E2E badge also includes fixture browser tests. Badges do not certify live source availability or all production data.
 
 Production scheduling requires the workflows on `main`, the native AppDeploy backend deployed, and the old AppDeploy ingestion crons removed so all writers share GitHub concurrency. No deployment or source success is implied by this README. See [schedules and permissions](docs/automation/GITHUB_ACTIONS.md), [architecture and data integrity](docs/automation/ARCHITECTURE.md), and [cutover/recovery](docs/automation/OPERATIONS.md). Use `pnpm automation:check-schema` and `pnpm test:browser:automation` for local checks.
 

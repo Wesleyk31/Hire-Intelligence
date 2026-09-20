@@ -351,29 +351,77 @@ export function createAutomationRoutes(deps: Dependencies): RouterRoutes {
             const candidates = await discoverSourceCandidates();
             const outcomes = [];
             for (const candidate of candidates) {
+              // Track this invocation, never infer execution from stored checks.
+              // Validation can return a disabled or changed-contract row without probing it.
+              const attempt: {
+                started: boolean;
+                observed?: Awaited<ReturnType<typeof probeCandidate>>;
+                failure?: string;
+              } = { started: false };
               const checked = await validateSourceCandidate(
                 candidate.source_id,
-                probeCandidate,
+                async (contract) => {
+                  attempt.started = true;
+                  try {
+                    attempt.observed = await probeCandidate(contract);
+                    return attempt.observed;
+                  } catch (cause) {
+                    attempt.failure =
+                      cause instanceof Error
+                        ? cause.message.slice(0, 2000)
+                        : 'CANDIDATE_PROBE_FAILED';
+                    throw cause;
+                  }
+                },
               );
+              const accessFailure = (
+                ['accessibility', 'response_type', 'authentication'] as const
+              ).find((check) => attempt.observed?.checks?.[check] !== 'PASS');
+              const execution = !attempt.started
+                ? 'NOT_RUN'
+                : attempt.failure || accessFailure
+                  ? 'FAILED'
+                  : 'COMPLETED';
               outcomes.push({
                 source_id: checked.source_id,
                 status: checked.status,
                 checks: checked.checks,
                 review: checked.legal_review_status,
                 failure_reason: checked.failure_reason,
+                collection_blocked: checked.collection_blocked,
+                collection_hold_reason: checked.collection_hold_reason,
+                validation_execution: execution,
+                validation_failure_reason:
+                  execution === 'NOT_RUN'
+                    ? 'VALIDATION_NOT_EXECUTED:' +
+                      (checked.collection_hold_reason || checked.status)
+                    : attempt.failure ||
+                      (accessFailure
+                        ? 'VALIDATION_ACCESS_CHECK_NOT_PASSED:' + accessFailure
+                        : null),
               });
             }
             return {
               status:
-                discovery.status === 'FAILED' ||
-                outcomes.some(
-                  (row) =>
-                    !row.checks ||
-                    row.checks.accessibility !== 'PASS' ||
-                    Object.values(row.checks).includes('FAIL'),
-                )
+                discovery.status !== 'SUCCESS' ||
+                outcomes.some((row) => row.validation_execution !== 'COMPLETED')
                   ? 'FAILED'
                   : 'SUCCESS',
+              status_basis: 'VALIDATION_EXECUTION_AND_PERSISTED_DECISIONS',
+              validation_summary: {
+                candidates: outcomes.length,
+                completed: outcomes.filter(
+                  (row) => row.validation_execution === 'COMPLETED',
+                ).length,
+                failed: outcomes.filter(
+                  (row) => row.validation_execution === 'FAILED',
+                ).length,
+                not_run: outcomes.filter(
+                  (row) => row.validation_execution === 'NOT_RUN',
+                ).length,
+                held: outcomes.filter((row) => row.collection_blocked).length,
+                activated: 0,
+              },
               discovery,
               candidates: outcomes,
               activation: 'REVIEW_REQUIRED',

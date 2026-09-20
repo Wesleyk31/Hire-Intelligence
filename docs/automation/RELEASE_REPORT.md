@@ -1,6 +1,6 @@
 # Production automation rollout — 18 September 2026
 
-**Current status, 19 September (Perth): production automation paused for a hosting outage.** AppDeploy's public backend returns HTTP 402 and the deployment service reports `CREDITS_USAGE_LIMIT_REACHED`. The incident and exact historical run evidence are recorded in [INCIDENT_2026-09-19.md](INCIDENT_2026-09-19.md). Earlier successful rollout checks below do not imply current availability.
+**Historical rollout record.** The 19 September hosting outage is recorded in [INCIDENT_2026-09-19.md](INCIDENT_2026-09-19.md). Service was available again on 20 September, with repairs and economy schedules recorded in [RECOVERY_2026-09-20.md](RECOVERY_2026-09-20.md). The original schedules and checks below describe the 18 September rollout, not current cadence or availability.
 
 ## Architecture and implementation
 
