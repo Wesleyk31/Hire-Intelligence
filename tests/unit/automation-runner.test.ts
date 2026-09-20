@@ -605,6 +605,54 @@ describe("production acceptance and reporting", () => {
       "ACKNOWLEDGED_RUNS_SINCE_AUTOMATION_ROLLOUT",
     );
   });
+  test("reveals failed sources without logging endpoints, evidence or credentials", async () => {
+    const result = await checkProductionSmoke({
+      client: clientFor(valid, {
+        sources: [
+          {
+            source_id: "healthy-feed",
+            status: "ACTIVE",
+            failure_reason: null,
+            collection_blocked: false,
+          },
+          {
+            source_id: "broken-feed",
+            status: "DEGRADED",
+            collection_blocked: true,
+            consecutive_failures: 3,
+            failure_reason:
+              "HTTP_400 token=private-value https://publisher.example/api",
+            collection_hold_reason: "STRUCTURAL_FAILURE",
+            checks: { parser: "FAIL", schema: "NOT_VERIFIED" },
+            last_checked_at: "2026-09-18T00:00:00Z",
+            last_success_at: null,
+            endpoint: "private-endpoint",
+            rawEvidence: "private-evidence",
+          },
+        ],
+      }),
+    });
+    expect(result.health.source_issues).toEqual([
+      {
+        source_id: "broken-feed",
+        status: "DEGRADED",
+        collection_blocked: true,
+        consecutive_failures: 3,
+        failure_reason: "HTTP_400 [credential omitted] [URL omitted]",
+        collection_hold_reason: "STRUCTURAL_FAILURE",
+        failed_checks: ["parser"],
+        last_checked_at: "2026-09-18T00:00:00.000Z",
+        last_success_at: null,
+      },
+    ]);
+    expect(JSON.stringify(result)).not.toMatch(
+      /private-value|private-endpoint|private-evidence|publisher.example/,
+    );
+    expect(
+      (await checkProductionSmoke({ client: clientFor(valid) })).health
+        .source_issues,
+    ).toBeNull();
+  });
   test("logs only compact stored operational observations and preserves unknown metrics", async () => {
     const result = await checkProductionSmoke({
       client: clientFor(valid, {

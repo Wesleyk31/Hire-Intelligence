@@ -496,6 +496,51 @@ function compactStoredHealth(health) {
       "PERSISTED_REGISTRY_ONLY",
     ]),
     unobserved_sources: count(health.unobserved_sources),
+    source_issues: Array.isArray(health.sources)
+      ? health.sources
+          .filter(
+            (source) =>
+              typeof source?.source_id === "string" &&
+              /^[a-z0-9][a-z0-9-]{0,119}$/.test(source.source_id) &&
+              (source.failure_reason ||
+                source.collection_blocked === true ||
+                ["DEGRADED", "REVIEW_REQUIRED"].includes(source.status)),
+          )
+          .slice(0, 100)
+          .map((source) => ({
+            source_id: source.source_id,
+            status: allowedValue(source.status, [
+              "ACTIVE",
+              "DEGRADED",
+              "DISABLED",
+              "REVIEW_REQUIRED",
+              "REJECTED",
+            ]),
+            collection_blocked:
+              typeof source.collection_blocked === "boolean"
+                ? source.collection_blocked
+                : null,
+            consecutive_failures: count(source.consecutive_failures),
+            failure_reason:
+              safeFailureDetails({ failure_reason: source.failure_reason }) ||
+              null,
+            collection_hold_reason:
+              safeFailureDetails({
+                failure_reason: source.collection_hold_reason,
+              }) || null,
+            failed_checks: [
+              "accessibility",
+              "response_type",
+              "schema",
+              "parser",
+              "authentication",
+              "pagination",
+              "freshness",
+            ].filter((key) => source.checks?.[key] === "FAIL"),
+            last_checked_at: timestamp(source.last_checked_at),
+            last_success_at: timestamp(source.last_success_at),
+          }))
+      : null,
     backfill: {
       last_backfill_run: timestamp(backfill.last_backfill_run),
       ...Object.fromEntries(
