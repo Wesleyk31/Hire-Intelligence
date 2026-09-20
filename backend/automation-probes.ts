@@ -62,6 +62,46 @@ async function arcgisSchema(
     throw new Error('ARCGIS_REQUIRED_FIELDS_MISSING');
   return createHash('sha256').update(JSON.stringify(fields)).digest('hex');
 }
+async function melbournePermitSchema(source: SourceDef): Promise<string> {
+  const url = new URL(source.endpoint);
+  if (!/\/datasets\/building-permits\/records\/?$/.test(url.pathname))
+    throw new Error('ODS_SCHEMA_METADATA_INVALID');
+  url.pathname = url.pathname.replace(/\/records\/?$/, '');
+  url.search = '';
+  const metadata = await sourceJson(url.toString());
+  if (
+    metadata.dataset_id !== 'building-permits' ||
+    !Array.isArray(metadata.fields) ||
+    !metadata.fields.length
+  )
+    throw new Error('ODS_SCHEMA_METADATA_INVALID');
+  const fields: [string, string][] = metadata.fields.map((field: any) => {
+    if (
+      !field ||
+      typeof field.name !== 'string' ||
+      !field.name.trim() ||
+      typeof field.type !== 'string' ||
+      !field.type.trim()
+    )
+      throw new Error('ODS_SCHEMA_FIELDS_INVALID');
+    return [field.name, field.type];
+  });
+  const types = new Map(fields);
+  if (types.size !== fields.length)
+    throw new Error('ODS_SCHEMA_FIELDS_INVALID');
+  for (const [name, type] of [
+    ['permit_number', 'text'],
+    ['issue_date', 'date'],
+    ['address', 'text'],
+    ['desc_of_works', 'text'],
+  ]) {
+    if (!types.has(name)) throw new Error('ODS_REQUIRED_FIELDS_MISSING');
+    if (types.get(name) !== type)
+      throw new Error('ODS_SCHEMA_REQUIRED_FIELD_TYPE_INVALID');
+  }
+  fields.sort(([a], [b]) => a.localeCompare(b));
+  return createHash('sha256').update(JSON.stringify(fields)).digest('hex');
+}
 function checkedPage(page: Page) {
   if (!Array.isArray(page.rows) || page.rows.length > 100)
     throw new Error('SOURCE_PROBE_PAGE_LIMIT');
@@ -83,8 +123,26 @@ function checkedPage(page: Page) {
     )
   )
     throw new Error('SOURCE_PROBE_ROW_SCHEMA_INVALID');
-  if (new Set(page.rows.map((row) => row.externalId)).size !== page.rows.length)
-    throw new Error('PAGINATION_REPEATED_PAGE');
+}
+function canonicalEvidence(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonicalEvidence);
+  if (value && typeof value === 'object')
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, item]) => [key, canonicalEvidence(item)]),
+    );
+  return value;
+}
+function evidenceFingerprint(row: Page['rows'][number]) {
+  return createHash('sha256')
+    .update(
+      JSON.stringify([
+        row.externalId,
+        canonicalEvidence(row.originalEvidence || row.raw),
+      ]),
+    )
+    .digest('hex');
 }
 export async function probeSource(
   source: SourceDef,
@@ -93,8 +151,13 @@ export async function probeSource(
     opportunities: Array<{ sourceObservedAt?: string }>;
   }>,
 ): Promise<SourceProbeResult> {
-  const schemaVersion =
-    source.method === 'ARCGIS' ? await arcgisSchema(source) : undefined;
+  let schemaVersion =
+    source.method === 'ARCGIS'
+      ? await arcgisSchema(source)
+      : source.method === 'OPENDATASOFT' &&
+          source.key === 'melbourne-building-permits'
+        ? await melbournePermitSchema(source)
+        : undefined;
   // These two legacy methods lack a historical adapter; retain a bounded live parser probe.
   if (['QLD_TENURE', 'WFS_MATCH'].includes(source.method)) {
     const result = await collect(source);
@@ -115,6 +178,11 @@ export async function probeSource(
   const context = await prepareBackfillContext(source, 0);
   const first = await collectBackfillPage(source, 0, undefined, context);
   checkedPage(first);
+  if (
+    source.method === 'XLSX_PROJECT' &&
+    source.key === 'aemo-key-connection-information'
+  )
+    schemaVersion = first.schemaVersion;
   let rows = first.rows;
   let paginationVerified = false;
   if (!first.completed) {
@@ -127,8 +195,12 @@ export async function probeSource(
       { ...context, ...first.context },
     );
     checkedPage(second);
-    const firstIds = new Set(first.rows.map((row) => row.externalId));
-    if (second.rows.some((row) => firstIds.has(row.externalId)))
+    if (first.schemaVersion !== second.schemaVersion)
+      throw new Error('SOURCE_SCHEMA_CHANGED');
+    // One source identity can have several factual versions or component rows.
+    // Only repeated evidence across requests proves overlapping source pages.
+    const firstEvidence = new Set(first.rows.map(evidenceFingerprint));
+    if (second.rows.some((row) => firstEvidence.has(evidenceFingerprint(row))))
       throw new Error('PAGINATION_REPEATED_PAGE');
     if (
       !second.completed &&

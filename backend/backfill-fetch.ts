@@ -21,7 +21,8 @@ import {
   type WfsCheckpoint,
   type CkanResource,
 } from './source-helpers';
-import { read, utils } from 'xlsx';
+import { read, utils, type WorkBook } from 'xlsx';
+import { createHash } from 'node:crypto';
 import { extractSourceDate, inferOrganisation } from './domain-hardening';
 
 export type BackfillSource = {
@@ -51,6 +52,8 @@ export type BackfillContext = {
 };
 export type Page = {
   rows: RawRow[];
+  /** Hash of publisher-declared worksheet columns, never sampled row fields. */
+  schemaVersion?: string;
   next: number;
   completed: boolean;
   nextUrl?: string;
@@ -633,21 +636,59 @@ async function geojson(source: BackfillSource, cursor: number): Promise<Page> {
     completed: cursor + rows.length >= all.length,
   };
 }
+function kciWorkbookSchema(book: WorkBook): string {
+  const declarations: string[][] = [];
+  for (const sheet of book.SheetNames.filter(
+    (name) => !/background|disclaimer|summary|change log|glossary/i.test(name),
+  )) {
+    const table = utils.sheet_to_json<unknown[]>(book.Sheets[sheet], {
+      header: 1,
+      defval: '',
+    });
+    const header = table
+      .slice(0, 40)
+      .find((row) => row.some((value) => text(value) === 'AEMO KCI ID'));
+    if (!header) throw new Error('KCI_REQUIRED_FIELDS_MISSING');
+    const names = header.map(text).filter(Boolean);
+    if (new Set(names).size !== names.length)
+      throw new Error('KCI_SCHEMA_FIELDS_INVALID');
+    if (
+      ![
+        'AEMO KCI ID',
+        'Site Name',
+        'KCI datafile compilation date time stamp',
+        'Organisation Name',
+      ].every((name) => names.includes(name))
+    )
+      throw new Error('KCI_REQUIRED_FIELDS_MISSING');
+    declarations.push(names.sort());
+  }
+  if (!declarations.length) throw new Error('KCI_REQUIRED_FIELDS_MISSING');
+  // Sheet titles and column order can change without changing the named contract.
+  declarations.sort((a, b) =>
+    JSON.stringify(a).localeCompare(JSON.stringify(b)),
+  );
+  return createHash('sha256')
+    .update(JSON.stringify(declarations))
+    .digest('hex');
+}
 async function projectXlsx(
   source: BackfillSource,
   cursor: number,
 ): Promise<Page> {
-  const all = projectWorkbookRows(
-    source.key,
-    await workbook(source.endpoint),
-    true,
-  );
+  const book = await workbook(source.endpoint);
+  const schemaVersion =
+    source.key === 'aemo-key-connection-information'
+      ? kciWorkbookSchema(book)
+      : undefined;
+  const all = projectWorkbookRows(source.key, book, true);
   const rows = all.slice(cursor, cursor + BATCH).map((raw) => ({
     externalId: projectRecordIdentity(source.key, raw),
     raw,
   }));
   return {
     rows,
+    schemaVersion,
     next: cursor + rows.length,
     completed: cursor + rows.length >= all.length,
   };

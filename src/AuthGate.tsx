@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { auth, type AuthUser } from '@appdeploy/client';
 
 export default function AuthGate({
@@ -11,6 +11,8 @@ export default function AuthGate({
   const [user, setUser] = useState<AuthUser | null>(null);
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState('');
+  const [pending, setPending] = useState<'sign-in' | 'sign-out' | null>(null);
+  const pendingRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -34,6 +36,9 @@ export default function AuthGate({
   }, []);
 
   const signIn = async () => {
+    if (pendingRef.current) return;
+    pendingRef.current = true;
+    setPending('sign-in');
     setError('');
     try {
       const result = await auth.signIn({
@@ -52,17 +57,29 @@ export default function AuthGate({
             ? 'Sign-in was cancelled.'
             : 'Sign-in failed. Please try again.',
       );
+    } finally {
+      pendingRef.current = false;
+      setPending(null);
     }
   };
 
   const signOut = async () => {
+    if (pendingRef.current) return;
+    pendingRef.current = true;
+    setPending('sign-out');
+    setError('');
+    let signedOut = false;
     try {
       await auth.signOut();
       setUser(null);
-      onExit();
+      signedOut = true;
     } catch {
       setError('Sign-out could not be completed. Please try again.');
+    } finally {
+      pendingRef.current = false;
+      setPending(null);
     }
+    if (signedOut) onExit();
   };
 
   if (checking)
@@ -82,9 +99,18 @@ export default function AuthGate({
             outcomes, reports and source administration require an authenticated
             account.
           </p>
-          {error && <div className="auth-error">{error}</div>}
-          <button onClick={() => void signIn()}>
-            Sign in to Hire Intelligence
+          {error && (
+            <div className="auth-error" role="alert">
+              {error}
+            </div>
+          )}
+          <button
+            disabled={pending === 'sign-in'}
+            onClick={() => void signIn()}
+          >
+            {pending === 'sign-in'
+              ? 'Signing in…'
+              : 'Sign in to Hire Intelligence'}
           </button>
           <button className="secondary" onClick={onExit}>
             Return to public site
@@ -100,7 +126,12 @@ export default function AuthGate({
         <button className="public-site-button" onClick={onExit}>
           Public site
         </button>
-        <button onClick={() => void signOut()}>Sign out</button>
+        <button
+          disabled={pending === 'sign-out'}
+          onClick={() => void signOut()}
+        >
+          {pending === 'sign-out' ? 'Signing out…' : 'Sign out'}
+        </button>
       </div>
       {error && (
         <div className="auth-error" role="alert">

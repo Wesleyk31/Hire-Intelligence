@@ -5,21 +5,21 @@ import type { AutomationIdentity } from './automation-auth';
 
 export const AUTOMATION_VERSION = 'production-automation-v1';
 export const JOB_POLICIES = {
-  'live-refresh': { workflow: 'live-source-refresh.yml', expectedMinutes: 15 },
-  'source-health': { workflow: 'source-health.yml', expectedMinutes: 60 },
+  'live-refresh': { workflow: 'live-source-refresh.yml', expectedMinutes: 120 },
+  'source-health': { workflow: 'source-health.yml', expectedMinutes: 1440 },
   'historical-backfill': {
     workflow: 'historical-backfill.yml',
-    expectedMinutes: 15,
+    expectedMinutes: 360,
   },
   'source-validation': {
     workflow: 'source-validation.yml',
     expectedMinutes: 1440,
   },
-  'deployment-qa': { workflow: 'deployment-qa.yml', expectedMinutes: 360 },
-  e2e: { workflow: 'deployment-qa.yml', expectedMinutes: 360 },
+  'deployment-qa': { workflow: 'deployment-qa.yml', expectedMinutes: 720 },
+  e2e: { workflow: 'deployment-qa.yml', expectedMinutes: 720 },
   'workflow-watchdog': {
     workflow: 'workflow-watchdog.yml',
-    expectedMinutes: 30,
+    expectedMinutes: 360,
   },
 } as const;
 export type AutomationJob = keyof typeof JOB_POLICIES;

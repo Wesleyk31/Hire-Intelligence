@@ -28,6 +28,7 @@ import {
 import { recordAutomationReport } from '../../backend/automation-state';
 import { requireAutomation } from '../../backend/automation-auth';
 import { db } from '@appdeploy/sdk';
+import { checkProductionSmoke } from '../../scripts/automation/runner.mjs';
 const routes = createAutomationRoutes({
   sources: [],
   liveSources: [],
@@ -38,6 +39,32 @@ const routes = createAutomationRoutes({
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(db.list).mockImplementation(async () => ({ items: [] }));
+});
+it('health uses one checkpoint snapshot for source and aggregate metrics', async () => {
+  let cursorReads = 0;
+  vi.mocked(db.list).mockImplementation(async (table: string) => ({ items:
+    table === 'backfill_cursors' ? [{ id: 'cursor', sourceKey: 'observed-feed', cursor: 10,
+      processed: ++cursorReads === 1 ? 10 : 20, completed: false }] : [],
+  }) as never);
+  const source = { key: 'observed-feed', name: 'Observed feed', owner: 'QA', territory: 'WA',
+    sector: 'Planning', licence: 'QA only', method: 'CSV', endpoint: 'https://example.test/feed', provenance: 'https://example.test' } as any;
+  const healthRoutes = createAutomationRoutes({ sources: [source], liveSources: [], backfillSources: [source], collect: vi.fn(), runSource: vi.fn() });
+  const response = await healthRoutes['GET /api/automation/health'].at(-1)!({} as never);
+  expect(response).toMatchObject({ body: {
+    sources: [{ source_id: 'observed-feed', records_processed: 10 }],
+    backfill: { records_processed: 10 },
+  } });
+  expect(cursorReads).toBe(1);
+});
+
+it('the runner preserves the real backend explanation of legacy versus verified totals', async () => {
+  const result = await checkProductionSmoke({ client: { request: async (path: string) => {
+    if (path === '/api/public/summary') return { metrics: { active: 0 }, sources: {} };
+    const response = await routes[`GET ${path}`].at(-1)!({} as never);
+    return response?.body;
+  } } });
+  expect(result.health.backfill.metrics_basis).toContain('stored legacy counts');
+  expect(result.health.backfill.metrics_basis).toContain('pre-rollout unique totals are unknown');
 });
 it('protects every automation API with verified workflow identity', () => {
   for (const route of Object.values(routes))

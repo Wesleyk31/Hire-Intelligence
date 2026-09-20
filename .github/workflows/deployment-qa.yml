@@ -6,7 +6,7 @@ on:
     branches: [main]
   deployment_status:
   schedule:
-    - cron: "26 */6 * * *"
+    - cron: "26 */12 * * *"
   workflow_dispatch:
 
 permissions: {}

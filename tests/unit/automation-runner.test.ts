@@ -475,7 +475,7 @@ describe("independent workflow watchdog", () => {
       status: "FAILED",
       failureCount: 1,
       lastSuccessAt: "2026-09-18T03:42:00Z",
-      expectedMinutes: 15,
+      expectedMinutes: 120,
     });
     expect(report).toMatchObject({
       job: "workflow-watchdog",
@@ -540,7 +540,8 @@ test("a newly queued run cannot make an old successful workflow healthy", async 
 });
 
 test.each([
-  ["live-source-refresh.yml", "2026-09-18T03:19:00Z", "STALE"],
+  ["live-source-refresh.yml", "2026-09-18T03:19:00Z", "HEALTHY"],
+  ["live-source-refresh.yml", "2026-09-17T23:49:00Z", "STALE"],
   ["source-health.yml", "2026-09-18T01:55:00Z", "HEALTHY"],
 ])(
   "watchdog uses the server's cadence grace for %s",
@@ -686,7 +687,10 @@ describe("production acceptance and reporting", () => {
             failure_count: 2,
             last_run: "2026-09-18T03:01:00Z",
             last_success_at: null,
-            details: { token: "private-token" },
+            details: {
+              failure_reason: "SOURCE_BATCH_FAILED",
+              token: "private-token",
+            },
           },
         ],
       }),
@@ -705,6 +709,7 @@ describe("production acceptance and reporting", () => {
           status: "FAILED",
           health: "FAILED",
           last_success_at: null,
+          failure_reason: "SOURCE_BATCH_FAILED",
         },
       ],
     });

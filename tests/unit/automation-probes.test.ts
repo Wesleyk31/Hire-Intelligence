@@ -103,6 +103,93 @@ describe("read-only source health probe", () => {
       "PAGINATION_REPEATED_PAGE",
     );
   });
+  it("preserves multiple permit events with the same ID within a source page", async () => {
+    fixture.pages = [
+      page(
+        [
+          {
+            externalId: "permit-1",
+            raw: { permitnumber: "permit-1", address: "Site A" },
+          },
+          {
+            externalId: "permit-1",
+            raw: { permitnumber: "permit-1", address: "Site B" },
+          },
+        ],
+        false,
+        2,
+      ),
+      page(
+        [
+          {
+            externalId: "permit-2",
+            raw: { permitnumber: "permit-2", address: "Site C" },
+          },
+        ],
+        true,
+        3,
+      ),
+    ];
+    expect(
+      await probeSource({ ...source, method: "OPENDATASOFT" }, collect),
+    ).toMatchObject({
+      recordCount: 3,
+      checks: { parser: "PASS", pagination: "PASS", schema: "NOT_VERIFIED" },
+    });
+  });
+  it("allows factual workbook versions sharing an ID across the page boundary", async () => {
+    fixture.pages = [
+      page(
+        [
+          {
+            externalId: "N00043",
+            raw: {
+              "AEMO KCI ID": "N00043",
+              "KCI datafile compilation date time stamp": 20260101,
+            },
+          },
+        ],
+        false,
+        1,
+      ),
+      page(
+        [
+          {
+            externalId: "N00043",
+            raw: {
+              "AEMO KCI ID": "N00043",
+              "KCI datafile compilation date time stamp": 20260701,
+            },
+          },
+        ],
+        true,
+        2,
+      ),
+    ];
+    expect(
+      await probeSource({ ...source, method: "XLSX_PROJECT" }, collect),
+    ).toMatchObject({
+      recordCount: 2,
+      checks: { parser: "PASS", pagination: "PASS", schema: "NOT_VERIFIED" },
+    });
+  });
+  it("rejects repeated evidence even when publisher JSON keys or row order change", async () => {
+    fixture.pages = [
+      page(
+        [{ externalId: "one", raw: { id: "one", nested: { a: 1, b: 2 } } }],
+        false,
+        1,
+      ),
+      page(
+        [{ externalId: "one", raw: { nested: { b: 2, a: 1 }, id: "one" } }],
+        true,
+        2,
+      ),
+    ];
+    await expect(probeSource(source, collect)).rejects.toThrow(
+      "PAGINATION_REPEATED_PAGE",
+    );
+  });
   it("rejects oversized pages and non-advancing cursors before processing further results", async () => {
     fixture.pages = [
       page(Array.from({ length: 101 }, (_, index) => row(String(index)))),

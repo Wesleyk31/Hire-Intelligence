@@ -20,13 +20,17 @@ export const MONITORED_WORKFLOWS = [
   {
     workflow: "live-source-refresh.yml",
     name: "Live Source Refresh",
-    expectedMinutes: 15,
+    expectedMinutes: 120,
   },
-  { workflow: "source-health.yml", name: "Source Health", expectedMinutes: 60 },
+  {
+    workflow: "source-health.yml",
+    name: "Source Health",
+    expectedMinutes: 1440,
+  },
   {
     workflow: "historical-backfill.yml",
     name: "Historical Backfill",
-    expectedMinutes: 15,
+    expectedMinutes: 360,
   },
   {
     workflow: "source-validation.yml",
@@ -36,7 +40,7 @@ export const MONITORED_WORKFLOWS = [
   {
     workflow: "deployment-qa.yml",
     name: "Production QA",
-    expectedMinutes: 360,
+    expectedMinutes: 720,
   },
 ];
 
@@ -556,6 +560,7 @@ function compactStoredHealth(health) {
       metrics_basis: [
         metricsBasis,
         "ACKNOWLEDGED_RUNS_SINCE_AUTOMATION_ROLLOUT",
+        "Records processed include stored legacy counts. Evidence/page/duplicate totals sum observed automation counters since rollout; pre-rollout unique totals are unknown. Null means no stored observation, not zero.",
       ].includes(backfill.metrics_basis)
         ? backfill.metrics_basis
         : "NOT_VERIFIED",
@@ -592,6 +597,7 @@ function compactStoredHealth(health) {
             last_run: timestamp(job.last_run),
             last_success_at: timestamp(job.last_success_at),
             failure_count: count(job.failure_count),
+            failure_reason: safeFailureDetails(job.details) || null,
           }))
       : null,
   };

@@ -2,7 +2,7 @@ name: Live Source Refresh
 
 on:
   schedule:
-    - cron: "3,18,33,48 * * * *"
+    - cron: "3 */2 * * *"
   workflow_dispatch:
 
 permissions: {}

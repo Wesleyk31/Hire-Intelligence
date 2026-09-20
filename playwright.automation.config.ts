@@ -7,6 +7,7 @@ export default defineConfig({
     ? ["automation-smoke.spec.ts"]
     : [
         "workflows.spec.ts",
+        "auth-transitions.spec.ts",
         "source-health.spec.ts",
         "source-diagnostics.spec.ts",
         "evidence-eligibility.spec.ts",

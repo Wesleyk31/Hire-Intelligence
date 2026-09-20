@@ -2,15 +2,16 @@
 
 ## Test 1 - Public site is aggregate-only and operational workspace requires sign-in [sanity]
 Viewport: desktop
-Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, GET /api/public/summary, protected GET /api/dashboard
+Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, sign-in/out transitions, duplicate authentication actions, GET /api/public/summary, protected GET /api/dashboard
 Description: Verifies public marketing pages remain usable without leaking project-level intelligence and the operational workspace is gated by authentication.
 
 Steps:
 1. Open the public homepage and navigate through Products, Solutions, Industries, Insights and About
 2. Confirm public Insights shows aggregate project-signal, source and regional counts but no canonical project names, contractor names, CRM records or evidence provenance
 3. Click Log in / Explore the platform and confirm a secure-workspace sign-in gate appears before Decision Desk; after authenticating, confirm Decision Desk loads
+4. Sign out and confirm the public site returns and the workspace requires sign-in again. Repeated clicks during a pending authentication action must not create competing sign-in windows or duplicate sign-out actions; a cancelled sign-in must allow another attempt
 
-Expected: Public pages are aggregate-only; project-level workspace data is not returned until authenticated; successful sign-in opens the operational platform.
+Expected: Public pages are aggregate-only; project-level workspace data is not returned until authenticated; successful sign-in opens the operational platform and sign-out restores the gate; authentication actions remain retryable without duplicate pending operations.
 
 ## Test 2 - Internal modules use corrected entity roles, current lifecycle evidence and CALL NOW gating
 Viewport: desktop

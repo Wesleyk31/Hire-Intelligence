@@ -2,7 +2,7 @@ name: Source Health
 
 on:
   schedule:
-    - cron: "11 * * * *"
+    - cron: "11 1 * * *"
   workflow_dispatch:
 
 permissions: {}

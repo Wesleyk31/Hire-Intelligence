@@ -1,0 +1,264 @@
+{
+  "at": "2026-09-20T01:23:32.968Z",
+  "mode": "Read-only official public responses through actual production probe modules; no SDK, handlers, writes, or reduced page limits",
+  "results": [
+    {
+      "key": "melbourne-building-permits",
+      "endpoint": "https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/building-permits/records?limit=40&order_by=issue_date%20desc",
+      "result": {
+        "recordCount": 200,
+        "schemaVersion": "a8523300fe4b91f47facbd2404015b3635e19d75b6a3a1954446f5e701d29a96",
+        "lastRecordTimestamp": "2026-09-07T00:00:00.000Z",
+        "checks": {
+          "accessibility": "PASS",
+          "response_type": "PASS",
+          "parser": "PASS",
+          "authentication": "PASS",
+          "schema": "PASS",
+          "pagination": "PASS",
+          "freshness": "NOT_VERIFIED"
+        }
+      }
+    },
+    {
+      "key": "aemo-key-connection-information",
+      "endpoint": "https://www.aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/generation_information/2026/kci-datafile-compiled-nem.xlsx?rev=2c020fb4f0d849ae9cfbd76bb0c670e7&sc_lang=en",
+      "result": {
+        "recordCount": 200,
+        "schemaVersion": "8b4cf6ecaedc9230b53fc06acba6015b827c471c9fb32d4ccefde42b185df12e",
+        "lastRecordTimestamp": "2026-03-31T00:00:00.000Z",
+        "checks": {
+          "accessibility": "PASS",
+          "response_type": "PASS",
+          "parser": "PASS",
+          "authentication": "PASS",
+          "schema": "PASS",
+          "pagination": "PASS",
+          "freshness": "NOT_VERIFIED"
+        }
+      }
+    }
+  ],
+  "paginationEvidence": [
+    {
+      "key": "melbourne-building-permits",
+      "first": {
+        "rows": 100,
+        "uniqueIds": 85,
+        "duplicateIdentityCount": 12,
+        "duplicateExamples": [
+          {
+            "id": "7862922742571",
+            "positions": [
+              5,
+              6,
+              7
+            ],
+            "distinctVersions": 3,
+            "changedFields": [
+              "address"
+            ]
+          },
+          {
+            "id": "9854418644814",
+            "positions": [
+              14,
+              15
+            ],
+            "distinctVersions": 2,
+            "changedFields": [
+              "address"
+            ]
+          }
+        ]
+      },
+      "second": {
+        "rows": 100,
+        "uniqueIds": 69,
+        "duplicateIdentityCount": 23,
+        "duplicateExamples": [
+          {
+            "id": "9257216165729",
+            "positions": [
+              5,
+              6
+            ],
+            "distinctVersions": 2,
+            "changedFields": [
+              "issue_date",
+              "address",
+              "permit_certificate_type"
+            ]
+          },
+          {
+            "id": "4442118076703",
+            "positions": [
+              16,
+              17
+            ],
+            "distinctVersions": 2,
+            "changedFields": [
+              "address"
+            ]
+          }
+        ]
+      },
+      "overlapIds": [],
+      "identicalPage": false,
+      "next": 100,
+      "secondNext": 200,
+      "completed": false,
+      "secondCompleted": false
+    },
+    {
+      "key": "aemo-key-connection-information",
+      "first": {
+        "rows": 100,
+        "uniqueIds": 46,
+        "duplicateIdentityCount": 29,
+        "duplicateExamples": [
+          {
+            "id": "N00001",
+            "positions": [
+              0,
+              1
+            ],
+            "distinctVersions": 2,
+            "changedFields": [
+              "KCI datafile compilation date time stamp",
+              "TNSP Connection Enquiry / Application ID",
+              "KCI received in / under NER",
+              "KCI data – Connection Applicant Notification Date",
+              "KCI data – TNSP Validation Date",
+              "Site Location Description",
+              "Maximum power generation (Upper estimate)",
+              "Latest expected forecast completion Date",
+              "Number of individual Generating Units [3] (Upper estimate)",
+              "Maximum power generation (Upper estimate)3",
+              "Maximum power generation (Lower estimate)",
+              "Number of individual Generating Units [2] (Lower estimate)"
+            ]
+          },
+          {
+            "id": "N00004",
+            "positions": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "distinctVersions": 4,
+            "changedFields": [
+              "KCI datafile compilation date time stamp",
+              "TNSP Connection Enquiry / Application ID",
+              "KCI received in / under NER",
+              "KCI data – Connection Applicant Notification Date",
+              "KCI data – TNSP Validation Date",
+              "Corresponding Connection Enquiry / Application Activity Status",
+              "ACN",
+              "Site Location Description",
+              "Maximum power generation (Lower estimate)",
+              "*Earliest expected forecast completion Date",
+              "Latest expected forecast completion Date",
+              "Energy Conversion Technology Sub Type (if known)",
+              "Number of individual Generating Units [2] (Lower estimate)",
+              "Number of individual Generating Units [3] (Upper estimate)",
+              "Maximum power generation (Lower estimate)2",
+              "Maximum power generation (Upper estimate)3",
+              "Nameplate Capacity (Lower estimate)",
+              "Nameplate Capacity (Upper estimate)",
+              "Maximum power generation (Upper estimate)"
+            ]
+          }
+        ]
+      },
+      "second": {
+        "rows": 100,
+        "uniqueIds": 48,
+        "duplicateIdentityCount": 27,
+        "duplicateExamples": [
+          {
+            "id": "N00043",
+            "positions": [
+              0,
+              1
+            ],
+            "distinctVersions": 2,
+            "changedFields": [
+              "KCI datafile compilation date time stamp",
+              "TNSP Connection Enquiry / Application ID",
+              "KCI data – Connection Applicant Notification Date",
+              "KCI data – TNSP Validation Date",
+              "Organisation Name",
+              "ABN",
+              "Site Location Description",
+              "Maximum power generation (Lower estimate)",
+              "Maximum power generation (Upper estimate)",
+              "Latest expected forecast completion Date",
+              "Number of individual Generating Units [2] (Lower estimate)",
+              "Number of individual Generating Units [3] (Upper estimate)",
+              "Maximum power generation (Upper estimate)3",
+              "Nameplate Capacity (Upper estimate)",
+              "Maximum power generation (Lower estimate)2",
+              "Nameplate Capacity (Lower estimate)"
+            ]
+          },
+          {
+            "id": "N00044",
+            "positions": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "distinctVersions": 6,
+            "changedFields": [
+              "KCI datafile compilation date time stamp",
+              "TNSP Connection Enquiry / Application ID",
+              "KCI received in / under NER",
+              "KCI data – Connection Applicant Notification Date",
+              "KCI data – TNSP Validation Date",
+              "Organisation Name",
+              "ABN",
+              "ACN",
+              "Site Name",
+              "Site Location Description",
+              "Maximum power generation (Lower estimate)",
+              "Maximum power generation (Upper estimate)",
+              "*Earliest expected forecast completion Date",
+              "Latest expected forecast completion Date",
+              "Energy Conversion Technology Type",
+              "Energy Conversion Technology Sub Type (if known)",
+              "Number of individual Generating Units [2] (Lower estimate)",
+              "Number of individual Generating Units [3] (Upper estimate)",
+              "Maximum power generation (Lower estimate)2",
+              "Maximum power generation (Upper estimate)3",
+              "Nameplate Capacity (Lower estimate)",
+              "Nameplate Capacity (Upper estimate)"
+            ]
+          }
+        ]
+      },
+      "overlapIds": [
+        "N00043"
+      ],
+      "identicalPage": false,
+      "next": 100,
+      "secondNext": 200,
+      "completed": false,
+      "secondCompleted": false
+    }
+  ],
+  "codeHashes": {
+    "automation-probes": "0c4df01c3dafd64230c408a90f8606f0e246421fa8fe07ede6b6d5336cc56f31",
+    "backfill-fetch": "d00aa0884384f2aed8b8a3fe1e92a837888b6bb367ed3fe36016cf8a72b7834a"
+  },
+  "verification": {
+    "unitTests": 443,
+    "testFiles": 35,
+    "backendTypecheck": "PASS",
+    "regression": "Both false-positive fixtures failed before repair; full real-adapter hold-recovery regression passes, including preserved schema-change hold."
+  }
+}

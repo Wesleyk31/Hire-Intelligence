@@ -109,9 +109,13 @@ export function createAutomationRoutes(deps: Dependencies): RouterRoutes {
   const configured = [
     ...new Map(deps.sources.map((source) => [source.key, source])).values(),
   ];
-  async function registry() {
+  async function registry(
+    backfillMetrics?: Awaited<ReturnType<typeof getBackfillAutomationMetrics>>,
+  ) {
     const stored = await readSourceRegistry(configured);
-    const metrics = await getBackfillAutomationMetrics(deps.backfillSources);
+    const metrics =
+      backfillMetrics ??
+      (await getBackfillAutomationMetrics(deps.backfillSources));
     return configured.map((source) => {
       const backfill = metrics.sources.find(
         (row) => row.source_id === source.key,
@@ -142,7 +146,10 @@ export function createAutomationRoutes(deps: Dependencies): RouterRoutes {
     'GET /api/automation/health': [
       requireAutomation,
       async () => {
-        const sources = await registry();
+        const backfill = await getBackfillAutomationMetrics(
+          deps.backfillSources,
+        );
+        const sources = await registry(backfill);
         const candidates = await readSourceCandidates(),
           discovery = await getSourceDiscoveryStatus();
         const observed = [
@@ -173,7 +180,7 @@ export function createAutomationRoutes(deps: Dependencies): RouterRoutes {
           source_count_basis: 'PERSISTED_REGISTRY_ONLY',
           unobserved_sources: sources.filter((source) => !source.observed)
             .length,
-          backfill: await getBackfillAutomationMetrics(deps.backfillSources),
+          backfill,
           candidates,
           discovery,
         });
