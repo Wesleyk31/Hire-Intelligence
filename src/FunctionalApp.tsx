@@ -151,6 +151,7 @@ type Dashboard = {
   };
   coverage: string;
   universe?: {
+    windowRecordLimit?: number;
     nextCursor?: string;
     windowOnly?: boolean;
     disclosure?: string;
@@ -538,6 +539,7 @@ export default function FunctionalApp() {
       await api.post('/api/pilot/outcomes', {
         ...Object.fromEntries(new FormData(form).entries()),
         evidenceCursor: submittedCursor,
+        evidenceWindowRecords: dashboard?.universe?.windowRecordLimit ?? 250,
       });
       if (!stillCurrent()) return;
       setMessage('Measured human-entered BDM outcome recorded.');

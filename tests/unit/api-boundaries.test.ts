@@ -114,11 +114,11 @@ it('rejects invalid evidence limits and unknown pilots without storage or networ
 });
 
 it('validates CRM linkage against the selected later evidence window and rejects malformed cursors', async () => {
-  const rows = Array.from({ length: 1501 }, (_, i) => ({
+  const rows = Array.from({ length: 251 }, (_, i) => ({
     id: 'qa-' + i,
     externalId: 'stable-' + i,
     sourceKey: 'qa-source',
-    project: i === 1500 ? 'QA Later Window Bridge' : 'QA First Window Bridge',
+    project: i === 250 ? 'QA Later Window Bridge' : 'QA First Window Bridge',
     location: 'Perth WA',
     company: '',
     description: 'Bridge approval',
@@ -180,6 +180,90 @@ it('validates CRM linkage against the selected later evidence window and rejects
   expect(bad.statusCode).toBe(400);
   expect(doubles.add).not.toHaveBeenCalled();
 });
+
+it.each([250, 100, 25, 1])(
+  'revalidates a displayed CRM project within its selected %s-record evidence window',
+  async (evidenceWindowRecords) => {
+    const base = {
+      sourceKey: 'qa-source',
+      location: 'Perth WA',
+      company: '',
+      description: 'Bridge approval',
+      value: 'Not stated',
+      sourceObservedAt: '2026-08-01',
+      observedAt: '2026-09-16',
+      provenance: 'https://example.test/qa',
+    };
+    const rows = Array.from({ length: 251 }, (_, index) => ({
+      ...base,
+      id: 'scope-' + index,
+      externalId: 'scope-' + index,
+      project:
+        index === 0
+          ? 'Pilbara Rail Expansion'
+          : index === 250
+            ? 'Pilbara Rail'
+            : 'Unrelated' + index,
+    }));
+    doubles.list.mockImplementation(async (table, options: any = {}) => {
+      if (table !== 'opportunities') return { items: [], nextToken: undefined };
+      const start = Number(options.nextToken || 0);
+      const end = start + options.limit;
+      return {
+        items: rows.slice(start, end),
+        nextToken: end < rows.length ? String(end) : undefined,
+      } as any;
+    });
+    const dashboard = JSON.parse(
+      (
+        await routes['GET /api/dashboard'][1]({
+          user: { userId: 'qa-a' },
+          query: {},
+        })
+      ).body,
+    );
+    expect(dashboard.universe.windowRecordLimit).toBe(250);
+    const selected = dashboard.projects.find(
+      (project: { name: string }) => project.name === 'Pilbara Rail Expansion',
+    );
+    expect(selected.id).toBe('perth-wa:expansion-pilbara-rail');
+    doubles.list.mockClear();
+    const saved = await routes['POST /api/pilot/outcomes'][1]({
+      user: { userId: 'qa-a' },
+      body: {
+        projectId: selected.id,
+        result: 'CONTACTED',
+        evidenceWindowRecords,
+      },
+    });
+    expect(saved.statusCode).toBe(201);
+    expect(doubles.list).toHaveBeenCalledWith('opportunities', {
+      limit: evidenceWindowRecords,
+      nextToken: undefined,
+    });
+    expect(doubles.add).toHaveBeenCalledWith('pilot_outcomes:qa-a', [
+      expect.objectContaining({ projectId: selected.id }),
+    ]);
+  },
+);
+
+it.each([0, -1, 2, 1.5, 1500, '250', null, [], {}])(
+  'rejects an invalid CRM evidence window record limit %j before storage access',
+  async (evidenceWindowRecords) => {
+    const response = await routes['POST /api/pilot/outcomes'][1]({
+      user: { userId: 'qa-a' },
+      body: {
+        projectId: 'perth-wa:expansion-pilbara-rail',
+        result: 'CONTACTED',
+        evidenceWindowRecords,
+      },
+    });
+    expect(response.statusCode).toBe(400);
+    expect(doubles.list).not.toHaveBeenCalled();
+    expect(doubles.add).not.toHaveBeenCalled();
+    expect(doubles.update).not.toHaveBeenCalled();
+  },
+);
 
 it('public aggregates exclude held evidence without exposing raw records', async () => {
   const base = {

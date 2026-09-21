@@ -292,7 +292,16 @@ function validateBatch<T>(items: T[], limit: number): T[] {
  * Counts, ranking inputs and deduplication apply to this window only. Continuation
  * tokens are positions in a changing store, not a frozen all-time export.
  */
-export async function loadEvidenceUniverse(cursor?: string) {
+export async function loadEvidenceUniverse(
+  cursor?: string,
+  maxRecords = MAX_WINDOW_RECORDS,
+) {
+  if (
+    !Number.isSafeInteger(maxRecords) ||
+    maxRecords < 1 ||
+    maxRecords > MAX_WINDOW_RECORDS
+  )
+    throw new Error('INVALID_EVIDENCE_WINDOW_LIMIT');
   const state = decodeWindowCursor(cursor);
   const merged = new Map<string, OperationalEvidence>();
   let duplicateRecords = 0;
@@ -309,10 +318,10 @@ export async function loadEvidenceUniverse(cursor?: string) {
     liveRequests = 0;
   while (
     !state.live.done &&
-    liveLoaded < MAX_WINDOW_RECORDS &&
+    liveLoaded < maxRecords &&
     liveRequests < MAX_REQUESTS
   ) {
-    const limit = Math.min(500, MAX_WINDOW_RECORDS - liveLoaded);
+    const limit = Math.min(500, maxRecords - liveLoaded);
     const page = await db.list<IntelligenceEvidence>('opportunities', {
       limit,
       nextToken: state.live.token,
@@ -358,7 +367,7 @@ export async function loadEvidenceUniverse(cursor?: string) {
   state.archive.pending = [];
 
   while (
-    archiveRecordsLoaded < MAX_WINDOW_RECORDS &&
+    archiveRecordsLoaded < maxRecords &&
     archivePagesRead < MAX_ARCHIVE_PAGES
   ) {
     if (!queue.length) {
@@ -397,7 +406,7 @@ export async function loadEvidenceUniverse(cursor?: string) {
     const events = current.record.events;
     const end = Math.min(
       events.length,
-      current.offset + MAX_WINDOW_RECORDS - archiveRecordsLoaded,
+      current.offset + maxRecords - archiveRecordsLoaded,
     );
     for (let index = current.offset; index < end; index++) {
       archiveRecordsLoaded++;

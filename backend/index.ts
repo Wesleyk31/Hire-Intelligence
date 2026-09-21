@@ -30,6 +30,7 @@ import {
 import { router, json, error, db, type RouterRoutes } from '@appdeploy/sdk';
 import { createOwnerAccessRoutes, denyDirectOwnerAccess } from './owner-access';
 import { createOwnerWorkspaceDispatch } from './owner-workspace';
+import { boundedDashboardResponse } from './dashboard-response';
 import { read, utils } from 'xlsx';
 import { getBackfillStatus } from './backfill';
 import {
@@ -1848,13 +1849,17 @@ function currentSourceStates(saved: SourceState[]): SourceState[] {
   });
 }
 
-async function buildDashboardV2(userId: string, cursor?: string) {
+async function buildDashboardV2(
+  userId: string,
+  cursor?: string,
+  windowRecords = 250,
+) {
   const backfill = await getBackfillStatus(BACKFILL_SOURCES);
   const s = await listBounded<SourceState>('source_states', {
     pageSize: 100,
     maxItems: 500,
   });
-  const o = await loadEvidenceUniverse(cursor);
+  const o = await loadEvidenceUniverse(cursor, windowRecords);
   const p = await listBounded<PilotOutcome>(`pilot_outcomes:${userId}`, {
     pageSize: 250,
     maxItems: 1000,
@@ -1946,6 +1951,7 @@ async function buildDashboardV2(userId: string, cursor?: string) {
           : 'Sources configured · refresh required',
     universe: {
       ...o.coverage,
+      windowRecordLimit: windowRecords,
       nextCursor: o.nextCursor,
       outcomesLoaded: p.items.length,
       outcomesTruncated: p.truncated,
@@ -2057,8 +2063,8 @@ const routes: RouterRoutes = {
     denyDirectOwnerAccess,
     async (ctx) => {
       try {
-        return json(
-          await buildDashboardV2(ctx.user!.userId, ctx.query?.cursor),
+        return await boundedDashboardResponse((windowRecords) =>
+          buildDashboardV2(ctx.user!.userId, ctx.query?.cursor, windowRecords),
         );
       } catch (cause) {
         if (
@@ -2249,10 +2255,18 @@ const routes: RouterRoutes = {
         typeof b.evidenceCursor !== 'string'
       )
         return error('Invalid evidence cursor', 400);
+      const windowRecords =
+        b.evidenceWindowRecords === undefined ? 250 : b.evidenceWindowRecords;
+      if (
+        typeof windowRecords !== 'number' ||
+        ![250, 100, 25, 1].includes(windowRecords)
+      )
+        return error('Invalid evidence window size', 400);
       let opportunityPage;
       try {
         opportunityPage = await loadEvidenceUniverse(
           b.evidenceCursor as string | undefined,
+          windowRecords,
         );
       } catch (cause) {
         if (

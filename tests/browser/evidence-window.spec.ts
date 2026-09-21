@@ -7,7 +7,7 @@ test('later evidence windows support project review and CRM linkage, then return
   const later={...project,id:'later-project',name:'QA Later Archive Project'};
   await page.route('**/__qa/api/dashboard**',route=>{
     const cursor=new URL(route.request().url()).searchParams.get('cursor');
-    return route.fulfill({json:cursor?{...base,projects:[later],universe:{loaded:1,truncated:false,windowOnly:true}}:base});
+    return route.fulfill({json:cursor?{...base,projects:[later],universe:{loaded:1,truncated:false,windowOnly:true,windowRecordLimit:25}}:base});
   });
   await page.getByRole('button',{name:'Next evidence window',exact:true}).click();
   await expect(page.getByText('Evidence window 2', {exact:false})).toBeVisible();
@@ -18,7 +18,7 @@ test('later evidence windows support project review and CRM linkage, then return
   await page.locator('select[name="projectId"]').selectOption(later.id);
   await page.locator('select[name="result"]').selectOption('CONTACTED');
   await page.getByRole('button',{name:'Record outcome'}).click();
-  await expect.poll(()=>audit.mutations.some(m=>m.path==='/api/pilot/outcomes'&&m.data.evidenceCursor==='next-window'&&m.data.projectId===later.id)).toBe(true);
+  await expect.poll(()=>audit.mutations.some(m=>m.path==='/api/pilot/outcomes'&&m.data.evidenceCursor==='next-window'&&m.data.evidenceWindowRecords===25&&m.data.projectId===later.id)).toBe(true);
   await page.getByRole('button',{name:'Previous evidence window',exact:true}).click();
   await expect(page.getByText('Evidence window 1', {exact:false})).toBeVisible();
   await expect(page.locator('select[name="projectId"]')).toContainText(project.name);

@@ -96,7 +96,7 @@ it('skips malformed and mixed-source archive rows and exposes the rejected count
 it('bounds archived event scanning and declares that additional archived records exist', async () => {
   memory.tables.evidence_pages=Array.from({length:16},(_,p)=>archive(Array.from({length:100},(_,i)=>evidence({externalId:String(p*100+i)}))));
   const result=await call('GET /api/dashboard');
-  expect(result.data.universe.archiveRecordsLoaded).toBe(1500);
+  expect(result.data.universe.archiveRecordsLoaded).toBe(250);
   expect(result.data.universe.archiveTruncated).toBe(true);
   expect(result.data.universe.truncated).toBe(true);
 });

@@ -26,3 +26,8 @@ durable 15-minute budget per trusted gateway IP; SDK storage has no atomic
 compare-and-swap, so this is best-effort under concurrent requests. Database
 quota errors retain HTTP 429 without exposing dependency details or retrying.
 Password reset requires replacing the encrypted secret through the same secure flow.
+
+The dashboard starts with 250 live and 250 archived evidence records per window.
+It reduces that window when necessary to keep the serialized response below
+5 MiB, leaving room within the hosting limit. Pagination continues from the
+chosen window without dropping records. CRM validation uses that same window size.
