@@ -8,6 +8,7 @@ export default defineConfig({
     : [
         "workflows.spec.ts",
         "auth-transitions.spec.ts",
+        "owner-access.spec.ts",
         "source-health.spec.ts",
         "source-diagnostics.spec.ts",
         "evidence-eligibility.spec.ts",

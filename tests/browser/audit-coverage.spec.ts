@@ -130,7 +130,7 @@ test('map filters, region jumps, selection and full project pathway', async ({ p
 
 test('dashboard failure exposes retry and recovers real page content', async ({ page }) => {
   const flags = { failDashboard: true }; const state = await setupAudit(page, flags);
-  await page.goto('/#platform/projects'); await page.getByRole('button', {name: 'Sign in to Hire Intelligence'}).click();
+  await page.goto('/#platform/projects'); await page.getByLabel('Password', { exact: true }).fill('fixture-password-only'); await page.getByRole('button', {name: 'Sign in to Hire Intelligence'}).click();
   await expect(page.getByText('Hire Intelligence could not load.')).toBeVisible();
   flags.failDashboard = false; await page.getByRole('button', {name: 'Retry dashboard'}).click();
   await expect(page.locator('button.hi-table-row')).toHaveCount(3);

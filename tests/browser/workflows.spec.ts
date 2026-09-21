@@ -47,6 +47,7 @@ async function setup(page: Page, flags = { failHistory: false, failSave: false }
 }
 async function signIn(page: Page) {
   await page.goto('/#platform/decision-desk');
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
   await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
   await expect(page.getByRole('heading', { name: 'Decision Desk', exact: true })).toBeVisible();
 }
@@ -87,7 +88,7 @@ test('project drawer and map show provenance and unique mapped projects', async 
   expect(state.errors).toEqual([]);
 });
 
-test('CRM guardrail, durable report history, account separation and PDF download', async ({ page }) => {
+test('CRM guardrail, durable owner report history, sign-out boundary and PDF download', async ({ page }) => {
   const state = await setup(page);
   await signIn(page);
   await page.getByRole('link', { name: 'CRM', exact: true }).click();
@@ -110,11 +111,13 @@ test('CRM guardrail, durable report history, account separation and PDF download
   await download.saveAs(pdfPath);
   expect((await readFile(pdfPath)).subarray(0, 5).toString()).toBe('%PDF-');
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await page.evaluate(() => sessionStorage.setItem('hire-test-actor', 'qa-b'));
+  await page.goto('/#platform/reports');
+  await expect(page.getByRole('heading', { name: 'Secure workspace' })).toBeVisible();
+  await expect(page.getByText('Executive Intelligence Report', { exact: true })).toHaveCount(0);
   await signIn(page);
   await page.getByRole('link', { name: 'Reports', exact: true }).click();
-  await expect(page.getByText('No report snapshots generated yet.')).toBeVisible();
-  expect(state.histories['qa-b'] || []).toHaveLength(0);
+  await expect(page.getByText('Executive Intelligence Report', { exact: true }).first()).toBeVisible();
+  expect(state.histories['qa-a'].length).toBeGreaterThan(0);
   expect(state.errors).toEqual([]);
 });
 

@@ -38,6 +38,13 @@ test("production public home loads and workspace retains its authentication boun
   await expect(
     page.getByRole("button", { name: "Sign in to Hire Intelligence" }),
   ).toBeVisible();
+  await expect(page.getByLabel("Username", { exact: true })).toHaveValue(
+    "hireowner",
+  );
+  await expect(page.getByLabel("Password", { exact: true })).toHaveAttribute(
+    "type",
+    "password",
+  );
   await expect(page.locator(".hi-page-head")).toHaveCount(0);
   const protectedData = await request.get(
     "https://api-v2.appdeploy.ai/app/hirer-intelligence-mfj58p/api/dashboard",

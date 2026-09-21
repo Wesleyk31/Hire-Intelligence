@@ -4,7 +4,7 @@ import SourceHealth from './SourceHealth';
 import EvidenceExplorer from './EvidenceExplorer';
 import SourcePilotPanel from './SourcePilotPanel';
 import { FormEvent, lazy, useEffect, useMemo, useRef, useState } from 'react';
-import { api } from '@appdeploy/client';
+import { api } from './workspace-client';
 import {
   Activity,
   BarChart3,

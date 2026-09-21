@@ -22,6 +22,7 @@ test('loads workspace, map and PDF code only when their workflows are used', asy
   await page.goto('/#platform/decision-desk');
   await expect(page.getByRole('heading', { name: 'Secure workspace' })).toBeVisible();
   expect(requested.filter(url => operationalModule.test(url))).toEqual([]);
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
   await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
   await expect(page.getByRole('heading', { name: 'Decision Desk', exact: true })).toBeVisible();
   expect(requested.some(url => operationalModule.test(url))).toBe(true);
@@ -59,7 +60,8 @@ test('slow workspace and map modules show loading states before rendering', asyn
   await page.route(operationalModule, async route => { await workspace.pending; await route.continue(); });
   await page.goto('/#platform/decision-desk');
   try {
-    await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
+    await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
+  await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
     await expect(page.getByRole('status')).toContainText('Loading workspace');
   } finally { workspace.release(); }
   await expect(page.getByRole('heading', { name: 'Decision Desk', exact: true })).toBeVisible();
@@ -77,6 +79,7 @@ test('workspace chunk failure offers reload and preserves the authenticated rout
   await setupAudit(page);
   await page.route(operationalModule, route => route.abort());
   await page.goto('/#platform/reports');
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
   await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
   await expect(page.getByRole('alert')).toContainText('Workspace could not be loaded');
   await page.unroute(operationalModule);

@@ -1,7 +1,8 @@
 // Browser test transport only. Never included in the production build.
-import type { AuthUser } from '@appdeploy/client';
-const key = 'hire-test-user';
-async function authTransition(operation: 'sign-in' | 'sign-out') {
+// Synthetic credentials and session authority stand in for the server boundary.
+const sessionsKey = 'hire-test-owner-sessions';
+const fixturePassword = 'fixture-password-only';
+async function authTransition(operation: 'sign-in' | 'sign-out' | 'session') {
   const countKey = `hire-test-${operation}-count`;
   sessionStorage.setItem(
     countKey,
@@ -28,26 +29,75 @@ async function authTransition(operation: 'sign-in' | 'sign-out') {
     throw new Error(`QA ${operation} failure`);
   }
 }
-export const auth = {
-  async getUser(): Promise<AuthUser | null> {
-    if (sessionStorage.getItem('hire-test-auth-error')) throw new Error('QA expired session');
-    return JSON.parse(sessionStorage.getItem(key) || 'null');
-  },
-  async signIn() {
-    await authTransition('sign-in');
-    const user = { userId: sessionStorage.getItem('hire-test-actor') || 'qa-a', name: 'QA test account', scope: '' };
-    sessionStorage.setItem(key, JSON.stringify(user));
-    return { user, accessToken: 'test-only', expiresIn: 3600 };
-  },
-  async signOut() {
-    await authTransition('sign-out');
-    sessionStorage.removeItem(key);
-  },
-};
-async function request(method: string, path: string, body?: unknown) {
-  const user = JSON.parse(sessionStorage.getItem(key) || 'null');
-  const response = await fetch('/__qa' + path, { method, headers: { 'content-type': 'application/json', 'x-qa-user': user?.userId || '' }, body: body === undefined ? undefined : JSON.stringify(body) });
-  if (!response.ok) throw new Error(`QA API returned ${response.status}`);
+function failure(status: number) {
+  return Object.assign(new Error(`QA API returned ${status}`), {
+    response: { status },
+  });
+}
+function sessions(): Record<
+  string,
+  { user: { userId: string; name: string }; expiresAt: string }
+> {
+  return JSON.parse(localStorage.getItem(sessionsKey) || '{}');
+}
+function verified(token: string) {
+  const found = sessions()[token];
+  if (
+    !found ||
+    Date.parse(found.expiresAt) <= Date.now() ||
+    sessionStorage.getItem('hire-test-auth-error')
+  )
+    throw failure(401);
+  return found;
+}
+async function request(
+  method: string,
+  path: string,
+  body?: unknown,
+  userId = '',
+) {
+  const response = await fetch('/__qa' + path, {
+    method,
+    headers: { 'content-type': 'application/json', 'x-qa-user': userId },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (!response.ok) throw failure(response.status);
   return { data: await response.json() };
 }
-export const api = { get: (path: string) => request('GET', path), post: (path: string, body: unknown) => request('POST', path, body) };
+async function post(path: string, body: any) {
+  if (path === '/api/owner/login') {
+    await authTransition('sign-in');
+    if (body.username !== 'hireowner' || body.password !== fixturePassword)
+      throw failure(401);
+    const session = crypto.randomUUID();
+    const result = {
+      user: { userId: 'qa-a', name: 'QA test account' },
+      expiresAt: new Date(
+        Date.now() + (body.remember ? 30 * 24 : 12) * 3600000,
+      ).toISOString(),
+    };
+    localStorage.setItem(
+      sessionsKey,
+      JSON.stringify({ ...sessions(), [session]: result }),
+    );
+    return { data: { ...result, session } };
+  }
+  if (path === '/api/owner/session') {
+    await authTransition('session');
+    return { data: verified(body.session) };
+  }
+  if (path === '/api/owner/logout') {
+    await authTransition('sign-out');
+    verified(body.session);
+    const all = sessions();
+    delete all[body.session];
+    localStorage.setItem(sessionsKey, JSON.stringify(all));
+    return { data: { ok: true } };
+  }
+  if (path === '/api/owner/request') {
+    const owner = verified(body.session);
+    return request(body.method, body.path, body.body, owner.user.userId);
+  }
+  return request('POST', path, body);
+}
+export const api = { get: (path: string) => request('GET', path), post };

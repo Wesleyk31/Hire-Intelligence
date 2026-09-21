@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { api } from '@appdeploy/client';
+import { api } from './workspace-client';
 type Pilot = {
   contract: {
     name: string;

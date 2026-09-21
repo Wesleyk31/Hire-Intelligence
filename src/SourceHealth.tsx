@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { api } from "@appdeploy/client";
+import { api } from "./workspace-client";
 import type { RegistryContract } from "../backend/registry-contracts";
 import type { readPullHistory } from "../backend/pull-receipts";
 

@@ -27,7 +27,9 @@ import {
   ckanResourceRows,
   ckanKmlRows,
 } from './source-helpers';
-import { router, json, error, db, requireAuth } from '@appdeploy/sdk';
+import { router, json, error, db, type RouterRoutes } from '@appdeploy/sdk';
+import { createOwnerAccessRoutes, denyDirectOwnerAccess } from './owner-access';
+import { createOwnerWorkspaceDispatch } from './owner-workspace';
 import { read, utils } from 'xlsx';
 import { getBackfillStatus } from './backfill';
 import {
@@ -2032,7 +2034,7 @@ async function buildPublicSummary() {
   };
 }
 
-export const handler = router({
+const routes: RouterRoutes = {
   ...createAutomationRoutes({
     sources: [...SOURCES, ...HISTORICAL_SOURCES],
     liveSources: LIVE_SOURCES,
@@ -2052,7 +2054,7 @@ export const handler = router({
   ],
   'GET /api/public/summary': [async () => json(await buildPublicSummary())],
   'GET /api/dashboard': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       try {
         return json(
@@ -2071,7 +2073,7 @@ export const handler = router({
     },
   ],
   'GET /api/sources/contracts': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async () =>
       json({
         contracts: [
@@ -2083,7 +2085,7 @@ export const handler = router({
       }),
   ],
   'GET /api/sources/:key/health': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       const source =
         SOURCES.find((item) => item.key === ctx.params.key) ||
@@ -2103,7 +2105,7 @@ export const handler = router({
     },
   ],
   'GET /api/sources/:key/diagnostic': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       const source = SOURCES.find((item) => item.key === ctx.params.key);
       if (!source) return error('Unknown source', 404);
@@ -2141,7 +2143,7 @@ export const handler = router({
   ],
 
   'GET /api/sources/pilots/:key': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       const key = ctx.params.key;
       if (!Object.hasOwn(SOURCE_PILOT_CONTRACTS, key))
@@ -2167,7 +2169,7 @@ export const handler = router({
   ],
 
   'GET /api/evidence/review': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       try {
         return json(
@@ -2190,7 +2192,7 @@ export const handler = router({
     },
   ],
   'GET /api/pilot/outcomes': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) =>
       json(
         (
@@ -2202,11 +2204,11 @@ export const handler = router({
       ),
   ],
   'GET /api/reports/history': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => json(await listReportHistory(ctx.user!)),
   ],
   'POST /api/reports/history': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       if (!validReportHistory(ctx.body))
         return error(
@@ -2226,7 +2228,7 @@ export const handler = router({
     },
   ],
   'POST /api/pilot/outcomes': [
-    requireAuth(),
+    denyDirectOwnerAccess,
     async (ctx) => {
       const body = ctx.body;
       const b = (body || {}) as Record<string, unknown>;
@@ -2319,4 +2321,11 @@ export const handler = router({
       );
     },
   ],
+};
+
+export const handler = router({
+  ...routes,
+  ...createOwnerAccessRoutes({
+    dispatch: createOwnerWorkspaceDispatch(routes),
+  }),
 });

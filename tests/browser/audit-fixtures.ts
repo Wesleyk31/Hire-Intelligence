@@ -69,6 +69,7 @@ export async function setupAudit(page: Page, flags: Options = {}) {
 }
 export async function enter(page: Page, slug = 'decision-desk') {
   await page.goto('/#platform/' + slug);
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
   await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
   await expect(page.locator('.hi-page-head h1')).toBeVisible();
 }

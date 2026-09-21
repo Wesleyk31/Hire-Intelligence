@@ -11,6 +11,7 @@ test('sign-in permits one pending operation and recovers for retry', async ({
   });
   await page.goto('/#platform/decision-desk');
 
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
   const signIn = page.getByRole('button', {
     name: 'Sign in to Hire Intelligence',
   });
@@ -54,15 +55,13 @@ test('sign-out permits one pending operation and recovers for retry', async ({
 }) => {
   await setupAudit(page);
   await page.addInitScript(() => {
-    sessionStorage.setItem(
-      'hire-test-user',
-      JSON.stringify({ userId: 'qa-a', name: 'QA test account', scope: '' }),
-    );
     sessionStorage.setItem('hire-test-sign-out-gate', '1');
     sessionStorage.setItem('hire-test-sign-out-failures', '1');
   });
   await page.goto('/#platform/decision-desk');
 
+  await page.getByLabel('Password', { exact: true }).fill('fixture-password-only');
+  await page.getByRole('button', { name: 'Sign in to Hire Intelligence' }).click();
   const signOut = page.getByRole('button', { name: 'Sign out', exact: true });
   await signOut.evaluate((button) => {
     button.click();

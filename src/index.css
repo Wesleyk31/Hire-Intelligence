@@ -1733,3 +1733,11 @@ h1 {
 .auth-userbar button {
   flex-shrink: 0;
 }
+
+.owner-login { display: grid; gap: 10px; margin: 20px 0 12px; }
+.owner-login > label { font-weight: 700; }
+.owner-login > input { min-width: 0; width: 100%; box-sizing: border-box; border: 1px solid #bec6cd; border-radius: 4px; padding: 11px; font: inherit; }
+.owner-login .owner-remember { display: flex; align-items: center; gap: 8px; font-weight: 400; }
+.owner-login input[type="checkbox"] { width: 18px; height: 18px; }
+.owner-login .owner-session-note { margin: 0 0 5px; font-size: 12px; }
+.auth-panel > button.secondary { margin-left: 0; }

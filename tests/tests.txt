@@ -8,8 +8,8 @@ Description: Verifies public marketing pages remain usable without leaking proje
 Steps:
 1. Open the public homepage and navigate through Products, Solutions, Industries, Insights and About
 2. Confirm public Insights shows aggregate project-signal, source and regional counts but no canonical project names, contractor names, CRM records or evidence provenance
-3. Click Log in / Explore the platform and confirm a secure-workspace sign-in gate appears before Decision Desk; after authenticating, confirm Decision Desk loads
-4. Sign out and confirm the public site returns and the workspace requires sign-in again. Repeated clicks during a pending authentication action must not create competing sign-in windows or duplicate sign-out actions; a cancelled sign-in must allow another attempt
+3. Click Log in / Explore the platform and confirm a secure-workspace owner username/password form appears before Decision Desk. Empty or incorrect credentials must not open the workspace. If configured owner credentials are available through the secure test environment, sign in and confirm Decision Desk loads; never place real credentials in this test file or logs.
+4. With a valid owner session, reload and confirm Remember me retains access after server verification. Sign out and confirm the workspace requires credentials again. Repeated clicks during a pending authentication action must not create duplicate requests; a failed sign-in must allow another attempt. A forged or revoked session must never load private data.
 
 Expected: Public pages are aggregate-only; project-level workspace data is not returned until authenticated; successful sign-in opens the operational platform and sign-out restores the gate; authentication actions remain retryable without duplicate pending operations.
 
@@ -44,7 +44,7 @@ Description: Verifies authenticated operational records cannot contaminate anoth
 
 Steps:
 1. Record CONTACTED then QUOTED then WON for one canonical project and confirm the CRM contacted count remains one project rather than three rows
-2. Confirm quote/won values are not double-counted and a second authenticated account does not see the first account's CRM/report history
+2. Confirm quote/won values are not double-counted and unauthenticated visitors or unrelated platform accounts cannot read owner CRM/report history. Owner identity must come from the server session, never caller-supplied fields.
 3. Open Reports, inspect Current Report Preview, save a report snapshot, reload the application and confirm report history remains; download the PDF and confirm CALL NOW, regional intelligence, source health/provenance and governance sections exist
 
 Expected: Funnel metrics are unique-project based and user scoped; report history persists per authenticated user; preview and PDF contain current governed intelligence.
