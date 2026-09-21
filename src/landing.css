@@ -515,19 +515,24 @@
   margin-bottom: 11px;
 }
 .hi2-photo-early {
-  background-image: url('/resources/project-signals.svg');
+  background-image: url('/resources/pilbara-drilling.jpg');
+  background-position: center 20%;
 }
 .hi2-photo-shutdown {
-  background-image: url('/resources/shutdown-intelligence.svg');
+  background-image: url('/resources/pilbara-reclaimer.jpg');
+  background-position: center 30%;
 }
 .hi2-photo-contractor {
-  background-image: url('/resources/contractor-activity.svg');
+  background-image: url('/resources/pilbara-construction.jpg');
+  background-position: center 25%;
 }
 .hi2-photo-fleet {
-  background-image: url('/resources/fleet-demand.svg');
+  background-image: url('/resources/pilbara-loader.jpg');
+  background-position: center 30%;
 }
 .hi2-photo-market {
-  background-image: url('/resources/market-intelligence.svg');
+  background-image: url('/resources/pilbara-open-pit.jpg');
+  background-position: center 30%;
 }
 .hi2-feature-label {
   display: flex;
@@ -697,6 +702,14 @@
 }
 .hi2-footer-links button {
   font-size: 8px;
+}
+.hi2-footer-links a {
+  color: inherit;
+  font-size: 8px;
+  text-decoration: none;
+}
+.hi2-footer-links a:hover {
+  text-decoration: underline;
 }
 .hi2-footer-links span {
   font-weight: 900;

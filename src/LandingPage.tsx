@@ -914,6 +914,7 @@ export default function LandingPage({ onExplore }: LandingPageProps) {
           <button onClick={() => openPublicPage('privacy')}>Privacy</button>
           <button onClick={() => openPublicPage('terms')}>Terms</button>
           <button onClick={() => openPublicPage('contact')}>Contact</button>
+          <a href="./photo-credits.html">Photo credits</a>
         </div>
       </footer>
 
