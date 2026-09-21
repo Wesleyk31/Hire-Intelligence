@@ -2,12 +2,12 @@
 
 ## Test 1 - Public site is aggregate-only and operational workspace requires sign-in [sanity]
 Viewport: desktop
-Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, sign-in/out transitions, duplicate authentication actions, GET /api/public/summary, protected GET /api/dashboard, five Pilbara feature photos, photo attribution, workspace brand returns home, retained owner session
+Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, sign-in/out transitions, duplicate authentication actions, GET /api/public/summary, protected GET /api/dashboard, five Western Australian feature photos, photo attribution, workspace brand returns home, retained owner session
 Description: Verifies public marketing pages remain usable without leaking project-level intelligence and the operational workspace is gated by authentication.
 
 Steps:
 1. Open the public homepage and navigate through Products, Solutions, Industries, Insights and About
-   On the homepage, confirm all five feature cards display distinct real Pilbara photographs without broken images, stretching or overflow. Open Photo credits in the footer, confirm five source and licence entries, then use Back to Hire Intelligence to return.
+   On the homepage, confirm all five feature cards display distinct real Western Australian photographs without broken images, stretching or overflow. Contractor Activity must show the white Toyota LandCruiser mining ute, with blue sky, in the existing card size. Open Photo credits in the footer, confirm five accurate source and licence entries, then use Back to Hire Intelligence to return.
 2. Confirm public Insights shows aggregate project-signal, source and regional counts but no canonical project names, contractor names, CRM records or evidence provenance
 3. Click Log in / Explore the platform and confirm a secure-workspace owner username/password form appears before Decision Desk. Empty or incorrect credentials must not open the workspace. If configured owner credentials are available through the secure test environment, sign in and confirm Decision Desk loads; never place real credentials in this test file or logs.
 4. With a valid owner session, reload and confirm Remember me retains access after server verification. Sign out and confirm the workspace requires credentials again. Repeated clicks during a pending authentication action must not create duplicate requests; a failed sign-in must allow another attempt. A forged or revoked session must never load private data.
