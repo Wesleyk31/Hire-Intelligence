@@ -1,5 +1,38 @@
 import { expect, test } from '@playwright/test';
-import { setupAudit } from './audit-fixtures';
+import { enter, modules, setupAudit } from './audit-fixtures';
+
+for (const width of [1280, 390]) {
+  test(`workspace logo returns home from all modules without signing out at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await setupAudit(page);
+    await enter(page);
+    for (const [slug, name] of modules) {
+      if (width <= 760) await page.locator('.hi-mobile-nav').selectOption(name);
+      else await page.getByRole('navigation', { name: 'Hire Intelligence modules' }).getByRole('link', { name, exact: true }).click();
+      await expect(page.locator('.hi-page-head h1')).toHaveText(name);
+      await expect(page).toHaveURL(new RegExp('#platform/' + slug + '$'));
+      const home = page.getByRole('link', { name: 'Hire Intelligence home', exact: true });
+      await expect(home).toBeVisible();
+      if (slug === 'decision-desk') {
+        await home.focus();
+        await page.keyboard.press('Enter');
+      } else await home.click();
+      await expect(page.locator('.hi2-hero')).toBeVisible();
+      await expect(page.locator('.hi-shell')).toHaveCount(0);
+      expect(new URL(page.url()).hash).toBe('');
+      if (slug === 'decision-desk') {
+        await page.goBack();
+        await expect(page.locator('.hi-page-head h1')).toHaveText('Decision Desk');
+        await page.goForward();
+        await expect(page.locator('.hi2-hero')).toBeVisible();
+      }
+      await page.getByRole('button', { name: 'Explore the platform', exact: true }).click();
+      await expect(page.locator('.hi-page-head h1')).toHaveText('Decision Desk');
+      await expect(page.locator('input[type="password"]')).toHaveCount(0);
+    }
+    expect(await page.evaluate(() => sessionStorage.getItem('hire-test-sign-in-count'))).toBe('1');
+  });
+}
 
 test('owner credentials are required, rejected credentials expose no workspace, and remember survives reload', async ({
   page,

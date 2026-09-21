@@ -328,7 +328,7 @@ function viewFromHash(): ViewName {
   return hit?.name || 'Decision Desk';
 }
 
-export default function FunctionalApp() {
+export default function FunctionalApp({ onHome }: { onHome: () => void }) {
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [loadError, setLoadError] = useState('');
   const [view, setView] = useState<ViewName>(() => viewFromHash());
@@ -638,13 +638,24 @@ export default function FunctionalApp() {
   return (
     <div className="hi-shell">
       <aside className="hi-sidebar">
-        <div className="hi-brand">
+        <a
+          className="hi-brand"
+          href="./"
+          aria-label="Hire Intelligence home"
+          title="Back to homepage"
+          onClick={(event) => {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)
+              return;
+            event.preventDefault();
+            onHome();
+          }}
+        >
           <span>HI</span>
           <div>
             <b>HIRE</b>
             <strong>INTELLIGENCE</strong>
           </div>
-        </div>
+        </a>
         <nav className="hi-nav" aria-label="Hire Intelligence modules">
           {VIEWS.map((item) => {
             const Icon = item.icon;

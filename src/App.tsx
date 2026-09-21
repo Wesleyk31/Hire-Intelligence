@@ -42,7 +42,7 @@ export default function App() {
       <div className="platform-root">
         <AuthGate onExit={openHome}>
           <LazySection label="Workspace">
-            <FunctionalApp />
+            <FunctionalApp onHome={openHome} />
           </LazySection>
         </AuthGate>
       </div>

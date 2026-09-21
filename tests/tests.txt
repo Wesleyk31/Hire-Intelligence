@@ -2,7 +2,7 @@
 
 ## Test 1 - Public site is aggregate-only and operational workspace requires sign-in [sanity]
 Viewport: desktop
-Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, sign-in/out transitions, duplicate authentication actions, GET /api/public/summary, protected GET /api/dashboard, five Pilbara feature photos, photo attribution
+Covers: public summary, Products, Solutions, Industries, Insights, About, secure workspace gate, sign-in/out transitions, duplicate authentication actions, GET /api/public/summary, protected GET /api/dashboard, five Pilbara feature photos, photo attribution, workspace brand returns home, retained owner session
 Description: Verifies public marketing pages remain usable without leaking project-level intelligence and the operational workspace is gated by authentication.
 
 Steps:
@@ -11,6 +11,7 @@ Steps:
 2. Confirm public Insights shows aggregate project-signal, source and regional counts but no canonical project names, contractor names, CRM records or evidence provenance
 3. Click Log in / Explore the platform and confirm a secure-workspace owner username/password form appears before Decision Desk. Empty or incorrect credentials must not open the workspace. If configured owner credentials are available through the secure test environment, sign in and confirm Decision Desk loads; never place real credentials in this test file or logs.
 4. With a valid owner session, reload and confirm Remember me retains access after server verification. Sign out and confirm the workspace requires credentials again. Repeated clicks during a pending authentication action must not create duplicate requests; a failed sign-in must allow another attempt. A forged or revoked session must never load private data.
+5. While signed in, click the Hire Intelligence logo from Decision Desk and the other workspace modules. Confirm it returns to the public homepage, browser Back/Forward work, and Explore the platform reopens the workspace without requesting the password again. Repeat with keyboard Enter and a mobile viewport; returning home must not sign the owner out.
 
 Expected: Public pages are aggregate-only; project-level workspace data is not returned until authenticated; successful sign-in opens the operational platform and sign-out restores the gate; authentication actions remain retryable without duplicate pending operations.
 
